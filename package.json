@@ -18,7 +18,8 @@
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
