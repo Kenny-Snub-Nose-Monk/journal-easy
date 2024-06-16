@@ -3,6 +3,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup
 } from '@/components/ui/resizable';
+import WorkNav from '@/components//WorkNav';
 
 export default function Layout({
     params,
@@ -14,16 +15,19 @@ export default function Layout({
     const { id = '0' } = params;
 
     return (
-        <ResizablePanelGroup direction="horizontal" className="min-h-screen">
-            <ResizablePanel defaultSize={25}>
+        <ResizablePanelGroup direction="horizontal" className="h-screen">
+            <ResizablePanel defaultSize={20}>
                 <div>
                     <span className="font-semibold">Sidebar {id}</span>
                 </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={75}>
-                <div className="flex h-full item-center justify-center p-6">
-                    {children}
+            <ResizablePanel defaultSize={80}>
+                <div className="h-screen flex flex-col">
+                    {/* nav bar */}
+                    <WorkNav workId={id} />
+                    {/* content */}
+                    <div className="flex-1">{children}</div>
                 </div>
             </ResizablePanel>
         </ResizablePanelGroup>
