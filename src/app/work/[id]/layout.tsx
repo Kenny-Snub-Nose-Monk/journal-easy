@@ -79,7 +79,7 @@ export default function Layout({
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={80}>
-                <div className="h-screen flex flex-col">
+                <div className="h-screen flex flex-col relative">
                     {/* nav bar */}
                     <WorkNav workId={id} />
                     {/* content */}
