@@ -20,7 +20,7 @@ export default function Home() {
         <Button variant="secondary" className="text-base" size="lg">
           <Code className="h-4 w-4" />
           &nbsp;加入研发团队
-          </Button>
+        </Button>
       </section>
     </main>
   )
