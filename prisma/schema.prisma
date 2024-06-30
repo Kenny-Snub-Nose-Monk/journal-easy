@@ -17,6 +17,7 @@ datasource db {
 // data model
 model Doc {
     id        Int      @id @default(autoincrement())
+    uid       String    @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     title      String
     content    String
     createdAt DateTime @default(now())
