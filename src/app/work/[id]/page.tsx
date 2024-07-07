@@ -19,7 +19,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
   return (
     <>
       <ScrollArea className="h-[calc(100vh-46px)]">
-        <div className="max-w-[900px] mx-auto my-10 h-[2000px]">
+        <div className="max-w-[900px] mx-auto my-10">
           <Title uid={uid} title={doc.title} />
           <Content uid={uid} content={doc.content} />
         </div>

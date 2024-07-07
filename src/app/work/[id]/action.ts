@@ -24,9 +24,7 @@ export async function updateDoc(
       data,
     })
 
-    if (data.title) {
-      revalidatePath(`/work/${uid}`)
-    }
+    revalidatePath(`/work/${uid}`)
   } catch (ex) {
     console.error(ex)
   }

@@ -1,8 +1,6 @@
-import Link from 'next/link'
-import { FileText } from 'lucide-react'
 import { create, getDocList } from './action'
 import CreateSubmitButton from './CreateSubmitButton'
-import { cn } from '@/lib/utils'
+import Item from './item'
 
 export default async function Directory({
   params,
@@ -19,19 +17,7 @@ export default async function Directory({
 
         if (uid === params.id) isCurrent = true
 
-        return (
-          <Link
-            href={`/work/${uid}`}
-            key={uid}
-            className={cn(
-              'inline-flex items-center w-full p-2 py-1 cursor-pointer hover:text-secondary-foreground',
-              isCurrent ? 'bg-card' : 'hover:bg-card'
-            )}
-          >
-            <FileText className="h-4 w-4" />
-            &nbsp;{title || '<無標題>'}
-          </Link>
-        )
+        return <Item key={uid} uid={uid} title={title} isCurrent={isCurrent} />
       })}
 
       <form action={create}>
