@@ -21,6 +21,9 @@ export async function getDocList() {
       uid: true,
       title: true,
     },
+    orderBy: {
+      id: 'asc',
+    },
   })
 
   return list || []
