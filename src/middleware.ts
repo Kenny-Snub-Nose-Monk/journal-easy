@@ -1,14 +1,11 @@
-import { NextRequest, NextResponse, userAgent } from 'next/server'
+export { auth as middleware } from 'auth'
 
-export function middleware(request: NextRequest) {
-  const url = request.nextUrl
-  const { device } = userAgent(request)
-  const viewport = device.type === 'mobile' ? 'mobile' : 'desktop'
-  if (viewport === 'desktop' || url.pathname.startsWith('/mobile')) {
-    // 是 PC 端，或者已经在 mobile 页面，则直接访问
-    return NextResponse.next()
-  }
+// Or like this if you need to do something here.
+// export default auth((req) => {
+//   console.log(req.auth) //  { session: { user: { ... } } }
+// })
 
-  // 否则（移动端浏览器，访问其他页面），重定向到 mobile 页面
-  return NextResponse.redirect(url.origin + '/mobile')
+// Read more: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }
