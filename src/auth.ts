@@ -64,6 +64,9 @@ import GitHub from 'next-auth/providers/github'
 // import Zoom from "next-auth/providers/zoom"
 
 import type { NextAuthConfig } from 'next-auth'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { type Adapter } from 'next-auth/adapters'
+import { db } from '@/db/db'
 
 export const config = {
   theme: {
@@ -134,10 +137,13 @@ export const config = {
     // Zoom,
   ],
   basePath: '/auth',
+  adapter: PrismaAdapter(db) as Adapter,
   callbacks: {
     authorized({ request, auth }) {
-      const { pathname } = request.nextUrl
-      if (pathname.startsWith('/work/')) return !!auth
+      // const { pathname } = request.nextUrl
+      // if (pathname.startsWith('/work/')) return !!auth
+
+      // 因為 NextAuth Adapter 默認不支持 middleware，所以這裡暫時不用了
       return true
     },
     jwt({ token, trigger, session }) {
