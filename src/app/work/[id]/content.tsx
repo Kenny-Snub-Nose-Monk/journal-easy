@@ -5,18 +5,18 @@ import { useState } from 'react'
 import debounce from 'lodash.debounce'
 import { updateDoc } from './action'
 
-const saveContent = debounce((uid: string, content: string) => {
-  updateDoc(uid, { content })
+const saveContent = debounce((id: string, content: string) => {
+  updateDoc(id, { content })
 }, 1000)
 
-export default function Content(props: { uid: string; content: string }) {
+export default function Content(props: { id: string; content: string }) {
   const [content, setContent] = useState(props.content || '')
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const newContent = e.target.value
 
     setContent(newContent)
-    saveContent(props.uid, newContent)
+    saveContent(props.id, newContent)
   }
 
   return (

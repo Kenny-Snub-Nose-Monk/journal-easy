@@ -5,9 +5,9 @@ import Title from './title'
 import Content from './content'
 
 export default async function OneWork({ params }: { params: { id: string } }) {
-  const uid = params.id
+  const id = params.id
 
-  const doc = await getDoc(uid)
+  const doc = await getDoc(id)
 
   if (doc == null)
     return (
@@ -20,8 +20,8 @@ export default async function OneWork({ params }: { params: { id: string } }) {
     <>
       <ScrollArea className="h-[calc(100vh-46px)]">
         <div className="max-w-[900px] mx-auto my-10">
-          <Title uid={uid} title={doc.title} />
-          <Content uid={uid} content={doc.content} />
+          <Title id={id} title={doc.title} />
+          <Content id={id} content={doc.content} />
         </div>
       </ScrollArea>
       {/* <AIIsland /> */}

@@ -3,10 +3,10 @@
 import { revalidatePath } from 'next/cache'
 import { db } from '@/db/db'
 
-export async function getDoc(uid: string) {
+export async function getDoc(id: string) {
   try {
     const doc = await db.doc.findUnique({
-      where: { uid },
+      where: { id },
     })
     return doc
   } catch (ex) {
@@ -15,16 +15,16 @@ export async function getDoc(uid: string) {
 }
 
 export async function updateDoc(
-  uid: string,
+  id: string,
   data: { title?: string; content?: string }
 ) {
   try {
     await db.doc.update({
-      where: { uid },
+      where: { id },
       data,
     })
 
-    revalidatePath(`/work/${uid}`)
+    revalidatePath(`/work/${id}`)
   } catch (ex) {
     console.error(ex)
   }

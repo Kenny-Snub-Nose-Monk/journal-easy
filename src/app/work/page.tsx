@@ -11,7 +11,7 @@ export default async function Work() {
   })
 
   let pathname = '/work/0'
-  if (firstDoc != null) pathname = `/work${firstDoc?.uid}`
+  if (firstDoc != null) pathname = `/work${firstDoc?.id}`
 
   redirect(pathname)
 
