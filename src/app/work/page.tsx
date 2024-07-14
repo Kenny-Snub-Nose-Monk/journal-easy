@@ -1,29 +1,34 @@
 import { db } from '@/db/db'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { getUserInfo } from '@/lib/session'
 
 export default async function Work() {
-  //找到第一篇檔案, 然後跳轉過去
-  const firstDoc = await db.doc.findFirst({
-    orderBy: {
-      updatedAt: 'desc',
-    },
-  })
-
   let pathname = '/work/0'
-  if (firstDoc != null) pathname = `/work${firstDoc?.id}`
+
+  const user = await getUserInfo()
+  if (user && user.id) {
+    const firstDoc = await db.doc.findFirst({
+      where: { userId: user.id },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    })
+
+    if (firstDoc != null) pathname = `/work/${firstDoc?.id}` // 找到第一篇文檔，然後跳轉過去
+  }
 
   redirect(pathname)
 
-  return (
-    <Wrapper>
-      <Link href={pathname} className="underline">
-        跳轉到 {pathname}
-      </Link>
-    </Wrapper>
-  )
+  // return (
+  //   <Wrapper>
+  //     <Link href={pathname} className="underline">
+  //       跳轉到 {pathname}
+  //     </Link>
+  //   </Wrapper>
+  // )
 }
 
-function Wrapper({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>
-}
+// function Wrapper({ children }: { children: React.ReactNode }) {
+//   return <div>{children}</div>
+// }
