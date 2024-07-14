@@ -18,6 +18,9 @@ import {
   Trash2,
 } from 'lucide-react'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getUserInfo } from '@/lib/session'
+
 export default function Layout({
   params,
   children,
@@ -49,18 +52,18 @@ export default function Layout({
               <Plus className="h-4 w-4" />
               &nbsp;&nbsp;创建文档
             </Button>
+            <Button className="w-full justify-start px-2" variant="ghost">
+              <Trash2 className="h-4 w-4" />
+              &nbsp;&nbsp; 回收站
+            </Button>
           </div>
           <Separator className="my-4" />
           <ScrollArea className="flex-auto">{directory}</ScrollArea>
           <Separator className="my-4" />
           <div>
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Trash2 className="h-4 w-4" />
-              &nbsp;&nbsp;回收站
-            </Button>
             <Button className="w-full justify-start px-2 " variant="ghost">
-              <User className="h-4 w-4" />
-              &nbsp;&nbsp;我的账户
+              <UserAvatar />
+              &nbsp;&nbsp;我的帳戶
             </Button>
             <Button className="w-full justify-start px-2 " variant="ghost">
               <DollarSign className="h-4 w-4" />
@@ -68,11 +71,11 @@ export default function Layout({
             </Button>
             <Button className="w-full justify-start px-2 " variant="ghost">
               <Settings className="h-4 w-4" />
-              &nbsp;&nbsp;设置
+              &nbsp;&nbsp;設置
             </Button>
             <Button className="w-full justify-start px-2 " variant="ghost">
               <LogOut className="h-4 w-4" />
-              &nbsp;&nbsp;退出登录
+              &nbsp;&nbsp;退出登入
             </Button>
           </div>
         </div>
@@ -87,5 +90,17 @@ export default function Layout({
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
+  )
+}
+
+async function UserAvatar() {
+  const user = await getUserInfo()
+  let { name, image } = user || {}
+
+  return (
+    <Avatar className="h-7 w-7">
+      <AvatarImage src={image || ''} alt={name || ''} />
+      <AvatarFallback>{name?.slice(0, 1)}</AvatarFallback>
+    </Avatar>
   )
 }
