@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { auth } from 'auth'
-import SignInButton from '@/components/sign-in-button'
+import SignInButton from '@/components/sigin-in-button'
 import { Button } from '@/components/ui/button'
 import { Zap, User } from 'lucide-react'
 

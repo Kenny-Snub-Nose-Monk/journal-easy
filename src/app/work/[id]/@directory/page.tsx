@@ -10,6 +10,7 @@ export default async function Directory({
   const list = await getDocList()
 
   return (
+    // <div className="h-[1000px]">
     <div>
       {list.map((doc) => {
         const { id, title } = doc
