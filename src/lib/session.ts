@@ -1,7 +1,8 @@
 import 'server-only' // 標注只在服務端使用（客户端组件引入會報錯）
 import { auth } from 'auth'
+import { cache } from 'react'
 
-export async function getUserInfo() {
+async function getUserInfoFn() {
   const session = await auth()
 
   if (!session?.user) {
@@ -10,3 +11,5 @@ export async function getUserInfo() {
 
   return session.user // 格式如 { id, name, email, image }
 }
+
+export const getUserInfo = cache(getUserInfoFn)
