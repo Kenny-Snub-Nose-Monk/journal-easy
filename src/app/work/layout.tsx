@@ -4,7 +4,7 @@ import { getUserInfo } from '@/lib/session'
 export default async function Layout({
   children,
 }: Readonly<{
-  children: React.ReactDOM
+  children: React.ReactNode
 }>) {
   const user = await getUserInfo()
   if (user == null) {
