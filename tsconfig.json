@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/middleware.ts.bak"
+    "src/middleware.ts.test"
   ],
   "exclude": ["node_modules"]
 }

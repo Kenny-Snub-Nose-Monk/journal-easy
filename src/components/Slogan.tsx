@@ -9,7 +9,7 @@ export default function Slogan() {
   useEffect(() => {
     const typed = new Typed(el.current, {
       strings: [
-        '基于 GPT 模型，AI 写作，AI 智能提示，AI 文本处理，多人协同编辑',
+        '基於 GPT 模型，AI 寫作，AI 智慧提示，AI 文件處理，多人協作編輯',
       ],
       startDelay: 300,
       typeSpeed: 100,

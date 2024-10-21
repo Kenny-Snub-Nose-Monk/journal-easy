@@ -7,9 +7,9 @@ export default async function Layout({
   children: React.ReactNode
 }>) {
   const user = await getUserInfo()
+
   if (user == null) {
     redirect('/user-info')
-    return null
   }
 
   return <>{children}</>
