@@ -4,22 +4,29 @@ import { Code, Zap } from 'lucide-react'
 import HomeNav from '@/components/HomeNav'
 import Slogan from '@/components/Slogan'
 import StartButton from './start-button'
+import LearnButton from '@/components/LearnButton'
+import QRCode from '@/components/QRCode'
 
 export default async function Home() {
   return (
     <main className="min-h-screen flex flex-col justify-center text-center">
       <HomeNav />
-      <h2 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-        <span className="font-extrabold">划水 AI</span>，智能寫作，高效工作
-      </h2>
-      <Slogan />
-      <section className="mt-10 flex justify-center space-x-4">
-        <StartButton />
-        <Button variant="secondary" className="text-base" size="lg">
-          <Code className="h-4 w-4" />
-          &nbsp;加入研發團隊
-        </Button>
-      </section>
+      <div className="flex flex-col justify-center text-start md:text-center mx-6">
+        <section className="md:flex md:justify-center">
+          <h2 className="text-4xl lg:text-5xl font-extrabold">划水 AI ，</h2>
+          <h2 className="text-4xl lg:text-5xl mt-2 md:mt-0">
+            智能寫作，高效工作
+          </h2>
+        </section>
+        <Slogan />
+        <section className="mt-12 flex justify-center space-x-4">
+          <StartButton />
+          <LearnButton />
+        </section>
+      </div>
+      <div className="w-32 md:w-48 fixed bottom-2 right-2">
+        <QRCode />
+      </div>
     </main>
   )
 }

@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
 import debounce from 'lodash.debounce'
 import { updateDoc } from './action'
+import TiptapEditor from '@/components/editor'
 
 const saveContent = debounce((id: string, content: string) => {
   updateDoc(id, { content })
@@ -21,12 +22,13 @@ export default function Content(props: { id: string; content: string }) {
 
   return (
     <div>
-      <Textarea
+      {/* <Textarea
         placeholder="請輸入標題..."
         value={content}
         onChange={handleChange}
         className="border-none p-0 text-base focus-visible:ring-transparent"
-      />
+      /> */}
+      <TiptapEditor />
     </div>
   )
 }

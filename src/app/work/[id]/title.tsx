@@ -19,7 +19,7 @@ export default function Title(props: { id: string; title: string }) {
   }
 
   return (
-    <div className="mb-8">
+    <div className="mb-6 pb-4 border-b">
       <Input
         placeholder="請輸入內容..."
         value={title}
