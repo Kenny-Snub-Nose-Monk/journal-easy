@@ -96,6 +96,18 @@ const config = {
               'margin-top': '1em',
               'margin-bottom': '1em',
             },
+            code: {
+              color: '#f56565', // This is text-red-500
+              backgroundColor: '#f7fafc', // Optional: Light background for code blocks
+              padding: '0.25rem', // Optional: Padding for code blocks
+              borderRadius: '0.25rem', // Optional: Rounded corners for code blocks
+              '&::before': {
+                display: 'none',
+              },
+              '&::after': {
+                display: 'none',
+              },
+            },
           },
         },
       },

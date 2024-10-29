@@ -2,6 +2,11 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
+import Underline from '@tiptap/extension-underline'
+import TextAlign from '@tiptap/extension-text-align'
+import SubScript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
+import TextMenu from './menus/text-menu'
 
 interface IProps {
   rawContent: string
@@ -23,6 +28,12 @@ const TiptapEditor = (props: IProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      SubScript,
+      Superscript,
       Placeholder.configure({
         placeholder: '請輸入內容...',
       }),
@@ -38,6 +49,11 @@ const TiptapEditor = (props: IProps) => {
       },
     },
   })
-  return <EditorContent editor={editor} />
+  return (
+    <>
+      <EditorContent editor={editor} />
+      <TextMenu editor={editor} />
+    </>
+  )
 }
 export default TiptapEditor
