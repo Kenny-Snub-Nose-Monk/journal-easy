@@ -1,10 +1,10 @@
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from '@/components/ui/hover-card'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Ellipsis, Subscript, Superscript, Strikethrough } from 'lucide-react'
 
 interface IProps {
@@ -16,13 +16,13 @@ export default function MoreMenu(props: IProps) {
   if (editor == null) return null
 
   return (
-    <HoverCard openDelay={150}>
-      <HoverCardTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <Button size="sm" variant="ghost">
           <Ellipsis className="h-4 w-4" />
         </Button>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-auto p-2">
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-2">
         <Button
           size="sm"
           onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -44,7 +44,7 @@ export default function MoreMenu(props: IProps) {
         >
           <Subscript className="h-4 w-4" />
         </Button>
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   )
 }

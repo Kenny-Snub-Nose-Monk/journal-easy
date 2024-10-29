@@ -3,10 +3,10 @@
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from '@/components/ui/hover-card'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { AlignLeft, AlignCenter, AlignRight, ChevronDown } from 'lucide-react'
 
 interface IProps {
@@ -18,15 +18,15 @@ export default function AlignMenu(props: IProps) {
   if (editor == null) return null
 
   return (
-    <HoverCard openDelay={150}>
-      <HoverCardTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <Button size="sm" variant="ghost">
           <AlignLeft className="h-4 w-4" />
           &nbsp;
           <ChevronDown className="h-2 w-2" />
         </Button>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-auto p-2">
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-2">
         <Button
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
@@ -51,7 +51,7 @@ export default function AlignMenu(props: IProps) {
         >
           <AlignRight className="h-4 w-4" />
         </Button>
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   )
 }

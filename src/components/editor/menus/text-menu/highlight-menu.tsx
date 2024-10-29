@@ -1,11 +1,10 @@
 import { Editor } from '@tiptap/react'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from '@/components/ui/hover-card'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Brush, ChevronDown } from 'lucide-react'
 
 interface IProps {
@@ -17,18 +16,18 @@ export default function HighlightMenu(props: IProps) {
   if (editor == null) return null
 
   return (
-    <HoverCard openDelay={300}>
-      <HoverCardTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <Button size="sm" variant="ghost">
           <Brush className="h-4 w-4" />
           &nbsp;
           <ChevronDown className="h-2 w-2" />
         </Button>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-auto p-0">
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
         <ColorPanel editor={editor} />
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   )
 }
 
