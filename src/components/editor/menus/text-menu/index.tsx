@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Bold, Italic, Code, Underline } from 'lucide-react'
 import AlignMenu from './align-menu'
 import MoreMenu from './more-menu'
+import HighlightMenu from './highlight-menu'
 
 interface IProps {
   editor: Editor | null
@@ -55,6 +56,7 @@ export default function TextMenu(props: IProps) {
         >
           <Code className="h-4 w-4" />
         </Button>
+        <HighlightMenu editor={editor} />
         <AlignMenu editor={editor} />
         <MoreMenu editor={editor} />
       </div>
