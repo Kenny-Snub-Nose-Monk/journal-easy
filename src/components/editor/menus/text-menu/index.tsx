@@ -1,13 +1,12 @@
 'use client'
 
 import { BubbleMenu, Editor } from '@tiptap/react'
-import { Button } from '@/components/ui/button'
-import { Bold, Italic, Code, Underline } from 'lucide-react'
 import BasicMenu from './basic-menu'
 import AlignMenu from './align-menu'
 import MoreMenu from './more-menu'
 import HighlightMenu from './highlight-menu'
 import ContentTypeMenu from './content-type'
+import { isTextSelected } from '@/components/editor/utils/isTextSelected'
 
 interface IProps {
   editor: Editor | null
@@ -17,11 +16,18 @@ export default function TextMenu(props: IProps) {
   const { editor } = props
   if (editor == null) return
 
+  function shouldShow(editor: Editor) {
+    if (editor?.isActive('codeBlock')) return false
+
+    return isTextSelected({ editor })
+  }
+
   return (
     <BubbleMenu
       editor={editor}
       tippyOptions={{ duration: 100 }}
       updateDelay={100}
+      shouldShow={() => shouldShow(editor)}
     >
       <div
         className="
