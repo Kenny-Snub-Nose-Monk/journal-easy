@@ -3,9 +3,11 @@
 import { BubbleMenu, Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { Bold, Italic, Code, Underline } from 'lucide-react'
+import BasicMenu from './basic-menu'
 import AlignMenu from './align-menu'
 import MoreMenu from './more-menu'
 import HighlightMenu from './highlight-menu'
+import ContentTypeMenu from './content-type'
 
 interface IProps {
   editor: Editor | null
@@ -28,34 +30,8 @@ export default function TextMenu(props: IProps) {
           inline-flex space-x-1
         "
       >
-        <Button
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          variant={editor.isActive('bold') ? 'secondary' : 'ghost'}
-        >
-          <Bold className="h-4 w-4" />
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          variant={editor.isActive('underline') ? 'secondary' : 'ghost'}
-        >
-          <Underline className="h-4 w-4" />
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          variant={editor.isActive('italic') ? 'secondary' : 'ghost'}
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          variant={editor.isActive('code') ? 'secondary' : 'ghost'}
-        >
-          <Code className="h-4 w-4" />
-        </Button>
+        <ContentTypeMenu editor={editor} />
+        <BasicMenu editor={editor} />
         <HighlightMenu editor={editor} />
         <AlignMenu editor={editor} />
         <MoreMenu editor={editor} />
