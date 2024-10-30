@@ -7,6 +7,7 @@ import Superscript from '@tiptap/extension-superscript'
 import Highlight from '@tiptap/extension-highlight'
 import { TaskItem } from '@tiptap/extension-task-item'
 import { TaskList } from '@tiptap/extension-task-list'
+import { SlashCommands } from './slash-commands'
 
 export const extensions = [
   StarterKit,
@@ -24,4 +25,5 @@ export const extensions = [
   TaskItem.configure({
     nested: true,
   }),
+  SlashCommands,
 ]
