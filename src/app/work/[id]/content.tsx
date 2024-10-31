@@ -15,15 +15,5 @@ export default function Content(props: { id: string; content: string }) {
     saveContent(id, content)
   }
 
-  return (
-    <div>
-      {/* <Textarea
-        placeholder="請輸入標題..."
-        value={content}
-        onChange={handleChange}
-        className="border-none p-0 text-base focus-visible:ring-transparent"
-      /> */}
-      <TiptapEditor rawContent={content} handleUpdate={handleUpdate} />
-    </div>
-  )
+  return <TiptapEditor rawContent={content} handleUpdate={handleUpdate} />
 }

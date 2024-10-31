@@ -10,8 +10,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Search, Star, LogOut, Trash2, Users } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { getUserInfo } from '@/lib/session'
 
 export default function Layout({
   params,
@@ -70,7 +68,9 @@ export default function Layout({
           {/* nav bar */}
           <WorkNav workId={id} />
           {/* content */}
-          <div className="flex-1">{children}</div>
+          <ScrollArea id="work-content-scroll-container" className="flex-auto">
+            {children}
+          </ScrollArea>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

@@ -6,6 +6,8 @@ import { extensionName, popup } from '.'
 const render = () => {
   // 存儲 ReactRenderer 實例的引用
   let component: any
+  let scrollElem: HTMLElement
+  let scrollYValue: string
 
   return {
     // 當建議菜單開始顯示時觸發
@@ -59,6 +61,16 @@ const render = () => {
 
       // 顯示彈出菜單
       popup?.[0].show()
+
+      //獲取編輯器滾動的元素，和 overflowY的值
+      if (!scrollElem) {
+        scrollElem = document.getElementById('work-content-scroll-container')
+          ?.lastElementChild as HTMLElement
+        scrollYValue = scrollElem.style.overflowY
+      }
+
+      //暫時禁止編輯器滾動
+      scrollElem.style.overflowY = 'hidden'
     },
 
     // 當建議內容更新時觸發
@@ -124,6 +136,9 @@ const render = () => {
       popup?.[0].hide()
       // 銷毀 ReactRenderer 實例，清理資源
       component.destroy()
+
+      // 恢復編輯器滾動
+      scrollElem.style.overflowY = scrollYValue
     },
   }
 }
