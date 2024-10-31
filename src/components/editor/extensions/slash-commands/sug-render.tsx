@@ -64,8 +64,9 @@ const render = () => {
 
       //獲取編輯器滾動的元素，和 overflowY的值
       if (!scrollElem) {
-        scrollElem = document.getElementById('work-content-scroll-container')
-          ?.lastElementChild as HTMLElement
+        scrollElem = document.getElementById(
+          'work-content-scroll-container'
+        ) as HTMLElement
         scrollYValue = scrollElem.style.overflowY
       }
 

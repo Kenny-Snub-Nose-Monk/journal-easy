@@ -68,9 +68,12 @@ export default function Layout({
           {/* nav bar */}
           <WorkNav workId={id} />
           {/* content */}
-          <ScrollArea id="work-content-scroll-container" className="flex-auto">
+          <div
+            id="work-content-scroll-container"
+            className="flex-auto overflow-y-auto"
+          >
             {children}
-          </ScrollArea>
+          </div>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
