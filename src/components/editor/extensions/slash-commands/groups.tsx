@@ -9,6 +9,7 @@ import {
   Quote,
   SquareCode,
   Minus,
+  Columns2,
 } from 'lucide-react'
 import { Group } from './types'
 
@@ -102,8 +103,23 @@ export const GROUPS: Group[] = [
     name: 'insert',
     title: '插入',
     commands: [
-      // TODO: table image column
-
+      // TODO: table image
+      {
+        name: 'columns',
+        label: 'Columns 多列',
+        Icon: Columns2,
+        description: 'Add two column content',
+        aliases: ['cols'],
+        shouldBeHidden: (editor) => editor.isActive('columns'),
+        action: (editor) => {
+          editor
+            .chain()
+            .focus()
+            .setColumns()
+            .focus(editor.state.selection.head - 1)
+            .run()
+        },
+      },
       {
         name: 'horizontalRule',
         label: 'HR 分割線',

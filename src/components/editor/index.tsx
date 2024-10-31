@@ -1,6 +1,8 @@
 'use client'
+import { useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import TextMenu from './menus/text-menu'
+import ColumnsMenu from './menus/columns-menu'
 import { extensions } from './extensions'
 
 interface IProps {
@@ -19,6 +21,7 @@ function get_content(rawContent: string) {
 
 const TiptapEditor = (props: IProps) => {
   const { rawContent, handleUpdate } = props
+  const menuContainerRef = useRef(null)
 
   const editor = useEditor({
     extensions,
@@ -34,10 +37,11 @@ const TiptapEditor = (props: IProps) => {
     },
   })
   return (
-    <>
+    <div ref={menuContainerRef}>
       <EditorContent editor={editor} />
       <TextMenu editor={editor} />
-    </>
+      <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
+    </div>
   )
 }
 export default TiptapEditor

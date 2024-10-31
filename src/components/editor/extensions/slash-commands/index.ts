@@ -55,7 +55,7 @@ export const SlashCommands = Extension.create({
           const isParagraph = $from.parent.type.name === 'paragraph' // 檢查是否在段落中
           const isStartOfNode = $from.parent.textContent?.charAt(0) === '/' // 檢查是否在節點開頭
 
-          const isInColumn = this.editor.isActive('column') // 檢查是否在列中
+          const isInColumn = this.editor.isActive('column') // 檢查是否在column中
 
           // 檢查斜槓後是否有兩個空格(避免重複觸發)
           const afterContent = $from.parent.textContent?.substring(

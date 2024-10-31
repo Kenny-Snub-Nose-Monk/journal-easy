@@ -8,9 +8,16 @@ import Highlight from '@tiptap/extension-highlight'
 import { TaskItem } from '@tiptap/extension-task-item'
 import { TaskList } from '@tiptap/extension-task-list'
 import { SlashCommands } from './slash-commands'
+import Document from './document'
+import { Columns, Column } from './column'
 
 export const extensions = [
-  StarterKit,
+  Document,
+  Columns,
+  Column,
+  StarterKit.configure({
+    document: false,
+  }),
   Underline,
   TextAlign.configure({
     types: ['heading', 'paragraph'],
