@@ -7,6 +7,7 @@ import Superscript from '@tiptap/extension-superscript'
 import Highlight from '@tiptap/extension-highlight'
 import { TaskItem } from '@tiptap/extension-task-item'
 import { TaskList } from '@tiptap/extension-task-list'
+import Link from '@tiptap/extension-link'
 import { SlashCommands } from './slash-commands'
 import Document from './document'
 import { Columns, Column } from './column'
@@ -31,6 +32,9 @@ export const extensions = [
   TaskList,
   TaskItem.configure({
     nested: true,
+  }),
+  Link.configure({
+    openOnClick: false,
   }),
   SlashCommands,
 ]

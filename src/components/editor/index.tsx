@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import TextMenu from './menus/text-menu'
 import ColumnsMenu from './menus/columns-menu'
+import LinkMenu from './menus/link-menu'
 import { extensions } from './extensions'
 
 interface IProps {
@@ -41,6 +42,7 @@ const TiptapEditor = (props: IProps) => {
       <EditorContent editor={editor} />
       <TextMenu editor={editor} />
       <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
+      <LinkMenu editor={editor} appendTo={menuContainerRef} />
     </div>
   )
 }

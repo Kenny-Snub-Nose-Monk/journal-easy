@@ -7,6 +7,8 @@ import MoreMenu from './more-menu'
 import HighlightMenu from './highlight-menu'
 import ContentTypeMenu from './content-type'
 import { isTextSelected } from '@/components/editor/utils/isTextSelected'
+import Wrapper from '../bubble-menu-wrapper'
+import SetLinkMenu from './set-link-menu'
 
 interface IProps {
   editor: Editor | null
@@ -29,19 +31,14 @@ export default function TextMenu(props: IProps) {
       updateDelay={100}
       shouldShow={() => shouldShow(editor)}
     >
-      <div
-        className="
-          border rounded p-1 shadow
-          bg-background dark:bg-background-dark dark:border-gray-800 dark:shadow-lg 
-          inline-flex space-x-1
-        "
-      >
+      <Wrapper>
         <ContentTypeMenu editor={editor} />
         <BasicMenu editor={editor} />
+        <SetLinkMenu editor={editor} />
         <HighlightMenu editor={editor} />
         <AlignMenu editor={editor} />
         <MoreMenu editor={editor} />
-      </div>
+      </Wrapper>
     </BubbleMenu>
   )
 }

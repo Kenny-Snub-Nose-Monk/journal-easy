@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid'
 import { Columns2, PanelLeft, PanelRight, Trash2 } from 'lucide-react'
 import { getRenderContainer } from '@/components/editor/utils/getRenderContainer'
 import { ColumnLayout } from '@/components/editor/extensions/column/Columns'
+import Wrapper from '../bubble-menu-wrapper'
 import { Button } from '@/components/ui/button'
 
 interface IProps {
@@ -34,7 +35,10 @@ export default function ColumnsMenu(props: IProps) {
   const shouldShow = useCallback(() => {
     if (editor == null) return false
     const isColumns = editor.isActive('columns')
-    return isColumns
+    if (!isColumns) return false
+    const { empty } = editor.state.selection
+    if (!empty) return false
+    return true
   }, [editor])
 
   // left
@@ -97,13 +101,7 @@ export default function ColumnsMenu(props: IProps) {
         sticky: 'popper',
       }}
     >
-      <div
-        className="
-          border rounded p-1 shadow
-          bg-background dark:bg-background-dark dark:border-gray-800 dark:shadow-lg 
-          inline-flex space-x-1
-        "
-      >
+      <Wrapper>
         <Button
           size="sm"
           onClick={onColumnLeft}
@@ -132,7 +130,7 @@ export default function ColumnsMenu(props: IProps) {
         >
           <Trash2 className="h-4 w-4" />
         </Button>
-      </div>
+      </Wrapper>
     </BubbleMenu>
   )
 }
