@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import TextMenu from './menus/text-menu'
 import ColumnsMenu from './menus/columns-menu'
 import LinkMenu from './menus/link-menu'
+import ImageBlockMenu from './menus/image-block-menu'
 import { extensions } from './extensions'
 
 interface IProps {
@@ -43,6 +44,7 @@ const TiptapEditor = (props: IProps) => {
       <TextMenu editor={editor} />
       <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
       <LinkMenu editor={editor} appendTo={menuContainerRef} />
+      <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
     </div>
   )
 }

@@ -11,6 +11,7 @@ import Link from '@tiptap/extension-link'
 import { SlashCommands } from './slash-commands'
 import Document from './document'
 import { Columns, Column } from './column'
+import ImageBlock from './image-block'
 
 export const extensions = [
   Document,
@@ -26,6 +27,7 @@ export const extensions = [
   SubScript,
   Superscript,
   Highlight.configure({ multicolor: true }),
+  ImageBlock,
   Placeholder.configure({
     placeholder: '請輸入內容...',
   }),

@@ -69,3 +69,22 @@
     @apply overflow-auto px-3;
   }
 }
+
+/* image block */
+.tiptap {
+  .node-imageBlock {
+    & img {
+      @apply border-2 border-transparent overflow-hidden w-full;
+    }
+
+    &:hover img {
+      outline: 3px solid #68cef8;
+    }
+  }
+
+  .ProseMirror-selectednode {
+    img {
+      outline: 3px solid #68cef8;
+    }
+  }
+}
