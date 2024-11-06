@@ -13,6 +13,8 @@ import Document from './document'
 import { Columns, Column } from './column'
 import ImageBlock from './image-block'
 import { ImageUpload } from './image-upload'
+import { FileHandler } from '@tiptap-pro/extension-file-handler'
+import { uploadImageAPI } from '@/components/editor/utils/api'
 
 export const extensions = [
   Document,
@@ -30,6 +32,28 @@ export const extensions = [
   Highlight.configure({ multicolor: true }),
   ImageBlock,
   ImageUpload,
+  FileHandler.configure({
+    allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+    onDrop: (currentEditor, files, pos) => {
+      files.forEach(async () => {
+        const url = await uploadImageAPI()
+        currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
+      })
+    },
+    onPaste: (currentEditor, files) => {
+      files.forEach(async () => {
+        const url = await uploadImageAPI()
+        return currentEditor
+          .chain()
+          .setImageBlockAt({
+            pos: currentEditor.state.selection.anchor,
+            src: url,
+          })
+          .focus()
+          .run()
+      })
+    },
+  }),
   Placeholder.configure({
     placeholder: '請輸入內容...',
   }),
