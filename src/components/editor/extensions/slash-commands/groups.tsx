@@ -112,16 +112,7 @@ export const GROUPS: Group[] = [
         description: 'Insert an image',
         aliases: ['img'],
         action: (editor) => {
-          const defaultUrl =
-            'https://upload.wikimedia.org/wikipedia/commons/5/5f/Liu_Yifei_at_the_2016_BAZAAR_Stars%E2%80%99_Charity_Night.jpg'
-          const url = window.prompt('Image URL')
-          editor
-            .chain()
-            .focus()
-            .setImageBlock({
-              src: url || defaultUrl,
-            })
-            .run()
+          editor.chain().focus().setImageUpload().run()
         },
       },
       {

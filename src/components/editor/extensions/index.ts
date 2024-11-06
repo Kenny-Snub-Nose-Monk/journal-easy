@@ -12,6 +12,7 @@ import { SlashCommands } from './slash-commands'
 import Document from './document'
 import { Columns, Column } from './column'
 import ImageBlock from './image-block'
+import { ImageUpload } from './image-upload'
 
 export const extensions = [
   Document,
@@ -28,6 +29,7 @@ export const extensions = [
   Superscript,
   Highlight.configure({ multicolor: true }),
   ImageBlock,
+  ImageUpload,
   Placeholder.configure({
     placeholder: '請輸入內容...',
   }),

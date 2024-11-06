@@ -19,7 +19,13 @@ export default function TextMenu(props: IProps) {
   if (editor == null) return
 
   function shouldShow(editor: Editor) {
-    const customTypes = ['codeBlock', 'imageBlock', 'horizontalRule', 'link']
+    const customTypes = [
+      'codeBlock',
+      'imageBlock',
+      'imageUpload',
+      'horizontalRule',
+      'link',
+    ]
     if (customTypes.some((type) => editor.isActive(type))) return false
 
     return isTextSelected({ editor })
