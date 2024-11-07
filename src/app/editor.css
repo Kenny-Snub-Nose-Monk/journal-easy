@@ -1,3 +1,7 @@
+.tiptap > * {
+  @apply mx-10;
+}
+
 /* placeholder */
 .tiptap {
   p.is-empty::before {
