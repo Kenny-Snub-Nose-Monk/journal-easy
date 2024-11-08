@@ -1,6 +1,8 @@
 {
   "cSpell.words": [
     "AIGC",
+    "colspan",
+    "colwidth",
     "dropcursor",
     "hookform",
     "huashui",
@@ -8,7 +10,8 @@
     "lucide",
     "shadcn",
     "Tiptap",
-    "Pilcrow"
+    "Pilcrow",
+    "rowspan"
   ],
   "files.associations": {
     "*.css": "tailwindcss"

@@ -10,13 +10,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { MenuProps } from '../types'
 
-interface IProps {
-  editor: Editor | null
-  appendTo: React.RefObject<any>
-}
-
-export default function ImageBlockMenu(props: IProps) {
+export default function ImageBlockMenu(props: MenuProps) {
   const { editor, appendTo } = props
 
   // 是否顯示菜單

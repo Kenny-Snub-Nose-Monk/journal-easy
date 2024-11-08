@@ -100,6 +100,10 @@ const config = {
               'margin-top': '0.6em',
               'margin-bottom': '0.6em',
             },
+            table: {
+              'margin-top': '1em',
+              'margin-bottom': '1em',
+            },
             code: {
               color: '#f56565', // This is text-red-500
               backgroundColor: '#f7fafc', // Optional: Light background for code blocks

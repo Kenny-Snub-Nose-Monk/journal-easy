@@ -16,6 +16,7 @@ import { ImageUpload } from './image-upload'
 import { FileHandler } from '@tiptap-pro/extension-file-handler'
 import { uploadImageAPI } from '@/components/editor/utils/api'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
+import { Table, TableCell, TableRow, TableHeader } from './table/index'
 
 export const extensions = [
   Document,
@@ -56,6 +57,10 @@ export const extensions = [
       })
     },
   }),
+  Table,
+  TableCell,
+  TableRow,
+  TableHeader,
   Placeholder.configure({
     placeholder: '請輸入內容...',
   }),
