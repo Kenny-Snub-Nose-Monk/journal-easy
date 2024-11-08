@@ -6,7 +6,6 @@ import {
 import WorkNav from '@/components//WorkNav'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Search, Star, LogOut, Trash2, Users } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
@@ -45,7 +44,7 @@ export default function Layout({
             </Button>
           </div>
           <Separator className="my-4" />
-          <ScrollArea className="flex-auto">{directory}</ScrollArea>
+          <div className="flex-auto overflow-y-auto">{directory}</div>
           <Separator className="my-4" />
           <div>
             <Button className="w-full justify-start px-2" variant="ghost">

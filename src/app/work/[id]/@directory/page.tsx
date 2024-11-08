@@ -11,7 +11,7 @@ export default async function Directory({
 
   return (
     // <div className="h-[1000px]">
-    <div>
+    <>
       {list.map((doc) => {
         const { id, title } = doc
         let isCurrent = false
@@ -24,6 +24,6 @@ export default async function Directory({
       <form action={create}>
         <CreateSubmitButton />
       </form>
-    </div>
+    </>
   )
 }

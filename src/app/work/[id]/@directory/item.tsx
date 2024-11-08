@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { del } from './action'
 import emitter from '@/lib/emitter'
+import scrollIntoView from 'scroll-into-view-if-needed'
 
 // 儲存修改過的標題的
 const changedTitleObj: { [key: string]: string } = {} // { id, changedTitle }
@@ -35,6 +36,8 @@ export default function Item(props: IProps) {
   const { id, title, isCurrent } = props
 
   const titleSpanRef = useRef<HTMLSpanElement>(null)
+  const titleContainerRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     // 修改標題時觸發事件
     const eventKey = `CHANGE_DOC_TITLE_${id}`
@@ -47,22 +50,41 @@ export default function Item(props: IProps) {
     })
   }, [id])
 
+  // 滾動到當前標題
+  useEffect(() => {
+    if (!isCurrent) return
+    if (titleContainerRef.current == null) return
+    scrollIntoView(titleContainerRef.current!, {
+      scrollMode: 'if-needed',
+      behavior: 'smooth',
+      block: 'center',
+    })
+  }, [isCurrent])
+
   return (
     <div
       className={cn(
-        'flex justify-between w-full p-2 cursor-pointer hover:text-secondary-foreground group',
+        'flex justify-between w-full hover:text-secondary-foreground group',
         isCurrent ? 'bg-card' : 'hover:bg-card'
       )}
+      ref={titleContainerRef}
     >
-      <Link href={`/work/${id}`} className="inline-flex items-center">
-        <FileText className="h-4 w-4" />
-        <span ref={titleSpanRef}>{getTitle(id, title)}</span>
+      <Link
+        href={`/work/${id}`}
+        className="flex-auto overflow-hidden p-2 flex items-center"
+      >
+        <div className="w-4 mr-1">
+          <FileText className="h-4 w-4" />
+        </div>
+        <span ref={titleSpanRef} className="truncate flex-auto">
+          {getTitle(id, title)}
+        </span>
       </Link>
 
-      <div className="inline-flex items-center invisible group-hover:visible">
+      <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Ellipsis className="h-4 w-4" />
+            <Ellipsis className="h-4 w-4 cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem

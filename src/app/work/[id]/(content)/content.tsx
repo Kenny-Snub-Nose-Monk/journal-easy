@@ -61,10 +61,11 @@ export default function Content(props: { id: string }) {
   }
   return (
     <>
-      <div className="mb-6 pb-4 border-b">
+      <div className="mx-10 mb-6 pb-4 border-b">
         <Input
           placeholder="請輸入標題..."
           value={title}
+          maxLength={100}
           onChange={handleChange}
           className="border-none p-0 text-4xl font-bold focus-visible:ring-transparent"
         />
