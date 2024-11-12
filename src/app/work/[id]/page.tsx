@@ -6,7 +6,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <div className="max-w-[980px] mx-auto my-10">
+      <div className="max-w-[880px] mx-auto my-10">
         <Content id={id} />
       </div>
       {/* <AIIsland /> */}

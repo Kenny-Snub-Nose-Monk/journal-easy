@@ -6,7 +6,7 @@ export default function AIIsland() {
   return (
     <div
       className="
-        absolute bottom-10 w-[900px] left-1/2 ml-[-450px] 
+        absolute bottom-10 w-[800px] left-1/2 ml-[-400px] 
         rounded-3xl p-4 pl-6 shadow-muted-foreground shadow-lg
         border-muted-foreground bg-secondary-foreground text-secondary 
         flex items-center justify-start
