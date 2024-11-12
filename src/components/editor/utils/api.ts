@@ -1,5 +1,25 @@
-export async function uploadImageAPI() {
-  // TODO 模擬圖片上傳，以後會傳到 OSS
-  await new Promise((r) => setTimeout(r, 500))
-  return 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Liu_Yifei_at_the_2016_BAZAAR_Stars%E2%80%99_Charity_Night.jpg'
+export async function uploadImageFn(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  console.log('file', file)
+  // 更詳細的日誌
+  console.log('Uploading file:', {
+    name: file.name,
+    type: file.type,
+    size: file.size,
+  })
+
+  const res = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  })
+  const dataRes = await res.json()
+
+  if (dataRes.errno !== 0) {
+    throw new Error('upload error')
+  }
+  const { url } = dataRes.data // GCS url
+
+  return url
 }

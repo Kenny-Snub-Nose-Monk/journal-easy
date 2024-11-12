@@ -39,3 +39,6 @@ next-env.d.ts
 ISSUE.md
 
 .npmrc
+
+# Google Cloud
+key.json

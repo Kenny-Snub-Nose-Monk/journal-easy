@@ -14,7 +14,7 @@ import { Columns, Column } from './column'
 import ImageBlock from './image-block'
 import { ImageUpload } from './image-upload'
 import { FileHandler } from '@tiptap-pro/extension-file-handler'
-import { uploadImageAPI } from '@/components/editor/utils/api'
+import { uploadImageFn } from '@/components/editor/utils/api'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
 import { Table, TableCell, TableRow, TableHeader } from './table/index'
 
@@ -38,14 +38,14 @@ export const extensions = [
   FileHandler.configure({
     allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
     onDrop: (currentEditor, files, pos) => {
-      files.forEach(async () => {
-        const url = await uploadImageAPI()
+      files.forEach(async (file) => {
+        const url = await uploadImageFn(file)
         currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
       })
     },
     onPaste: (currentEditor, files) => {
-      files.forEach(async () => {
-        const url = await uploadImageAPI()
+      files.forEach(async (file) => {
+        const url = await uploadImageFn(file)
         return currentEditor
           .chain()
           .setImageBlockAt({
