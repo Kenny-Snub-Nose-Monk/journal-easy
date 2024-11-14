@@ -20,6 +20,7 @@ import {
 import { del } from './action'
 import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
+import { isShowChildren } from './util'
 
 // 儲存修改過的標題的
 const changedTitleObj: { [key: string]: string } = {} // { id, changedTitle }
@@ -48,7 +49,9 @@ export default function Item(props: IProps) {
 
   const children = list.filter((i) => i.parentId === id)
   const hasChildren = children.length > 0
-  const [showChildren, setShowChildren] = useState(true)
+  const [showChildren, setShowChildren] = useState(
+    hasChildren ? isShowChildren(id, paramId, list) : false
+  )
   function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation
     setShowChildren(!showChildren)
