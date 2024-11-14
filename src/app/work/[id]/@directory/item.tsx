@@ -86,12 +86,15 @@ export default function Item(props: IProps) {
         ref={titleContainerRef}
         className={cn(
           'flex justify-between items-center w-full hover:text-secondary-foreground group',
-          isCurrent ? 'bg-card' : 'hover:bg-card'
+          isCurrent && 'text-secondary-foreground'
         )}
       >
         {/* icon 顯示/隱藏 children */}
         {hasChildren && (
-          <div className="w-4 pl-1 cursor-pointer" onClick={toggleShowChildren}>
+          <div
+            className="cursor-pointer hover:bg-background rounded-full p-0.5"
+            onClick={toggleShowChildren}
+          >
             {showChildren && <ChevronDown className="h-4 w-4" />}
             {!showChildren && <ChevronRight className="h-4 w-4" />}
           </div>
@@ -100,7 +103,7 @@ export default function Item(props: IProps) {
         {/* 標題連結 */}
         <Link
           href={`/work/${id}`}
-          className="flex-auto overflow-hidden p-1.5 flex items-center"
+          className="flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
           {!hasChildren && (
             <div className="w-4 mr-1">
@@ -116,11 +119,13 @@ export default function Item(props: IProps) {
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Ellipsis className="h-4 w-4 cursor-pointer" />
+              <div className="cursor-pointer rounded-full p-0.5 hover:bg-background">
+                <Ellipsis className="h-4 w-4" />
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem
-                className="cursor-pointer"
+                className="cursor-pointer text-destructive"
                 onClick={() => del(id)}
               >
                 <Trash2 className="h-4 w-4" />
