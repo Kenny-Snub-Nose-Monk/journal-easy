@@ -6,6 +6,7 @@ import {
   genErrorData,
 } from '../utils/gen-res-data'
 import { bucket } from '@/lib/gcs'
+import { getFileExtension } from './util'
 
 // 這是一個處理文件上傳的 API 端點
 export async function POST(req: Request) {
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
     console.log('5. Processing form data...')
     const formData = await req.formData()
     const file = formData.get('file') as File
+    const ext = getFileExtension(file.name)
     console.log('6. File details:', {
       name: file?.name,
       type: file?.type,
@@ -36,7 +38,7 @@ export async function POST(req: Request) {
 
     // 步驟 3: 準備文件名
     console.log('7. Preparing file name...')
-    const fileName = `files/${user.id}/imgs/${uuid()}.${file.name}`
+    const fileName = `files/${user.id}/imgs/${uuid()}.${ext}`
     console.log('8. Generated file name:', fileName)
 
     try {
