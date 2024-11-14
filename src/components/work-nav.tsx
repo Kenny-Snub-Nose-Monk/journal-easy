@@ -1,5 +1,5 @@
 import Logo from './Logo'
-import ChangeTheme from './ChangeTheme'
+import ChangeTheme from './change-theme'
 import { Button } from './ui/button'
 import { Forward, Star } from 'lucide-react'
 import Link from 'next/link'

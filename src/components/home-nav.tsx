@@ -1,7 +1,7 @@
 import Logo from './Logo'
 import { Button } from './ui/button'
 import { Github } from 'lucide-react'
-import ChangeTheme from './ChangeTheme'
+import ChangeTheme from './change-theme'
 
 export default function HomeNav() {
   return (

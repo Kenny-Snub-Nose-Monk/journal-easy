@@ -3,7 +3,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-import WorkNav from '@/components//WorkNav'
+import WorkNav from '@/components//work-nav'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Search, Star, LogOut, Trash2, Users } from 'lucide-react'

@@ -1,4 +1,4 @@
-// import AIIsland from '@/components/AIIsland'
+// import AIIsland from '@/components/all-island'
 import Content from './(content)/content'
 import { CONTENT_WIDTH } from '@/constants'
 
