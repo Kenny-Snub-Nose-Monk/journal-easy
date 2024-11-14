@@ -1,6 +1,7 @@
 import { Editor, NodeViewWrapper } from '@tiptap/react'
 import { useCallback } from 'react'
 import ImageUploader from './image-uploader'
+import { getWidthPercent } from '@/components/editor/utils/img'
 
 interface ImageUploadViewProps {
   getPos: () => number
@@ -11,11 +12,13 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
   const { getPos, editor } = props
 
   const onUpload = useCallback(
-    (url: string) => {
+    (url: string, ratio: number) => {
+      const width = getWidthPercent(ratio)
       if (url) {
         editor
           .chain()
-          .setImageBlock({ src: url }) // 插入圖片 imageBlock Node
+          .setImageBlock({ src: url, ratio }) // 插入圖片 imageBlock Node
+          .setImageBlockWidth(width)
           .deleteRange({ from: getPos(), to: getPos() }) // 刪除當前 imageUpload Node
           .focus()
           .run()

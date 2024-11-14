@@ -1,16 +1,20 @@
-import { useCallback, ChangeEvent, useRef } from 'react'
+import { useCallback, ChangeEvent, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Image as ImageIcon, Upload } from 'lucide-react'
 import useUploader from './hooks/useUploader'
 import useDropZone from './hooks/useDropZone'
 import { Button } from '@/components/ui/button'
+import { getWidthPercent } from '@/components/editor/utils/img'
 
 interface ImageUploadViewProps {
-  onUpload: (url: string) => void
+  onUpload: (url: string, ratio: number) => void
 }
 
 export default function ImageUploadView(props: ImageUploadViewProps) {
   const { onUpload } = props
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [widthPercent, setWidthPercent] = useState<number>(100)
+  const imgRef = useRef<HTMLImageElement>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   function handleUploadClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -24,15 +28,39 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
   })
 
   const onFileChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) =>
-      e.target.files ? uploadFile(e.target.files[0]) : null, // 選擇文件後，調用 uploadFile 方法, 沒選擇回傳 null
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files) return
+
+      const file = e.target.files[0]
+
+      if (!file) return
+      uploadFile(file)
+      setSelectedFile(file)
+    }, // 選擇文件後，調用 uploadFile 方法, 沒選擇回傳 null
     [uploadFile]
   )
 
+  const onImageLoad = useCallback(() => {
+    if (!imgRef.current) return
+    const { width, height } = imgRef.current
+    const widthPercent = getWidthPercent(width / height)
+    setWidthPercent(widthPercent)
+  }, [imgRef])
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8 rounded-lg min-h-[10rem] bg-opacity-80">
-        <p className="text-neutral-500">上傳中...</p>
+      <div className="rounded-lg h-[15rem] relative overflow-hidden">
+        <div className="opacity-30 w-full">
+          {/* eslint-disable-next-line  */}
+          <img
+            ref={imgRef}
+            src={selectedFile ? URL.createObjectURL(selectedFile) : ''}
+            className="mx-auto"
+            style={{ width: `${widthPercent}%` }}
+            onLoad={onImageLoad}
+          />
+        </div>
+        <p className="absolute top-1/3 w-full text-center">上傳中...</p>
       </div>
     )
   }
