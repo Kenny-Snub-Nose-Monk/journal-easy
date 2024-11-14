@@ -27,6 +27,7 @@ export async function getDocList() {
     select: {
       id: true,
       title: true,
+      parentId: true,
     },
     where: {
       userId: user.id || '',

@@ -12,14 +12,20 @@ export default async function Directory({
   return (
     // <div className="h-[1000px]">
     <>
-      {list.map((doc) => {
-        const { id, title } = doc
-        let isCurrent = false
-
-        if (id === params.id) isCurrent = true
-
-        return <Item key={id} id={id} title={title} isCurrent={isCurrent} />
-      })}
+      {list
+        .filter((i) => i.parentId == null) // 顶级目录
+        .map((doc) => {
+          const { id, title } = doc
+          return (
+            <Item
+              key={id}
+              id={id}
+              title={title}
+              paramId={params.id}
+              list={list}
+            />
+          )
+        })}
 
       <form action={create}>
         <CreateSubmitButton />
