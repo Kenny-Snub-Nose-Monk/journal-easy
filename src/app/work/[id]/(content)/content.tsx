@@ -11,15 +11,16 @@ interface IProps {
   defaultId: string
   defaultTitle: string
   defaultContent: string
+  defaultNotFound: boolean
 }
 
 export default function Content(props: IProps) {
-  const { defaultId, defaultTitle, defaultContent } = props
+  const { defaultId, defaultTitle, defaultContent, defaultNotFound } = props
   const [id, setId] = useState(defaultId)
   // loading
   const [loading, setLoading] = useState(false)
   // 找不到文章
-  const [notFound, setNotFound] = useState(false)
+  const [notFound, setNotFound] = useState(defaultNotFound)
   // 標題
   const [title, setTitle] = useState(defaultTitle)
 
@@ -41,6 +42,7 @@ export default function Content(props: IProps) {
       const { id, type } = payload || {}
       if (!id) return
       setId(id) // 切換 id ，重要！
+      setNotFound(false)
       setLoading(true)
 
       // 剛創建的新文檔，不用查詢內容（查也是空的）
@@ -85,7 +87,7 @@ export default function Content(props: IProps) {
   if (notFound) {
     return (
       <div className="p-8 text-center text-muted-foreground">
-        <p>找不到文檔...</p>
+        <p>找不到文檔，可在左侧创建新文档...</p>
       </div>
     )
   }

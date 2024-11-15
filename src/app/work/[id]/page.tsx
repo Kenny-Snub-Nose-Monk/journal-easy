@@ -8,20 +8,17 @@ export default async function OneWork({ params }: { params: { id: string } }) {
   const fullWidth = CONTENT_WIDTH + 80 // 兩邊留白 40px
 
   const doc = await getDoc(id)
-  if (!doc)
-    return (
-      <div className="p-8 text-center text-muted-foreground">
-        <p>找不到文檔...</p>
-      </div>
-    )
+  const notFound = !doc
+  const { title = '', content = '' } = doc || {}
 
   return (
     <>
       <div className={`max-w-[${fullWidth}px] mx-auto my-10`}>
         <Content
           defaultId={id}
-          defaultTitle={doc.title?.toString() || ''}
-          defaultContent={doc.content?.toString() || ''}
+          defaultTitle={title}
+          defaultContent={content?.toString() || ''}
+          defaultNotFound={notFound}
         />
       </div>
       {/* <AIIsland /> */}
