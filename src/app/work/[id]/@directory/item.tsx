@@ -21,7 +21,7 @@ import {
 import { del } from './action'
 import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import { isShowChildren } from './util'
+import { isShowChildren, nav } from './util'
 
 // 儲存修改過的標題的
 const changedTitleObj: { [key: string]: string } = {} // { id, changedTitle }
@@ -58,16 +58,22 @@ export default function Item(props: IProps) {
     setShowChildren(!showChildren)
   }
 
+  // 修改標題時觸發事件
   useEffect(() => {
-    // 修改標題時觸發事件
     const eventKey = `CHANGE_DOC_TITLE_${id}`
-    emitter.on(eventKey, (payload) => {
+
+    function handler(payload: any) {
       const newTitle = payload as string
       changedTitleObj[id] = newTitle // 記錄下
       if (titleSpanRef.current) {
         titleSpanRef.current!.textContent = newTitle // 修改 DOM
       }
-    })
+    }
+
+    emitter.on(eventKey, handler)
+    return () => {
+      emitter.off(eventKey, handler) // 及時清理自定義事件
+    }
   }, [id])
 
   // 滾動到當前標題
@@ -80,6 +86,12 @@ export default function Item(props: IProps) {
       block: 'center',
     })
   }, [isCurrent])
+
+  // 點擊標題
+  function onClickTitle() {
+    if (isCurrent) return
+    nav(id)
+  }
 
   return (
     <div>
@@ -102,9 +114,9 @@ export default function Item(props: IProps) {
         )}
 
         {/* 標題連結 */}
-        <Link
-          href={`/work/${id}`}
-          className="flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
+        <div
+          onClick={onClickTitle}
+          className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
           {!hasChildren && (
             <div className="w-4 mr-1">
@@ -114,7 +126,7 @@ export default function Item(props: IProps) {
           <span ref={titleSpanRef} className="truncate flex-auto">
             {getTitle(id, title)}
           </span>
-        </Link>
+        </div>
 
         {/* 操作按鈕 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">

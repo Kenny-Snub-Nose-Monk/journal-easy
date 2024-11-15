@@ -39,7 +39,7 @@ export async function del(id: string) {
 
   const list = await getDocList()
   const idList = list.map((doc) => doc.id)
-  const otherId = idList.find((id) => id !== id)
+  const otherId = idList.find((i) => i !== id)
 
   redirect(`/work/${otherId}`)
 }
