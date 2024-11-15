@@ -22,16 +22,18 @@ import { del } from './action'
 import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { isShowChildren, nav } from './util'
+import { IDoc } from './type'
 
 interface IProps {
   id: string
   defaultTitle: string
   paramId: string
-  list: Array<{ id: string; title: string; parentId: string | null }>
+  list: IDoc[]
+  onCreateDoc: (parentId: string | null) => void
 }
 
 export default function Item(props: IProps) {
-  const { id, defaultTitle, list = [], paramId } = props
+  const { id, defaultTitle, list = [], paramId, onCreateDoc } = props
   const isCurrent = id === paramId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -47,7 +49,7 @@ export default function Item(props: IProps) {
   }
 
   // 修改標題時觸發事件
-  const [title, setTitle] = useState(defaultTitle)
+  const [title, setTitle] = useState(defaultTitle || '<無標題>')
   useEffect(() => {
     if (!isCurrent) return // 只監聽當前文檔
     const eventKey = `CHANGE_DOC_TITLE`
@@ -78,6 +80,12 @@ export default function Item(props: IProps) {
   function onClickTitle() {
     if (isCurrent) return
     nav(id)
+  }
+
+  // 新建子節點
+  function createDocHandler(parentId: string | null) {
+    onCreateDoc(parentId)
+    setShowChildren(true)
   }
 
   return (
@@ -137,7 +145,10 @@ export default function Item(props: IProps) {
         </div>
 
         {/* 創建文檔 */}
-        <div className="cursor-pointer rounded-full p-1 hover:bg-background invisible group-hover:visible">
+        <div
+          onClick={() => createDocHandler(id)}
+          className="cursor-pointer rounded-full p-1 hover:bg-background invisible group-hover:visible"
+        >
           <Plus className="h-4 w-4" />
         </div>
       </div>
@@ -154,6 +165,7 @@ export default function Item(props: IProps) {
                 defaultTitle={title}
                 paramId={paramId}
                 list={list}
+                onCreateDoc={onCreateDoc}
               />
             )
           })}

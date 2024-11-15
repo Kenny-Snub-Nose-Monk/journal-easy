@@ -15,9 +15,9 @@ export function isShowChildren(
 }
 
 // 跳轉鏈接 切換文檔
-export function nav(id: string) {
+export function nav(id: string, type: 'nav' | 'create' = 'nav') {
   const url = `/work/${id}`
-  emitter.emit('NAV_DOC', { id })
+  emitter.emit('NAV_DOC', { id, type })
   history.pushState({ docId: id }, '', url)
 }
 if (typeof window !== 'undefined') {

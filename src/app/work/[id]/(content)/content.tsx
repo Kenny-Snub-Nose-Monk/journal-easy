@@ -39,10 +39,22 @@ export default function Content(props: IProps) {
   useEffect(() => {
     const eventKey = 'NAV_DOC'
     function load(payload: any) {
-      const { id } = payload || {}
+      const { id, type } = payload || {}
       if (!id) return
       setId(id) // 切換 id ，重要！
       setLoading(true)
+
+      // 剛創建的新文檔，不用查詢內容（查也是空的）
+      if (type === 'create') {
+        // 用 setTimeout 模擬 loading 效果（還有，不用 setTimeout 無法徹底清除編輯器之前的内容）
+        setTimeout(() => {
+          setTitle('')
+          SetEditorContent('')
+          setLoading(false)
+        }, 200)
+        return
+      }
+
       getDoc(id).then((data: any) => {
         // 通過 id 找不到 doc
         if (data == null) {

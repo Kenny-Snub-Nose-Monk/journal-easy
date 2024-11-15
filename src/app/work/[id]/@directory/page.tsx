@@ -8,5 +8,5 @@ export default async function Directory({
 }) {
   const list = await getDocList()
 
-  return <List list={list} defaultParamId={params.id} />
+  return <List defaultList={list} defaultParamId={params.id} />
 }
