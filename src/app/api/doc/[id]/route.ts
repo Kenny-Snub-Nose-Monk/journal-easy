@@ -1,4 +1,3 @@
-import { revalidatePath } from 'next/cache'
 import { getUserInfo } from '@/lib/session'
 import { db } from '@/db/db'
 import {
@@ -6,6 +5,7 @@ import {
   genErrorData,
   genUnAuthData,
 } from '@/app/api/utils/gen-res-data'
+
 // 獲取單個 doc 内容
 export async function GET(
   request: Request,
@@ -19,6 +19,7 @@ export async function GET(
   })
   return Response.json(genSuccessData(doc))
 }
+
 // 更新單個 doc 内容
 export async function PATCH(
   request: Request,

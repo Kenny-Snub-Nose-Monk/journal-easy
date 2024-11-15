@@ -4,21 +4,6 @@ import { db } from '@/db/db'
 import { redirect } from 'next/navigation'
 import { getUserInfo } from '@/lib/session'
 
-export async function create() {
-  const user = await getUserInfo()
-  if (!user || !user.id) return
-
-  const newDoc = await db.doc.create({
-    data: {
-      title: '新建檔案' + Date.now().toString().slice(-4),
-      content: '',
-      userId: user.id,
-    },
-  })
-
-  redirect(`/work/${newDoc.id}`)
-}
-
 export async function getDocList() {
   const user = await getUserInfo()
   if (user == null) return []
@@ -33,7 +18,7 @@ export async function getDocList() {
       userId: user.id || '',
     },
     orderBy: {
-      id: 'asc',
+      createdAt: 'asc',
     },
   })
 

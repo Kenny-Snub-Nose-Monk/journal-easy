@@ -23,7 +23,7 @@ export default function Layout({
 
   return (
     <ResizablePanelGroup direction="horizontal" className="h-screen">
-      <ResizablePanel defaultSize={20}>
+      <ResizablePanel defaultSize={18}>
         <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
           <div>
             <UserSettingButton />
@@ -62,7 +62,7 @@ export default function Layout({
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={80}>
+      <ResizablePanel defaultSize={82}>
         <div className="h-screen flex flex-col relative">
           {/* nav bar */}
           <WorkNav workId={id} />
