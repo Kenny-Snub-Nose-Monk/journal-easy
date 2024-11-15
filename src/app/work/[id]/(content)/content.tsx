@@ -1,10 +1,11 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
 import TiptapEditor from '@/components/editor'
 import { getDoc, updateContent, updateTitle } from './client-action'
 import emitter from '@/lib/emitter'
+import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_NAV_DOC } from '@/constants'
 
 interface IProps {
   defaultId: string
@@ -27,8 +28,7 @@ export default function Content(props: IProps) {
     setTitle(newTitle)
     updateTitle(id, newTitle)
     // 觸發事件，以更新左側列表的文章標題
-    const key = `CHANGE_DOC_TITLE`
-    emitter.emit(key, newTitle)
+    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, newTitle)
   }
   // 編輯器內容
   const [editorContent, SetEditorContent] = useState(defaultContent)
@@ -37,7 +37,6 @@ export default function Content(props: IProps) {
   }
   // 獲取文章內容
   useEffect(() => {
-    const eventKey = 'NAV_DOC'
     function load(payload: any) {
       const { id, type } = payload || {}
       if (!id) return
@@ -66,9 +65,9 @@ export default function Content(props: IProps) {
         setLoading(false)
       })
     }
-    emitter.on(eventKey, load)
+    emitter.on(EVENT_KEY_NAV_DOC, load)
     return () => {
-      emitter.off(eventKey, load) // 及時銷毀自定義事件
+      emitter.off(EVENT_KEY_NAV_DOC, load) // 及時銷毀自定義事件
     }
   }, [id])
 

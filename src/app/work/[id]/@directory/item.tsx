@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import {
   FileText,
   Ellipsis,
@@ -23,6 +22,7 @@ import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { isShowChildren, nav } from './util'
 import { IDoc } from './type'
+import { EVENT_KEY_CHANGE_DOC_TITLE } from '@/constants'
 
 interface IProps {
   id: string
@@ -52,16 +52,15 @@ export default function Item(props: IProps) {
   const [title, setTitle] = useState(defaultTitle || '<無標題>')
   useEffect(() => {
     if (!isCurrent) return // 只監聽當前文檔
-    const eventKey = `CHANGE_DOC_TITLE`
 
     function handler(payload: any) {
       const newTitle = payload as string
       setTitle(newTitle)
     }
 
-    emitter.on(eventKey, handler)
+    emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler)
     return () => {
-      emitter.off(eventKey, handler) // 及時清理自定義事件
+      emitter.off(EVENT_KEY_CHANGE_DOC_TITLE, handler) // 及時清理自定義事件
     }
   }, [isCurrent])
 
@@ -94,7 +93,7 @@ export default function Item(props: IProps) {
         ref={titleContainerRef}
         className={cn(
           'flex justify-between items-center w-full hover:text-secondary-foreground group',
-          isCurrent && 'text-secondary-foreground'
+          isCurrent && 'text-secondary-foreground font-bold'
         )}
       >
         {/* icon 顯示/隱藏 children */}

@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast'
 import emitter from '@/lib/emitter'
 import { nav } from './util'
 import { IDoc } from './type'
+import { EVENT_KEY_NAV_DOC } from '@/constants'
 
 interface ListProps {
   defaultParamId: string
@@ -19,15 +20,14 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
   const [paramId, setParamId] = useState(defaultParamId)
 
   useEffect(() => {
-    const eventKey = 'NAV_DOC'
     function handler(payload: any) {
       const { id } = payload || {}
       if (!id) return
       setParamId(id)
     }
-    emitter.on(eventKey, handler)
+    emitter.on(EVENT_KEY_NAV_DOC, handler)
     return () => {
-      emitter.off(eventKey, handler) // 及時清理自定義事件
+      emitter.off(EVENT_KEY_NAV_DOC, handler) // 及時清理自定義事件
     }
   }, [])
 

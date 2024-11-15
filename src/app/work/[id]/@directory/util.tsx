@@ -1,4 +1,5 @@
 import emitter from '@/lib/emitter'
+import { EVENT_KEY_NAV_DOC } from '@/constants'
 
 // 判斷是否展示子節點
 export function isShowChildren(
@@ -17,12 +18,12 @@ export function isShowChildren(
 // 跳轉鏈接 切換文檔
 export function nav(id: string, type: 'nav' | 'create' = 'nav') {
   const url = `/work/${id}`
-  emitter.emit('NAV_DOC', { id, type })
+  emitter.emit(EVENT_KEY_NAV_DOC, { id, type })
   history.pushState({ docId: id }, '', url)
 }
 if (typeof window !== 'undefined') {
   const handlePopState = (event: PopStateEvent) => {
-    emitter.emit('NAV_DOC', { id: event.state.docId })
+    emitter.emit(EVENT_KEY_NAV_DOC, { id: event.state.docId })
   }
   window.addEventListener('popstate', handlePopState) // 只能綁定一次
 }

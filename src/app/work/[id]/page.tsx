@@ -19,7 +19,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
     <>
       <div className={`max-w-[${fullWidth}px] mx-auto my-10`}>
         <Content
-          id={id}
+          defaultId={id}
           defaultTitle={doc.title?.toString() || ''}
           defaultContent={doc.content?.toString() || ''}
         />
