@@ -7,13 +7,14 @@ import { getDoc, updateContent, updateTitle } from './client-action'
 import emitter from '@/lib/emitter'
 
 interface IProps {
-  id: string
+  defaultId: string
   defaultTitle: string
   defaultContent: string
 }
 
 export default function Content(props: IProps) {
-  const { id, defaultTitle, defaultContent } = props
+  const { defaultId, defaultTitle, defaultContent } = props
+  const [id, setId] = useState(defaultId)
   // loading
   const [loading, setLoading] = useState(false)
   // 找不到文章
@@ -26,7 +27,7 @@ export default function Content(props: IProps) {
     setTitle(newTitle)
     updateTitle(id, newTitle)
     // 觸發事件，以更新左側列表的文章標題
-    const key = `CHANGE_DOC_TITLE_${id}`
+    const key = `CHANGE_DOC_TITLE`
     emitter.emit(key, newTitle)
   }
   // 編輯器內容
@@ -40,6 +41,7 @@ export default function Content(props: IProps) {
     function load(payload: any) {
       const { id } = payload || {}
       if (!id) return
+      setId(id) // 切換 id ，重要！
       setLoading(true)
       getDoc(id).then((data: any) => {
         // 通過 id 找不到 doc
