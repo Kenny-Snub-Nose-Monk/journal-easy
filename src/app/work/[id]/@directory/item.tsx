@@ -22,18 +22,17 @@ import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { isShowChildren, nav } from './util'
 import { IDoc } from './type'
-import { EVENT_KEY_CHANGE_DOC_TITLE } from '@/constants'
+import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_CREATE_DOC } from '@/constants'
 
 interface IProps {
   id: string
   defaultTitle: string
   paramId: string
   list: IDoc[]
-  onCreateDoc: (parentId: string | null) => void
 }
 
 export default function Item(props: IProps) {
-  const { id, defaultTitle, list = [], paramId, onCreateDoc } = props
+  const { id, defaultTitle, list = [], paramId } = props
   const isCurrent = id === paramId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -83,7 +82,7 @@ export default function Item(props: IProps) {
 
   // 新建子節點
   function createDocHandler(parentId: string | null) {
-    onCreateDoc(parentId)
+    emitter.emit(EVENT_KEY_CREATE_DOC, { parentId })
     setShowChildren(true)
   }
 
@@ -164,7 +163,6 @@ export default function Item(props: IProps) {
                 defaultTitle={title}
                 paramId={paramId}
                 list={list}
-                onCreateDoc={onCreateDoc}
               />
             )
           })}

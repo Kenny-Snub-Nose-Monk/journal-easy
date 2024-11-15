@@ -9,6 +9,7 @@ import emitter from '@/lib/emitter'
 import { nav } from './util'
 import { IDoc } from './type'
 import { EVENT_KEY_NAV_DOC } from '@/constants'
+import useList from './hooks/useList'
 
 interface ListProps {
   defaultParamId: string
@@ -19,6 +20,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
 
   const [paramId, setParamId] = useState(defaultParamId)
 
+  // 切換文檔，重新設置 paramId
   useEffect(() => {
     function handler(payload: any) {
       const { id } = payload || {}
@@ -31,44 +33,8 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
     }
   }, [])
 
-  const [list, setList] = useState(defaultList)
+  const { list, createDoc } = useList(defaultList)
 
-  // 创建文档
-  function createDoc(parentId: string | null = null) {
-    const newId = uuid()
-
-    // 更新列表
-    setList([
-      ...list,
-      {
-        id: newId,
-        title: '',
-        parentId,
-      },
-    ])
-
-    // 跳转
-    nav(newId, 'create')
-
-    // 異步創建
-    fetch('/api/doc', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: newId, parentId }),
-    })
-      .then((res) => res.json())
-      .then((resData) => {
-        if (resData.errno !== 0) {
-          toast({
-            variant: 'destructive',
-            description: resData.msg || '創建失敗',
-          })
-          return
-        }
-      })
-  }
   return (
     // <div className="h-[1000px]">
     <>
@@ -84,7 +50,6 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
               defaultTitle={title}
               paramId={paramId}
               list={list}
-              onCreateDoc={createDoc}
             />
           )
         })}
