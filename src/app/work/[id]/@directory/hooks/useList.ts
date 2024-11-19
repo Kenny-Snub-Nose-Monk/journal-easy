@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuid } from 'uuid'
 import { useToast } from '@/hooks/use-toast'
 import emitter from '@/lib/emitter'
-import { nav } from '../util'
+import { getDescendantsIds, nav } from '../util'
 import { IDoc } from '../type'
-import { EVENT_KEY_CREATE_DOC } from '@/constants'
-export default function useList(defaultList: IDoc[]) {
+import { EVENT_KEY_CREATE_DOC, EVENT_KEY_DEL_DOC } from '@/constants'
+
+export default function useList(defaultList: IDoc[], paramId: string) {
   const { toast } = useToast()
   const [list, setList] = useState(defaultList)
   // 創建文檔
@@ -55,5 +56,55 @@ export default function useList(defaultList: IDoc[]) {
       emitter.off(EVENT_KEY_CREATE_DOC, handleCreate) // 及時清除自定義事件
     }
   }, [createDoc])
-  return { list, createDoc }
+
+  // 刪除文檔
+  const deleteDoc = useCallback(
+    (id: string) => {
+      // 找到所有下級節點 ids
+      const descendantsIds = getDescendantsIds(id, list)
+      // 要刪除的所有 ids ，包括當前節點
+      const ids = [...descendantsIds, id]
+      // 異步執行軟刪除
+      fetch('/api/doc', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      })
+        .then((res) => res.json())
+        .then((resData) => {
+          if (resData.errno !== 0) {
+            toast({
+              variant: 'destructive',
+              description: resData.msg || '刪除失敗',
+            })
+            return
+          }
+          toast({
+            description: `已刪除 ${ids.length} 個文檔，放在回收站`,
+          })
+        })
+      // 更新 list
+      const remainList = list.filter((i) => !ids.includes(i.id))
+      setList(remainList)
+      // 跳轉頁面
+      if (id === paramId) {
+        const length = remainList.length
+        if (length === 0) nav('0')
+        else nav(remainList[length - 1].id) // 跳轉到 list 最後一個
+      }
+    },
+    [list, toast, paramId]
+  )
+  // 刪除文檔 - 綁定自定義事件
+  useEffect(() => {
+    function handleDel(payload: any) {
+      const { id } = payload || {}
+      if (id) deleteDoc(id)
+    }
+    emitter.on(EVENT_KEY_DEL_DOC, handleDel)
+    return () => {
+      emitter.off(EVENT_KEY_DEL_DOC, handleDel) // 及時清除自定義事件
+    }
+  }, [deleteDoc])
+  return { list }
 }

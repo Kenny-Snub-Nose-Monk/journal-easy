@@ -15,7 +15,7 @@ export async function GET(
   if (user == null) return Response.json(genUnAuthData())
   const { id } = params
   const doc = await db.doc.findUnique({
-    where: { id, userId: user.id },
+    where: { id, userId: user.id, isDeleted: false },
   })
   return Response.json(genSuccessData(doc))
 }

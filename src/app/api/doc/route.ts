@@ -28,3 +28,26 @@ export async function POST(request: Request) {
     return Response.json(genErrorData('Create doc error'))
   }
 }
+
+// 軟刪除 多個 docs
+export async function PATCH(request: Request) {
+  const user = await getUserInfo()
+  if (user == null) return Response.json(genUnAuthData())
+  const body = await request.json()
+  const { ids = [] } = body
+  try {
+    await db.doc.updateMany({
+      where: {
+        id: { in: ids },
+        userId: user.id,
+      },
+      data: {
+        isDeleted: true,
+      },
+    })
+    return Response.json(genSuccessData())
+  } catch (ex) {
+    console.error('Delete docs error', ex)
+    return Response.json(genErrorData('Delete docs error'))
+  }
+}

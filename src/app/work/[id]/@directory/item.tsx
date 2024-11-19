@@ -1,28 +1,14 @@
 'use client'
 
-import {
-  FileText,
-  Ellipsis,
-  Trash2,
-  ChevronDown,
-  ChevronRight,
-  Plus,
-} from 'lucide-react'
+import { FileText, ChevronDown, ChevronRight, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { del } from './action'
 import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import { isShowChildren, nav } from './util'
+import { isDescendant, nav } from './util'
 import { IDoc } from './type'
 import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_CREATE_DOC } from '@/constants'
+import DocHandlers from '@/components/doc-handlers'
 
 interface IProps {
   id: string
@@ -40,7 +26,7 @@ export default function Item(props: IProps) {
   const children = list.filter((i) => i.parentId === id)
   const hasChildren = children.length > 0
   const [showChildren, setShowChildren] = useState(
-    hasChildren ? isShowChildren(id, paramId, list) : false
+    hasChildren ? isDescendant(id, paramId, list) : false
   )
   function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation
@@ -121,25 +107,10 @@ export default function Item(props: IProps) {
 
         {/* 操作按鈕 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="cursor-pointer rounded-full p-1 hover:bg-background">
-                <Ellipsis className="h-4 w-4" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem
-                className="cursor-pointer text-destructive"
-                onClick={() => del(id)}
-              >
-                <Trash2 className="h-4 w-4" />
-                &nbsp;刪除
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>其他操作</DropdownMenuItem>
-              <DropdownMenuItem>其他操作</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DocHandlers
+            id={id}
+            triggerButtonClassName="rounded-full p-1 hover:bg-background"
+          />
         </div>
 
         {/* 創建文檔 */}

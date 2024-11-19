@@ -4,7 +4,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-import WorkNav from '@/components//work-nav'
+import TopBar from './top-bar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Search, Star, LogOut, Trash2, Users } from 'lucide-react'
@@ -42,13 +42,13 @@ export default async function Layout({
               <Star className="h-4 w-4" />
               &nbsp;&nbsp;收藏夹
             </Button>
-            <Button
+            {/* <Button
               className="w-full justify-start px-2 font-bold hover:bg-card"
               variant="ghost"
             >
               <Users className="h-4 w-4" />
               &nbsp;&nbsp;共同編輯
-            </Button>
+            </Button> */}
           </div>
           <Separator className="my-4" />
           <div className="flex-auto overflow-y-auto">{directory}</div>
@@ -71,8 +71,8 @@ export default async function Layout({
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={82}>
         <div className="h-screen flex flex-col relative">
-          {/* nav bar */}
-          <WorkNav workId={id} />
+          {/* top bar */}
+          <TopBar defaultId={id} />
           {/* content */}
           <div
             id="work-content-scroll-container"
