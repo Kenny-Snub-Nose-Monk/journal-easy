@@ -7,10 +7,11 @@ import {
 import TopBar from './top-bar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Search, Star, LogOut, Trash2, Users } from 'lucide-react'
+import { Search, Star, LogOut, Users } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
 import { getUserInfo } from '@/lib/session'
+import Trash from '@/app/work/trash'
 
 export default async function Layout({
   params,
@@ -24,7 +25,6 @@ export default async function Layout({
   const user = await getUserInfo()
   if (user == null) {
     redirect('/user-info')
-    return null
   }
   const { id = '0' } = params
 
@@ -54,10 +54,7 @@ export default async function Layout({
           <div className="flex-auto overflow-y-auto">{directory}</div>
           <Separator className="my-4" />
           <div>
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Trash2 className="h-4 w-4" />
-              &nbsp;&nbsp;回收站
-            </Button>
+            <Trash />
             <SignOutButton
               className="w-full justify-start px-2 "
               variant="ghost"

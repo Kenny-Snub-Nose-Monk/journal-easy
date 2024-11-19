@@ -68,7 +68,7 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       fetch('/api/doc', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids }),
+        body: JSON.stringify({ ids, data: { isDeleted: true } }),
       })
         .then((res) => res.json())
         .then((resData) => {
