@@ -3,16 +3,17 @@ import { useState, useEffect } from 'react'
 import Logo from '@/components/Logo'
 import ChangeTheme from '@/components/change-theme'
 import { Button } from '@/components/ui/button'
-import { Forward, Star } from 'lucide-react'
+import { Forward, Star, Check, PencilLine } from 'lucide-react'
 import DocHandlers from '@/components/doc-handlers'
 import emitter from '@/lib/emitter'
-import { EVENT_KEY_NAV_DOC } from '@/constants'
+import { EVENT_KEY_NAV_DOC, EVENT_KEY_CHANGE_UPDATING } from '@/constants'
 interface IProps {
   defaultId: string
 }
 export default function TopBar(props: IProps) {
   const { defaultId } = props
   const [id, setId] = useState(defaultId)
+
   useEffect(() => {
     function handler(payload: any) {
       const { id } = payload || {}
@@ -24,10 +25,37 @@ export default function TopBar(props: IProps) {
       emitter.off(EVENT_KEY_NAV_DOC, handler) // 及時銷毀自定義事件
     }
   }, [])
+
+  const [updating, setUpdating] = useState(false)
+  useEffect(() => {
+    function handler(payload: any) {
+      const { updating = false } = payload
+      setUpdating(updating)
+    }
+    emitter.on(EVENT_KEY_CHANGE_UPDATING, handler)
+    return () => {
+      emitter.off(EVENT_KEY_CHANGE_UPDATING, handler) // 及时銷毀自定义事件
+    }
+  }, [])
+
   return (
     <div className="flex text-secondary-foreground my-1 mx-3 bg-ground pb-1 border-b">
       <div className="text-start inline-flex items-center">
         <Logo />
+        <span className="text-muted-foreground text-sm ml-3 inline-flex items-center">
+          {updating && (
+            <>
+              <PencilLine className="w-4 h-4 mr-1" />
+              修改中...
+            </>
+          )}
+          {!updating && (
+            <>
+              <Check className="w-4 h-4 mr-1" />
+              已更新
+            </>
+          )}
+        </span>
       </div>
       <div className="flex-1 text-end">
         {/* 後續再拆分組件 */}

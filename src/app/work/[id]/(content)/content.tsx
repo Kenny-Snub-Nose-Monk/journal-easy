@@ -9,6 +9,7 @@ import {
   EVENT_KEY_CHANGE_DOC_TITLE,
   EVENT_KEY_NAV_DOC,
   EVENT_KEY_CREATE_DOC,
+  EVENT_KEY_CHANGE_UPDATING,
 } from '@/constants'
 
 interface IProps {
@@ -30,6 +31,8 @@ export default function Content(props: IProps) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value
+    // 更新資料庫
+    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true }) // 標記“修改中”
     setTitle(newTitle)
     updateTitle(id, newTitle)
     // 觸發事件，以更新左側列表的文章標題
@@ -38,6 +41,7 @@ export default function Content(props: IProps) {
   // 編輯器內容
   const [editorContent, SetEditorContent] = useState(defaultContent)
   function handleUpdate(content: string) {
+    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true }) // 標記“修改中”
     updateContent(id, content)
   }
   // 獲取文章內容
