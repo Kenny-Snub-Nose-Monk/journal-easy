@@ -59,7 +59,13 @@ export async function GET(request: NextRequest) {
   if (user == null) return Response.json(genUnAuthData())
 
   const searchParams = request.nextUrl.searchParams
-  const isDeleted = searchParams.get('isDeleted') // 是否軟刪除
+
+  // 是否軟刪除
+  const isDeletedParam = searchParams.get('isDeleted')
+  const isDeleted = !!isDeletedParam
+  // 是否收藏
+  let isStarParam = searchParams.get('isStar')
+  const isStar = !!isStarParam
 
   const list = await db.doc.findMany({
     select: {
@@ -72,7 +78,8 @@ export async function GET(request: NextRequest) {
     },
     where: {
       userId: user.id || '',
-      isDeleted: !!isDeleted,
+      isDeleted: isDeleted,
+      isStar: isStar,
     },
     orderBy: {
       updatedAt: 'desc',

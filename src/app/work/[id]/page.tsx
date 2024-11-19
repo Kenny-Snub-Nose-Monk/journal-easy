@@ -9,7 +9,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
 
   const doc = await getDoc(id)
   const notFound = !doc
-  const { title = '', content = '' } = doc || {}
+  const { title = '', content = '', isStar = false } = doc || {}
 
   return (
     <>
@@ -19,6 +19,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
           defaultTitle={title}
           defaultContent={content?.toString() || ''}
           defaultNotFound={notFound}
+          defaultIsStar={isStar}
         />
       </div>
       {/* <AIIsland /> */}

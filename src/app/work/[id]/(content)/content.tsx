@@ -10,6 +10,7 @@ import {
   EVENT_KEY_NAV_DOC,
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_CHANGE_UPDATING,
+  EVENT_KEY_CHANGE_IS_STAR,
 } from '@/constants'
 
 interface IProps {
@@ -17,10 +18,17 @@ interface IProps {
   defaultTitle: string
   defaultContent: string
   defaultNotFound: boolean
+  defaultIsStar: boolean | null
 }
 
 export default function Content(props: IProps) {
-  const { defaultId, defaultTitle, defaultContent, defaultNotFound } = props
+  const {
+    defaultId,
+    defaultTitle,
+    defaultContent,
+    defaultNotFound,
+    defaultIsStar,
+  } = props
   const [id, setId] = useState(defaultId)
   // loading
   const [loading, setLoading] = useState(false)
@@ -44,12 +52,20 @@ export default function Content(props: IProps) {
     emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true }) // 標記“修改中”
     updateContent(id, content)
   }
+
+  // isStar
+  const [isStar, setIsStar] = useState(defaultIsStar)
+  useEffect(() => {
+    emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar })
+  }, [isStar])
+
   // 獲取文章內容
   useEffect(() => {
     function load(payload: any) {
       const { id, type } = payload || {}
       if (!id) return
       setId(id) // 切換 id ，重要！
+      setIsStar(false)
       setNotFound(false)
       setLoading(true)
 
@@ -73,6 +89,7 @@ export default function Content(props: IProps) {
         setTitle(data.title)
         SetEditorContent(data.content)
         setLoading(false)
+        setIsStar(data.isStar)
       })
     }
     emitter.on(EVENT_KEY_NAV_DOC, load)

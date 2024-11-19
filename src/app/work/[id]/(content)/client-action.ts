@@ -12,7 +12,12 @@ export async function getDoc(id: string) {
 }
 async function updateDoc(
   id: string,
-  data: { title?: string; content?: string; parentId?: string | null }
+  data: {
+    title?: string
+    content?: string
+    parentId?: string | null
+    isStar?: boolean | null
+  }
 ) {
   const url = `/api/doc/${id}`
   const res = await patch(url, data)
@@ -30,4 +35,8 @@ export const updateContent = debounce(async (id: string, content: string) => {
 
 export const updateParentId = async (id: string, parentId: string | null) => {
   return await updateDoc(id, { parentId })
+}
+
+export const updateIsStar = async (id: string, isStar: boolean | null) => {
+  return await updateDoc(id, { isStar })
 }

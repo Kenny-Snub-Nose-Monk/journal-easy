@@ -11,7 +11,8 @@ import { Search, Star, LogOut, Users } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
 import { getUserInfo } from '@/lib/session'
-import Trash from '@/app/work/trash'
+import Trash from './(dialog-pages)/trash'
+import StarList from './(dialog-pages)/star-list'
 
 export default async function Layout({
   params,
@@ -38,10 +39,7 @@ export default async function Layout({
               <Search className="h-4 w-4" />
               &nbsp;&nbsp;搜索
             </Button>
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Star className="h-4 w-4" />
-              &nbsp;&nbsp;收藏夹
-            </Button>
+            <StarList />
             {/* <Button
               className="w-full justify-start px-2 font-bold hover:bg-card"
               variant="ghost"

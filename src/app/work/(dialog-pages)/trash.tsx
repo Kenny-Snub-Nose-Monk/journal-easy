@@ -21,10 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { IDoc } from './[id]/@directory/type'
+import { IDoc } from '../[id]/@directory/type'
 import { timeAgo } from '@/lib/dt'
-import { getDescendantsIds } from './[id]/@directory/util'
-import { getDoc, updateParentId } from './[id]/(content)/client-action'
+import { getDescendantsIds } from '../[id]/@directory/util'
+import { getDoc, updateParentId } from '../[id]/(content)/client-action'
 import { get, patch, del as ajaxDelete } from '@/lib/ajax'
 
 export default function Trash() {
@@ -139,9 +139,9 @@ function TrashTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-48">標題</TableHead>
-            <TableHead>刪除時間</TableHead>
-            <TableHead className="text-center">操作</TableHead>
+            <TableHead className="w-auto">標題</TableHead>
+            <TableHead className="w-24">刪除時間</TableHead>
+            <TableHead className="text-right w-24">操作</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -150,12 +150,12 @@ function TrashTable() {
             .map((doc) => (
               <TableRow key={doc.id} className="group">
                 <TableCell>
-                  <p className="w-48 overflow-hidden truncate">
+                  <p className="overflow-hidden truncate">
                     {doc.title || '<無標題>'}
                   </p>
                 </TableCell>
                 <TableCell>{timeAgo(doc.updatedAt || '')}</TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   <div className="inline-flex space-x-1 invisible group-hover:visible">
                     <Button
                       variant="outline"
