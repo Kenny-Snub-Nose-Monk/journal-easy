@@ -5,6 +5,7 @@ import emitter from '@/lib/emitter'
 import { getDescendantsIds, nav } from '../util'
 import { IDoc } from '../type'
 import { EVENT_KEY_CREATE_DOC, EVENT_KEY_DEL_DOC } from '@/constants'
+import { post, patch, IAjaxRes } from '@/lib/ajax'
 
 export default function useList(defaultList: IDoc[], paramId: string) {
   const { toast } = useToast()
@@ -25,23 +26,13 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       // 跳轉
       nav(newId, 'create')
       // 異步創建
-      fetch('/api/doc', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: newId, parentId }),
-      })
-        .then((res) => res.json())
-        .then((resData) => {
-          if (resData.errno !== 0) {
-            toast({
-              variant: 'destructive',
-              description: resData.msg || '創建失敗',
-            })
-            return
-          }
+      post('/api/doc', { id: newId, parentId }).then((resData: IAjaxRes) => {
+        if (resData.errno === 0) return
+        toast({
+          variant: 'destructive',
+          description: resData.msg || '創建失敗',
         })
+      })
     },
     [list, toast]
   )
@@ -65,13 +56,8 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       // 要刪除的所有 ids ，包括當前節點
       const ids = [...descendantsIds, id]
       // 異步執行軟刪除
-      fetch('/api/doc', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids, data: { isDeleted: true } }),
-      })
-        .then((res) => res.json())
-        .then((resData) => {
+      patch('/api/doc', { ids, data: { isDeleted: true } }).then(
+        (resData: IAjaxRes) => {
           if (resData.errno !== 0) {
             toast({
               variant: 'destructive',
@@ -82,7 +68,8 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           toast({
             description: `已刪除 ${ids.length} 個文檔，放在回收站`,
           })
-        })
+        }
+      )
       // 更新 list
       const remainList = list.filter((i) => !ids.includes(i.id))
       setList(remainList)

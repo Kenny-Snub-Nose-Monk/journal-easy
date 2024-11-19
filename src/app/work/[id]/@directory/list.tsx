@@ -55,7 +55,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
         })}
       {/* create button */}
       <Button
-        className="w-full justify-start px-0.5 font-bold"
+        className="justify-start px-0.5 font-bold"
         variant="ghost"
         onClick={() => emitter.emit(EVENT_KEY_CREATE_DOC)}
       >

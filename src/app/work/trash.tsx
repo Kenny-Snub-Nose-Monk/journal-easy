@@ -25,6 +25,8 @@ import { IDoc } from './[id]/@directory/type'
 import { timeAgo } from '@/lib/dt'
 import { getDescendantsIds } from './[id]/@directory/util'
 import { getDoc, updateParentId } from './[id]/(content)/client-action'
+import { get, patch, del as ajaxDelete } from '@/lib/ajax'
+
 export default function Trash() {
   return (
     <Dialog>
@@ -52,10 +54,8 @@ function TrashTable() {
   // 加載數據
   const load = useCallback(async () => {
     const url = `/api/doc?isDeleted=1`
-    const res = await fetch(url)
-    const resData = await res.json()
-    const { errno, data: list = [] } = resData || {}
-    if (errno !== 0) console.error('回收站 load error')
+    const { data: list } = await get(url)
+
     return list
   }, [])
   useEffect(() => {
@@ -80,19 +80,17 @@ function TrashTable() {
     // 所有下級文檔
     const descendantsIds = getDescendantsIds(id, list)
     const ids = [...descendantsIds, id]
-    const res = await fetch('/api/doc', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids, data: { isDeleted: false } }),
-    })
-    const resData = await res.json()
 
-    if (resData.errno === 0) {
+    const { errno, msg } = await patch('/api/doc', {
+      ids,
+      data: { isDeleted: false },
+    })
+    if (errno === 0) {
       router.push(`/work/${id}`)
     } else {
       toast({
         variant: 'destructive',
-        description: resData.msg || '執行失敗',
+        description: msg || '執行失敗',
       })
     }
   }
@@ -102,11 +100,7 @@ function TrashTable() {
     const descendantsIds = getDescendantsIds(id, list)
     const ids = [...descendantsIds, id]
     // 異步刪除
-    fetch('/api/doc', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids }),
-    })
+    ajaxDelete('/api/doc', { ids })
     // 更新列表
     setList(list.filter((d) => !ids.includes(d.id)))
   }
