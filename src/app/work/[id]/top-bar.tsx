@@ -4,7 +4,7 @@ import Logo from '@/components/Logo'
 import ChangeTheme from '@/components/change-theme'
 import { Button } from '@/components/ui/button'
 import { Forward, Star, Check, PencilLine } from 'lucide-react'
-import DocHandlers from '@/components/doc-handlers'
+import TopBarHandlers from './top-bar-handlers'
 import emitter from '@/lib/emitter'
 import {
   EVENT_KEY_NAV_DOC,
@@ -103,10 +103,7 @@ export default function TopBar(props: IProps) {
             <Star className="h-4 w-4 mr-1" />
             {isStar ? '已收藏' : '收藏'}
           </Button>
-          <DocHandlers
-            id={id}
-            triggerButtonClassName="px-3 h-9 hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md"
-          />
+          <TopBarHandlers id={id} />
           <ChangeTheme />
         </div>
       </div>

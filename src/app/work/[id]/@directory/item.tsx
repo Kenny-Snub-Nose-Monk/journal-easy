@@ -8,7 +8,7 @@ import scrollIntoView from 'scroll-into-view-if-needed'
 import { isDescendant, nav } from './util'
 import { IDoc } from './type'
 import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_CREATE_DOC } from '@/constants'
-import DocHandlers from '@/components/doc-handlers'
+import ItemHandlers from './item-handlers'
 
 interface IProps {
   id: string
@@ -107,10 +107,7 @@ export default function Item(props: IProps) {
 
         {/* 操作按鈕 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
-          <DocHandlers
-            id={id}
-            triggerButtonClassName="rounded-full p-1 hover:bg-background"
-          />
+          <ItemHandlers id={id} />
         </div>
 
         {/* 創建文檔 */}
