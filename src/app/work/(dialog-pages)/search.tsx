@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,9 +33,7 @@ export default function Search() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>搜索</DialogTitle>
-          <DialogDescription asChild>
-            <SearchPanel />
-          </DialogDescription>
+          <SearchPanel />
         </DialogHeader>
       </DialogContent>
     </Dialog>

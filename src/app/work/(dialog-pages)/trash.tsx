@@ -8,7 +8,6 @@ import { useToast } from '@/hooks/use-toast'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -39,9 +38,7 @@ export default function Trash() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>回收站</DialogTitle>
-          <DialogDescription asChild>
-            <TrashTable />
-          </DialogDescription>
+          <TrashTable />
         </DialogHeader>
       </DialogContent>
     </Dialog>
@@ -55,7 +52,7 @@ function TrashTable() {
 
   // 加載數據
   const load = useCallback(async () => {
-    const url = `/api/doc?isDeleted=1`
+    const url = `/api/doc?isDeleted=true`
     const { data: list } = await get(url)
 
     return list

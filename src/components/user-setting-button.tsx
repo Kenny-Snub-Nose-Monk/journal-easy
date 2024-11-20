@@ -31,13 +31,11 @@ export default function UserSettingButton({ user }: { user: IUser }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>修改用户訊息</DialogTitle>
-          <DialogDescription asChild>
-            <UserProfileForm
-              name={name || ''}
-              avatar={image || ''}
-              email={email || ''}
-            />
-          </DialogDescription>
+          <UserProfileForm
+            name={name || ''}
+            avatar={image || ''}
+            email={email || ''}
+          />
         </DialogHeader>
       </DialogContent>
     </Dialog>

@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -36,9 +35,7 @@ export default function StarList() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>收藏夹</DialogTitle>
-          <DialogDescription asChild>
-            <StarListTable />
-          </DialogDescription>
+          <StarListTable />
         </DialogHeader>
       </DialogContent>
     </Dialog>
