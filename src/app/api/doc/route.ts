@@ -12,9 +12,29 @@ export async function POST(request: Request) {
   const user = await getUserInfo()
   if (user == null) return Response.json(genUnAuthData())
   const body = await request.json()
-  const { id = undefined, title = '', content = '', parentId = null } = body
+  let {
+    originId,
+    id = undefined,
+    title = '',
+    content = '',
+    parentId = null,
+  } = body
+
+  // 從 originId 複制一個
+  if (originId) {
+    const originDoc = await db.doc.findUnique({
+      where: { id: originId },
+    })
+    if (originDoc == null) {
+      return Response.json(genErrorData('Origin doc not found'))
+    }
+    title = originDoc.title + ' 複製'
+    content = originDoc.content
+    parentId = originDoc.parentId
+  }
+
   try {
-    await db.doc.create({
+    const doc = await db.doc.create({
       data: {
         id,
         title,
@@ -23,7 +43,7 @@ export async function POST(request: Request) {
         userId: user.id!,
       },
     })
-    return Response.json(genSuccessData())
+    return Response.json(genSuccessData(doc))
   } catch (ex) {
     console.error('Create doc error', ex)
     return Response.json(genErrorData('Create doc error'))
@@ -71,13 +91,6 @@ export async function GET(request: NextRequest) {
 
   // 搜索關鍵字
   const keyword = searchParams.get('keyword') || null
-
-  console.log({
-    userId: user.id || '',
-    isDeleted: isDeleted,
-    isStar: isStar,
-    title: keyword ? { contains: keyword } : undefined,
-  })
 
   const list = await db.doc.findMany({
     select: {

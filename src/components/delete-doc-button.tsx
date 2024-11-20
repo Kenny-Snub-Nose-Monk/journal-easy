@@ -16,10 +16,7 @@ export default function DocDeleteButton(props: IProps) {
   return (
     <Button
       variant="ghost"
-      className={cn(
-        'w-full justify-start py-2 px-1 h-8 text-destructive',
-        className
-      )}
+      className={cn('w-full justify-start p-2 h-8 text-destructive', className)}
       onClick={() => delDocHandler(id)}
     >
       <Trash2 className="h-4 w-4 mr-1" />
