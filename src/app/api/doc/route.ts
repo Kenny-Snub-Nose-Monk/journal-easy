@@ -84,10 +84,12 @@ export async function GET(request: NextRequest) {
 
   // 是否軟刪除
   const isDeletedParam = searchParams.get('isDeleted')
-  const isDeleted = isDeletedParam === null ? undefined : !!isDeletedParam
+  const isDeleted =
+    isDeletedParam === null ? undefined : isDeletedParam === 'true'
+
   // 是否收藏
   let isStarParam = searchParams.get('isStar')
-  const isStar = isStarParam === null ? undefined : !!isStarParam
+  const isStar = isStarParam === null ? undefined : isDeletedParam === 'true'
 
   // 搜索關鍵字
   const keyword = searchParams.get('keyword') || null

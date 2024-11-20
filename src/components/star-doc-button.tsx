@@ -33,7 +33,7 @@ export default function StarDocButton(props: IProps) {
       variant={isStar ? 'secondary' : 'ghost'}
       size="sm"
       onClick={handleUpdateIsStar}
-      className={cn(className)}
+      className={cn('focus-visible:ring-transparent', className)}
     >
       <Star className="h-4 w-4 mr-1" />
       {isStar ? '已收藏' : '收藏'}
