@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import TiptapEditor from '@/components/editor'
 import { getDoc, updateContent, updateTitle } from './client-action'
 import emitter from '@/lib/emitter'
+import { get } from '@/lib/ajax'
 import {
   EVENT_KEY_CHANGE_DOC_TITLE,
   EVENT_KEY_NAV_DOC,
@@ -95,6 +96,18 @@ export default function Content(props: IProps) {
     emitter.on(EVENT_KEY_NAV_DOC, load)
     return () => {
       emitter.off(EVENT_KEY_NAV_DOC, load) // 及時銷毀自定義事件
+    }
+  }, [id])
+
+  // 監聽 window close 更新 lastDocId
+  useEffect(() => {
+    function handler() {
+      const url = '/api/user/update-last-doc-id?lastDocId=' + id
+      get(url) // window close 時只能發送 get 請求，如發送 patch 請求服務端會報錯
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => {
+      window.removeEventListener('beforeunload', handler) // 及時銷毀 DOM 事件
     }
   }, [id])
 

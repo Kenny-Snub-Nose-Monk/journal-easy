@@ -29,6 +29,7 @@ model Doc {
     parent  Doc?     @relation("ChildrenDocs", fields: [parentId], references: [id])
     parentId String?
     children Doc[]   @relation("ChildrenDocs")
+    lastDocId String?
 }
 
 // NextAuth Adapter models
