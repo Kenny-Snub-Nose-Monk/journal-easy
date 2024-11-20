@@ -12,6 +12,7 @@ export async function getDocList() {
       id: true,
       title: true,
       parentId: true,
+      isStar: true,
     },
     where: {
       userId: user.id || '',

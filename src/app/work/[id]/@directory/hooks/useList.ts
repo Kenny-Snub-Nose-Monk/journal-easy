@@ -4,7 +4,11 @@ import { useToast } from '@/hooks/use-toast'
 import emitter from '@/lib/emitter'
 import { getDescendantsIds, nav } from '../util'
 import { IDoc } from '../type'
-import { EVENT_KEY_CREATE_DOC, EVENT_KEY_DEL_DOC } from '@/constants'
+import {
+  EVENT_KEY_CREATE_DOC,
+  EVENT_KEY_DEL_DOC,
+  EVENT_KEY_CHANGE_IS_STAR,
+} from '@/constants'
 import { post, patch, IAjaxRes } from '@/lib/ajax'
 
 export default function useList(defaultList: IDoc[], paramId: string) {
@@ -93,5 +97,21 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       emitter.off(EVENT_KEY_DEL_DOC, handleDel) // 及時清除自定義事件
     }
   }, [deleteDoc])
+
+  // 監聽 isStar 變化
+  useEffect(() => {
+    function handler(payload: any) {
+      const { isStar = false, id: docId = '' } = payload
+      if (!docId) return
+      setList((prevList) => {
+        return prevList.map((i) => {
+          if (i.id === docId) return { ...i, isStar }
+          return i
+        })
+      })
+    }
+    emitter.on(EVENT_KEY_CHANGE_IS_STAR, handler)
+    return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler) // 及时銷毀自定義事件
+  }, [])
   return { list }
 }

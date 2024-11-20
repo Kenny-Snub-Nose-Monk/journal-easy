@@ -13,12 +13,13 @@ import ItemHandlers from './item-handlers'
 interface IProps {
   id: string
   defaultTitle: string
+  isStar: boolean
   paramId: string
   list: IDoc[]
 }
 
 export default function Item(props: IProps) {
-  const { id, defaultTitle, list = [], paramId } = props
+  const { id, defaultTitle, list = [], paramId, isStar } = props
   const isCurrent = id === paramId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -107,7 +108,7 @@ export default function Item(props: IProps) {
 
         {/* 操作按鈕 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
-          <ItemHandlers id={id} />
+          <ItemHandlers id={id} isStar={isStar} />
         </div>
 
         {/* 創建文檔 */}
@@ -123,7 +124,7 @@ export default function Item(props: IProps) {
       {hasChildren && showChildren && (
         <div className="ml-3">
           {children.map((doc) => {
-            const { id, title } = doc
+            const { id, title, isStar } = doc
             return (
               <Item
                 key={id}
@@ -131,6 +132,7 @@ export default function Item(props: IProps) {
                 defaultTitle={title}
                 paramId={paramId}
                 list={list}
+                isStar={!!isStar}
               />
             )
           })}

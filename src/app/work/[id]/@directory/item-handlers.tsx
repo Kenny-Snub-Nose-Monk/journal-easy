@@ -8,11 +8,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import DocDeleteButton from '@/components/delete-doc-button'
+import StarDocButton from '@/components/star-doc-button'
+
 interface IProps {
   id: string
+  isStar: boolean
 }
+
 export default function ItemHandlers(props: IProps) {
-  const { id } = props
+  const { id, isStar = false } = props
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,11 +26,19 @@ export default function ItemHandlers(props: IProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem className="p-0">
-          <DocDeleteButton id={id} />
+          <StarDocButton
+            id={id}
+            defaultIsStar={isStar}
+            className="w-full justify-start h-8 px-2"
+          />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>其他操作</DropdownMenuItem>
         <DropdownMenuItem>其他操作</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="p-0">
+          <DocDeleteButton id={id} />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

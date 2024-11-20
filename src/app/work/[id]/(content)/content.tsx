@@ -56,9 +56,10 @@ export default function Content(props: IProps) {
 
   // isStar
   const [isStar, setIsStar] = useState(defaultIsStar)
+
   useEffect(() => {
-    emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar })
-  }, [isStar])
+    emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar, id })
+  }, [isStar, id])
 
   // 獲取文章內容
   useEffect(() => {

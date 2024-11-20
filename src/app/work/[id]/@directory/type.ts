@@ -5,4 +5,5 @@ export interface IDoc {
   createdAt?: string
   updatedAt?: string
   isDeleted?: boolean | null
+  isStar?: boolean | null
 }
