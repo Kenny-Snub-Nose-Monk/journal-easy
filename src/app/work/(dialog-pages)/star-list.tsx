@@ -28,7 +28,7 @@ export default function StarList() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full justify-start px-2  h-8" variant="ghost">
+        <Button className="w-full justify-start px-2  h-9" variant="ghost">
           <Star className="h-4 w-4 mr-1" />
           收藏夹
         </Button>

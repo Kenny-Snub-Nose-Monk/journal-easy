@@ -5,14 +5,14 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
 import TopBar from './top-bar'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Search, Star, LogOut, Users } from 'lucide-react'
+import { LogOut, Users } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
 import { getUserInfo } from '@/lib/session'
-import Trash from './(dialog-pages)/trash'
-import StarList from './(dialog-pages)/star-list'
+import Trash from '../(dialog-pages)/trash'
+import StarList from '../(dialog-pages)/star-list'
+import SearchComp from '../(dialog-pages)/search'
 
 export default async function Layout({
   params,
@@ -35,10 +35,7 @@ export default async function Layout({
         <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
           <div>
             <UserSettingButton user={user} />
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Search className="h-4 w-4" />
-              &nbsp;&nbsp;搜索
-            </Button>
+            <SearchComp />
             <StarList />
             {/* <Button
               className="w-full justify-start px-2 font-bold hover:bg-card"

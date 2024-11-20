@@ -31,7 +31,7 @@ export default function Trash() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full justify-start px-2" variant="ghost">
+        <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <Trash2 className="h-4 w-4" />
           &nbsp;&nbsp;回收站
         </Button>
