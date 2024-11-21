@@ -2,36 +2,30 @@ FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
-# 複製 package.json 和 package-lock.json
-COPY package*.json ./
+# 複製 package 相關文件
+COPY package.json package-lock.json* ./
+COPY .npmrc ./
 
-# 顯示當前目錄內容（調試用）
-RUN echo "Contents before npm install:" && ls -la
-
-# 使用 npm install 替代 npm ci
-RUN npm install
-
-# 確認 node_modules 已創建（調試用）
-RUN echo "Contents after npm install:" && ls -la && \
-    echo "Node modules directory:" && ls -la node_modules
+# 安裝依賴並確保 node_modules 存在
+RUN npm ci
+RUN ls -la && echo "Node modules:" && ls -la node_modules
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+
+# 確保正確複製 node_modules
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# 顯示當前目錄內容（調試用）
-RUN echo "Builder stage contents:" && ls -la
+# 排除 image-processor，因為它是獨立的服務
+RUN rm -rf image-processor
 
 # Generate Prisma Client
 RUN npx prisma generate
-
-# Build Next.js application
 RUN npm run build
 
 # Production image, copy all the files and run next
