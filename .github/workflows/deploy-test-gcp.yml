@@ -27,17 +27,15 @@ jobs:
         run: |
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
-      - name: Build Docker image
+      - name: Build and Push Docker image
         env:
           TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
         run: |
           docker build \
             --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
-            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/huashuiai-web .
-
-      - name: Build and Push Docker image
-        run: |
-          docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} .
+            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/huashuiai-web \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+            .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
 
       - name: Deploy to Cloud Run
