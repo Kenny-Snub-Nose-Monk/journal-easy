@@ -5,8 +5,15 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
+# 添加 Tiptap Pro token
+ARG TIPTAP_PRO_TOKEN
+COPY .npmrc ./
+RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
+    echo "//registry.tiptap.dev/:_authToken=${TIPTAP_PRO_TOKEN}" >> .npmrc; \
+    fi
+
 # 複製 package 相關文件
-COPY package.json ./
+COPY package.json package-lock.json* ./
 # 如果使用 package-lock.json，確保它存在
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
@@ -16,6 +23,9 @@ RUN npm list || true
 # 安裝依賴並確保 node_modules 存在
 RUN npm ci
 RUN ls -la && echo "Node modules:" && ls -la node_modules
+
+# 安裝完成後刪除 .npmrc（安全考慮）
+RUN rm -f .npmrc
 
 # Rebuild the source code only when needed
 FROM base AS builder
