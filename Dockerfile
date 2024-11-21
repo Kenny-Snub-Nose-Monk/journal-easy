@@ -6,7 +6,12 @@ RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
 # 複製 package 相關文件
-COPY package.json package-lock.json* ./
+COPY package.json ./
+# 如果使用 package-lock.json，確保它存在
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+# 添加調試信息
+RUN npm list || true
 
 # 安裝依賴並確保 node_modules 存在
 RUN npm ci
