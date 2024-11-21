@@ -7,10 +7,13 @@ WORKDIR /app
 
 # 添加 Tiptap Pro token
 ARG TIPTAP_PRO_TOKEN
+RUN echo "Token length: ${#TIPTAP_PRO_TOKEN}"  # 只輸出長度，不輸出實際 token
 COPY .npmrc ./
 RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
+    echo "Adding token to .npmrc"; \
     echo "//registry.tiptap.dev/:_authToken=${TIPTAP_PRO_TOKEN}" >> .npmrc; \
     fi
+RUN cat .npmrc  # 小心不要洩露 token
 
 # 複製 package 相關文件
 COPY package.json package-lock.json ./
