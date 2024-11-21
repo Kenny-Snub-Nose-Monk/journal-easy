@@ -7,7 +7,8 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
+COPY package*.json ./
+COPY packages/*/package*.json ./packages/
 
 
 # Rebuild the source code only when needed
