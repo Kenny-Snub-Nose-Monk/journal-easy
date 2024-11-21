@@ -7,7 +7,6 @@ WORKDIR /app
 
 # 複製 package 相關文件
 COPY package.json package-lock.json* ./
-COPY .npmrc ./
 
 # 安裝依賴並確保 node_modules 存在
 RUN npm ci
