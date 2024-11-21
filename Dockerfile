@@ -13,7 +13,10 @@ RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
     fi
 
 # 複製 package 相關文件
-COPY package.json package-lock.json* ./
+COPY package.json package-lock.json ./
+
+RUN ls -la  # 列出所有文件
+
 # 如果使用 package-lock.json，確保它存在
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
