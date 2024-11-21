@@ -1,6 +1,5 @@
-import { create, getDocList } from './action'
-import CreateSubmitButton from './CreateSubmitButton'
-import Item from './item'
+import { getDocList } from './action'
+import List from './list'
 
 export default async function Directory({
   params,
@@ -9,21 +8,5 @@ export default async function Directory({
 }) {
   const list = await getDocList()
 
-  return (
-    // <div className="h-[1000px]">
-    <div>
-      {list.map((doc) => {
-        const { id, title } = doc
-        let isCurrent = false
-
-        if (id === params.id) isCurrent = true
-
-        return <Item key={id} id={id} title={title} isCurrent={isCurrent} />
-      })}
-
-      <form action={create}>
-        <CreateSubmitButton />
-      </form>
-    </div>
-  )
+  return <List defaultList={list} defaultParamId={params.id} />
 }

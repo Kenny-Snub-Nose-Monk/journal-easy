@@ -1,0 +1,8 @@
+export const CONTENT_WIDTH = 800 // 内容寬度
+
+export const EVENT_KEY_CHANGE_DOC_TITLE = 'E_K_CHANGE_DOC_TITLE'
+export const EVENT_KEY_NAV_DOC = 'E_K_NAV_DOC'
+export const EVENT_KEY_CREATE_DOC = 'E_K_CREATE_DOC'
+export const EVENT_KEY_DEL_DOC = 'E_K_DEL_DOC'
+export const EVENT_KEY_CHANGE_UPDATING = 'E_K_CHANGE_UPDATING'
+export const EVENT_KEY_CHANGE_IS_STAR = 'E_K_CHANGE_IS_STAR'

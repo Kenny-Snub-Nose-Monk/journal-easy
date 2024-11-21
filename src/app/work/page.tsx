@@ -9,7 +9,7 @@ export default async function Work() {
   const user = await getUserInfo()
   if (user && user.id) {
     const firstDoc = await db.doc.findFirst({
-      where: { userId: user.id },
+      where: { userId: user.id, isDeleted: false },
       orderBy: {
         updatedAt: 'desc',
       },

@@ -19,11 +19,17 @@ datasource db {
 model Doc {
     id        String   @id @default(cuid())
     title     String
-    content   String
+    content   Json
+    isDeleted Boolean  @default(false)
+    isStar Boolean  @default(false)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     user      User     @relation(fields: [userId], references: [id])
     userId    String
+    parent  Doc?     @relation("ChildrenDocs", fields: [parentId], references: [id])
+    parentId String?
+    children Doc[]   @relation("ChildrenDocs")
+    lastDocId String?
 }
 
 // NextAuth Adapter models

@@ -17,8 +17,10 @@ export default async function StartButton() {
     )
   }
 
+  const lastDocId = (user as any).lastDocId || ''
+
   return (
-    <Link href="/work">
+    <Link href={`/work/${lastDocId}`}>
       <Button className="text-base" size="lg">
         <Zap className="h-4 w-4" />
         &nbsp;開始使用

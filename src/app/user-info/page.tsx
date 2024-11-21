@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { auth } from 'auth'
-import HomeNav from '@/components/HomeNav'
+import HomeNav from '@/components/home-nav'
 import SignOutButton from '@/components/sign-out-button'
 import { getUserInfo } from '@/lib/session'
 

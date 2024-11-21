@@ -72,9 +72,61 @@ const config = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      // custom tailwindcss typography style
+      typography: {
+        DEFAULT: {
+          css: {
+            'h2, h3, h4, h5, ul, ol': {
+              'margin-top': '1em',
+              'margin-bottom': '0.6em',
+            },
+            'p, pre, blockquote': {
+              'margin-top': '0.6em',
+              'margin-bottom': '0.6em',
+            },
+            li: {
+              'margin-top': '0px',
+              'margin-bottom': '0px',
+            },
+            'li > p, li > ul, li > ol ': {
+              'margin-top': '0px',
+              'margin-bottom': '0px',
+            },
+            hr: {
+              'margin-top': '1em',
+              'margin-bottom': '1em',
+            },
+            img: {
+              'margin-top': '0.6em',
+              'margin-bottom': '0.6em',
+            },
+            table: {
+              'margin-top': '1em',
+              'margin-bottom': '1em',
+            },
+            code: {
+              color: '#f56565', // This is text-red-500
+              backgroundColor: '#f7fafc', // Optional: Light background for code blocks
+              padding: '0.25rem', // Optional: Padding for code blocks
+              borderRadius: '0.25rem', // Optional: Rounded corners for code blocks
+              '&::before': {
+                display: 'none',
+              },
+              '&::after': {
+                display: 'none',
+              },
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  variants: {
+    extend: {
+      display: ['group-hover'],
+    },
+  },
 } satisfies Config
 
 export default config

@@ -1,23 +1,7 @@
 'use server'
 
 import { db } from '@/db/db'
-import { redirect } from 'next/navigation'
 import { getUserInfo } from '@/lib/session'
-
-export async function create() {
-  const user = await getUserInfo()
-  if (!user || !user.id) return
-
-  const newDoc = await db.doc.create({
-    data: {
-      title: '新建檔案' + Date.now().toString().slice(-4),
-      content: '檔案内容...',
-      userId: user.id,
-    },
-  })
-
-  redirect(`/work/${newDoc.id}`)
-}
 
 export async function getDocList() {
   const user = await getUserInfo()
@@ -27,33 +11,17 @@ export async function getDocList() {
     select: {
       id: true,
       title: true,
+      parentId: true,
+      isStar: true,
     },
     where: {
       userId: user.id || '',
+      isDeleted: false,
     },
     orderBy: {
-      id: 'asc',
+      createdAt: 'asc',
     },
   })
 
   return list || []
-}
-
-export async function del(id: string) {
-  const user = await getUserInfo()
-  if (!user || !user.id) return
-
-  // 刪除
-  await db.doc.delete({
-    where: {
-      id,
-      userId: user.id,
-    },
-  })
-
-  const list = await getDocList()
-  const idList = list.map((doc) => doc.id)
-  const otherId = idList.find((id) => id !== id)
-
-  redirect(`/work/${otherId}`)
 }
