@@ -3,12 +3,21 @@ FROM node:18-alpine AS base
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# 複製 package.json 和 package-lock.json
 COPY package*.json ./
 
+# 顯示當前目錄內容（調試用）
+RUN echo "Contents before npm install:" && ls -la
+
+# 使用 npm install 替代 npm ci
+RUN npm install
+
+# 確認 node_modules 已創建（調試用）
+RUN echo "Contents after npm install:" && ls -la && \
+    echo "Node modules directory:" && ls -la node_modules
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -16,51 +25,41 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# 顯示當前目錄內容（調試用）
+RUN echo "Builder stage contents:" && ls -la
 
-## 參考此處本地運行的錯誤訊息截圖 https://github.com/huashui-ai/project-wiki/issues/16
+# Generate Prisma Client
 RUN npx prisma generate
 
-RUN \
-    if [ -f yarn.lock ]; then yarn run build; \
-    elif [ -f package-lock.json ]; then npm run build; \
-    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-    else echo "Lockfile not found." && exit 1; \
-    fi
+# Build Next.js application
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-# 添加 GCP 相關的環境變數
 ENV PORT 8080
 ENV HOSTNAME "0.0.0.0"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Copy necessary files
 COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
+# Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# 確保 prisma 客戶端在生產環境中可用
+# Copy Prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 USER nextjs
 
-# GCP 建議使用 8080 端口
 EXPOSE 8080
 
-# 簡化啟動命令
 CMD ["node", "server.js"]
