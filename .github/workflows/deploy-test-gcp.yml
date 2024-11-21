@@ -1,4 +1,4 @@
-ame: Deploy to GCP
+name: Deploy to GCP
 on:
   push:
     branches:
