@@ -29,15 +29,8 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          # 設置完整的映像標籤
-          IMAGE_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-
-          # 輸出標籤以進行驗證
-          echo "Building image: $IMAGE_TAG"
-
-          # 構建和推送映像
-          docker build -t $IMAGE_TAG .
-          docker push $IMAGE_TAG
+          docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} .
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         run: |
