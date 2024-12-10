@@ -6,6 +6,11 @@ import {
   genUnAuthData,
 } from '@/app/api/utils/gen-res-data'
 
+// 添加這個條件檢查
+if (process.env.NODE_ENV === 'development') {
+  db.$connect()
+}
+
 // 獲取單個 doc 内容
 export async function GET(
   request: Request,
