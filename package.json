@@ -30,7 +30,7 @@
     "@radix-ui/react-toast": "^1.2.2",
     "@tiptap-pro/extension-drag-handle-react": "^2.13.0",
     "@tiptap-pro/extension-file-handler": "^2.13.0",
-    "@tiptap-pro/extension-unique-id": "^2.15.0",
+    "@tiptap-pro/extension-unique-id": "^2.16.3",
     "@tiptap/extension-dropcursor": "^2.9.1",
     "@tiptap/extension-highlight": "^2.9.1",
     "@tiptap/extension-image": "^2.9.1",
