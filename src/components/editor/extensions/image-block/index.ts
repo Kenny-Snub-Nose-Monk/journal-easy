@@ -107,6 +107,7 @@ const ImageBlock = BaseImage.extend({
     }
   },
   addNodeView() {
+    // @ts-ignore
     return ReactNodeViewRenderer(ImageBlockView)
   },
 })
