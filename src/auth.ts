@@ -5,7 +5,7 @@ import { db } from '@/db/db'
 
 import GitHub from 'next-auth/providers/github'
 import Email from 'next-auth/providers/nodemailer'
-// 其他 provider 看这里 https://github.com/nextauthjs/next-auth/blob/main/apps/examples/nextjs/auth.ts
+// 其他 provider 看 https://github.com/nextauthjs/next-auth/blob/main/apps/examples/nextjs/auth.ts
 
 import type { NextAuthConfig } from 'next-auth'
 

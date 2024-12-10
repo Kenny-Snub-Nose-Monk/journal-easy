@@ -27,14 +27,18 @@ jobs:
         run: |
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
-      - name: Build and Push Docker image
-        env:
-          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
-        run: |
-          docker build \
-            --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
-            .
+          - name: Build and Push Docker image
+          env:
+            TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+            EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
+            EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          run: |
+            docker build \
+              --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
+              --build-arg EMAIL_SERVER=$EMAIL_SERVER \
+              --build-arg EMAIL_FROM=$EMAIL_FROM \
+              -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+              .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
 
       - name: Deploy to Cloud Run
