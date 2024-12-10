@@ -33,7 +33,6 @@ jobs:
         run: |
           docker build \
             --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
-            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/huashuiai-web \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
             .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
