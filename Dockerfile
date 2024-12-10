@@ -1,5 +1,10 @@
 FROM node:18-alpine AS base
 
+# Set environment variables
+ENV TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN
+ENV EMAIL_SERVER=$EMAIL_SERVER
+ENV EMAIL_FROM=$EMAIL_FROM
+
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat git
