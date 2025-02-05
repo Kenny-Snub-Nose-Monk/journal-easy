@@ -47,14 +47,12 @@ jobs:
             .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy nextjs-app \
-            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
-            --platform managed \
-            --region ${{ env.REGION }} \
-            --port 8080 \
-            --allow-unauthenticated \
-            --set-secrets="DATABASE_URL=DATABASE_URL:latest" \
-            --set-secrets="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest" \
-            --update-secrets="/secrets/my-secret=my-secret:latest"
+          - name: Deploy to Cloud Run
+          run: |
+            gcloud run deploy nextjs-app \
+              --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+              --platform managed \
+              --region ${{ env.REGION }} \
+              --port 8080 \
+              --allow-unauthenticated \
+              --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest"
