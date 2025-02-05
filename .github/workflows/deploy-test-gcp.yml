@@ -22,37 +22,40 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
+
       - name: Configure Docker for Artifact Registry
         run: |
-          # 先將服務帳號金鑰寫入臨時檔案
           echo '${{ secrets.GCP_SA_KEY }}' > gcp-sa-key.json
-
-          # 使用完整的服務帳號電子郵件地址進行認證
           gcloud auth activate-service-account github-actions@${{ env.PROJECT_ID }}.iam.gserviceaccount.com --key-file=gcp-sa-key.json
-
-          # 配置 Docker
           gcloud auth configure-docker asia-east1-docker.pkg.dev
-
-          # 清理臨時檔案
           rm gcp-sa-key.json
+
       - name: Build and Push Docker image
         env:
           GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
-          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+          EMAIL_SERVER_HOST: ${{ secrets.EMAIL_SERVER_HOST }}
+          EMAIL_SERVER_PORT: ${{ secrets.EMAIL_SERVER_PORT }}
+          EMAIL_SERVER_USER: ${{ secrets.EMAIL_SERVER_USER }}
+          EMAIL_SERVER_PASSWORD: ${{ secrets.EMAIL_SERVER_PASSWORD }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
         run: |
           docker build \
-            --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
             --build-arg GOOGLE_CLOUD_BUCKET_NAME=$GOOGLE_CLOUD_BUCKET_NAME \
+            --build-arg EMAIL_SERVER_HOST=$EMAIL_SERVER_HOST \
+            --build-arg EMAIL_SERVER_PORT=$EMAIL_SERVER_PORT \
+            --build-arg EMAIL_SERVER_USER=$EMAIL_SERVER_USER \
+            --build-arg EMAIL_SERVER_PASSWORD=$EMAIL_SERVER_PASSWORD \
+            --build-arg EMAIL_FROM=$EMAIL_FROM \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
             .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
 
-          - name: Deploy to Cloud Run
-          run: |
-            gcloud run deploy nextjs-app \
-              --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
-              --platform managed \
-              --region ${{ env.REGION }} \
-              --port 8080 \
-              --allow-unauthenticated \
-              --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest"
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy nextjs-app \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --port 8080 \
+            --allow-unauthenticated \
+            --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest"
