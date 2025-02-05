@@ -1,5 +1,10 @@
 FROM node:18-alpine AS base
 
+# Declare build arguments
+ARG TIPTAP_PRO_TOKEN
+ARG EMAIL_SERVER
+ARG EMAIL_FROM
+
 # Set environment variables
 ENV TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN
 ENV EMAIL_SERVER=$EMAIL_SERVER
