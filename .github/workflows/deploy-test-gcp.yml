@@ -23,6 +23,10 @@ env:
   NEXTAUTH_URL: https://nextjs-app-abeco3wo7a-de.a.run.app
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
+  # OAuth Configuration (Production)
+  GITHUB_ID: ${{ secrets.PROD_GITHUB_ID }} # 改用生產環境的 ID
+  GITHUB_SECRET: ${{ secrets.PROD_GITHUB_SECRET }} # 改用生產環境的 Secret
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -70,4 +74,6 @@ jobs:
             --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest" \
             --set-env-vars="NEXTAUTH_URL=${{ env.NEXTAUTH_URL }}" \
             --set-env-vars="NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }}"
+            --set-env-vars="GITHUB_ID=${{ env.GITHUB_ID }}" \
+            --set-env-vars="GITHUB_SECRET=${{ env.GITHUB_SECRET }}"
           echo "Service URL: $(gcloud run services describe nextjs-app --region ${{ env.REGION }} --format 'value(status.url)')"
