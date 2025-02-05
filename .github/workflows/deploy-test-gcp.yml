@@ -5,9 +5,23 @@ on:
       - test-deploy
 
 env:
+  # GCP Configuration
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: asia-east1
   ARTIFACT_REGISTRY: ${{ secrets.GCP_ARTIFACT_REGISTRY }}
+
+  # Email Configuration
+  EMAIL_SERVER_HOST: ${{ secrets.EMAIL_SERVER_HOST }}
+  EMAIL_SERVER_PORT: ${{ secrets.EMAIL_SERVER_PORT }}
+  EMAIL_SERVER_USER: ${{ secrets.EMAIL_SERVER_USER }}
+  EMAIL_SERVER_PASSWORD: ${{ secrets.EMAIL_SERVER_PASSWORD }}
+  EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+
+  # Application Configuration
+  GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
+  TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
+  NEXTAUTH_URL: https://nextjs-app-abeco3wo7a-de.a.run.app
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
 jobs:
   deploy:
@@ -19,7 +33,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ env.PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
@@ -31,23 +45,15 @@ jobs:
           rm gcp-sa-key.json
 
       - name: Build and Push Docker image
-        env:
-          GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
-          EMAIL_SERVER_HOST: ${{ secrets.EMAIL_SERVER_HOST }}
-          EMAIL_SERVER_PORT: ${{ secrets.EMAIL_SERVER_PORT }}
-          EMAIL_SERVER_USER: ${{ secrets.EMAIL_SERVER_USER }}
-          EMAIL_SERVER_PASSWORD: ${{ secrets.EMAIL_SERVER_PASSWORD }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
         run: |
           docker build \
-            --build-arg GOOGLE_CLOUD_BUCKET_NAME=$GOOGLE_CLOUD_BUCKET_NAME \
-            --build-arg EMAIL_SERVER_HOST=$EMAIL_SERVER_HOST \
-            --build-arg EMAIL_SERVER_PORT=$EMAIL_SERVER_PORT \
-            --build-arg EMAIL_SERVER_USER=$EMAIL_SERVER_USER \
-            --build-arg EMAIL_SERVER_PASSWORD=$EMAIL_SERVER_PASSWORD \
-            --build-arg EMAIL_FROM=$EMAIL_FROM \
-            --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
+            --build-arg GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }} \
+            --build-arg EMAIL_SERVER_HOST=${{ env.EMAIL_SERVER_HOST }} \
+            --build-arg EMAIL_SERVER_PORT=${{ env.EMAIL_SERVER_PORT }} \
+            --build-arg EMAIL_SERVER_USER=${{ env.EMAIL_SERVER_USER }} \
+            --build-arg EMAIL_SERVER_PASSWORD=${{ env.EMAIL_SERVER_PASSWORD }} \
+            --build-arg EMAIL_FROM=${{ env.EMAIL_FROM }} \
+            --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
             .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
@@ -61,7 +67,7 @@ jobs:
             --port 8080 \
             --allow-unauthenticated \
             --service-account github-actions@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
-            --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest"
-            --set-env-vars="NEXTAUTH_URL=https://nextjs-app-abeco3wo7a-de.a.run.app" \
-            --set-env-vars="NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}"
+            --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest" \
+            --set-env-vars="NEXTAUTH_URL=${{ env.NEXTAUTH_URL }}" \
+            --set-env-vars="NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }}"
           echo "Service URL: $(gcloud run services describe nextjs-app --region ${{ env.REGION }} --format 'value(status.url)')"
