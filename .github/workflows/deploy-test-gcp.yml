@@ -30,24 +30,21 @@ jobs:
       - name: Build and Push Docker image
         env:
           TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
-          EMAIL_SERVER: ${{ secrets.EMAIL_SERVER }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
         run: |
           docker build \
             --build-arg TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN \
-            --build-arg EMAIL_SERVER=$EMAIL_SERVER \
-            --build-arg EMAIL_FROM=$EMAIL_FROM \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
             .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy nextjs-app \
-            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
-            --platform managed \
-            --region ${{ env.REGION }} \
-            --port 8080 \
-            --allow-unauthenticated \
-            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }}" \
-            --set-env-vars="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=${{ secrets.NEXT_PUBLIC_IMAGE_PROCESSOR_URL }}"
+          - name: Deploy to Cloud Run
+          run: |
+            gcloud run deploy nextjs-app \
+              --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+              --platform managed \
+              --region ${{ env.REGION }} \
+              --port 8080 \
+              --allow-unauthenticated \
+              --set-secrets="DATABASE_URL=DATABASE_URL:latest" \
+              --set-secrets="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest" \
+              --update-secrets="/secrets/my-secret=my-secret:latest"
