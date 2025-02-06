@@ -16,7 +16,10 @@ export const config = {
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
-    GitHub,
+    GitHub({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
+    }),
     Email({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
