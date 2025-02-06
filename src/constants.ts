@@ -6,3 +6,5 @@ export const EVENT_KEY_CREATE_DOC = 'E_K_CREATE_DOC'
 export const EVENT_KEY_DEL_DOC = 'E_K_DEL_DOC'
 export const EVENT_KEY_CHANGE_UPDATING = 'E_K_CHANGE_UPDATING'
 export const EVENT_KEY_CHANGE_IS_STAR = 'E_K_CHANGE_IS_STAR'
+
+export const EVENT_KEY_AI_EDIT = 'E_K_AI_edit'

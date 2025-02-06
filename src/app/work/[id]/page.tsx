@@ -1,4 +1,4 @@
-// import AIIsland from '@/components/all-island'
+import AIIsland from '@/components/ai-island'
 import Content from './(content)/content'
 import { CONTENT_WIDTH } from '@/constants'
 import { getDoc } from './action'
@@ -13,7 +13,10 @@ export default async function OneWork({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <div className={`max-w-[${fullWidth}px] mx-auto my-10`}>
+      <div
+        className={`mx-auto my-10 mb-24`}
+        style={{ width: `${fullWidth}px` }}
+      >
         <Content
           defaultId={id}
           defaultTitle={title}
@@ -22,7 +25,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
           defaultIsStar={isStar}
         />
       </div>
-      {/* <AIIsland /> */}
+      <AIIsland />
     </>
   )
 }
