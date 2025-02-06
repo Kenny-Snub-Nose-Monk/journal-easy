@@ -22,6 +22,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
+# 安裝必要的 SSL 庫
+RUN apk add --no-cache openssl1.1-compat
+
 # 添加 Tiptap Pro token
 ARG TIPTAP_PRO_TOKEN
 RUN echo "Token length: ${#TIPTAP_PRO_TOKEN}"  # 只輸出長度，不輸出實際 token
@@ -34,6 +37,9 @@ RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
 # 調試用（記得移除）
 RUN echo "Token length: ${#TIPTAP_PRO_TOKEN}"
 RUN cat .npmrc | grep "registry" || true
+
+# 生成 Prisma Client
+RUN npx prisma generate
 
 # 複製 package 相關文件
 COPY package.json package-lock.json ./
