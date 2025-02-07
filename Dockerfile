@@ -1,4 +1,4 @@
-FROM node:18-alpine3.17 AS base
+FROM node:18-alpine3.16 AS base
 
 # Declare build arguments
 ARG EMAIL_SERVER_HOST
@@ -25,7 +25,7 @@ RUN apk add --no-cache \
     git \
     openssl \
     openssl-dev \
-    openssl1.1-compat \  # Add this line to install OpenSSL 1.1 compatibility
+    openssl1.1-compat \ 
 WORKDIR /app
 
 # 添加 Tiptap Pro token
