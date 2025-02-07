@@ -57,7 +57,7 @@ jobs:
 
           # Create temporary .npmrc file
           echo "@tiptap-pro:registry=https://registry.tiptap.dev/" > .npmrc
-          echo "//registry.tiptap.dev/:_authToken=${TIPTAP_PRO_TOKEN}" >> .npmrc
+          echo "//registry.tiptap.dev/:_authToken=${{ env.TIPTAP_PRO_TOKEN }}" >> .npmrc
 
           # Create service account key file
           echo "$GCP_SA_KEY" > /tmp/gcp-sa-key.json
