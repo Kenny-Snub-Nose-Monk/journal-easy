@@ -20,7 +20,12 @@ ENV TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat git openssl openssl-dev
+RUN apk add --no-cache \
+    libc6-compat \
+    git \
+    openssl \
+    openssl-dev \
+    openssl1.1-compat \  # Add this line to install OpenSSL 1.1 compatibility
 WORKDIR /app
 
 # 添加 Tiptap Pro token
@@ -60,6 +65,9 @@ ENV HOSTNAME "0.0.0.0"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Install OpenSSL 1.1 compatibility in the runner stage
+RUN apk add --no-cache openssl1.1-compat
 
 # Copy necessary files
 COPY --from=builder /app/public ./public
