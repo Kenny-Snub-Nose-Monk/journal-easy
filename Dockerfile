@@ -22,12 +22,14 @@ ENV TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN
 FROM base AS deps
 RUN apk add --no-cache libc6-compat git
 
+FROM alpine:3.16
+
 # 安裝必要的 SSL 
 RUN apk --no-cache add \
     openssl \
     openssl-dev
 
-WORKDIR /app
+WORKDIR /application
 
 # 添加 Tiptap Pro token
 COPY .npmrc ./
@@ -56,7 +58,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # 排除 image-processor，因為它是獨立的服務
-RUN rm -rf image-processor
+FROM alpine:3.18
+
+RUN apk add --no-cache openssl1.1-compat
 
 # Generate Prisma Client
 RUN npx prisma generate
