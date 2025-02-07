@@ -52,10 +52,17 @@ jobs:
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          # 創建服務帳戶金鑰文件
+          # Debug: Check if token exists (will print length only for security)
+          echo "TIPTAP_PRO_TOKEN length: ${#TIPTAP_PRO_TOKEN}"
+
+          # Create temporary .npmrc file
+          echo "@tiptap-pro:registry=https://registry.tiptap.dev/" > .npmrc
+          echo "//registry.tiptap.dev/:_authToken=${TIPTAP_PRO_TOKEN}" >> .npmrc
+
+          # Create service account key file
           echo "$GCP_SA_KEY" > /tmp/gcp-sa-key.json
 
-          # 構建 Docker 映像
+          # Build Docker image
           docker build \
             --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
             --build-arg GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa-key.json \
@@ -65,11 +72,15 @@ jobs:
             --build-arg EMAIL_SERVER_USER=${{ env.EMAIL_SERVER_USER }} \
             --build-arg EMAIL_SERVER_PASSWORD=${{ env.EMAIL_SERVER_PASSWORD }} \
             --build-arg EMAIL_FROM=${{ env.EMAIL_FROM }} \
+            --progress=plain \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
             .
             
-          # 清理服務帳戶金鑰文件
+          # Cleanup
           rm /tmp/gcp-sa-key.json
+          rm .npmrc
+
+          # Push image
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }}
 
       - name: Deploy to Cloud Run
