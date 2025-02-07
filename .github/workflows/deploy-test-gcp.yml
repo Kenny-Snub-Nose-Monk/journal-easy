@@ -20,12 +20,12 @@ env:
   # Application Configuration
   GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
   TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
-  NEXTAUTH_URL: https://nextjs-app-abeco3wo7a-de.a.run.app
+  NEXTAUTH_URL: https://huashui-ai-abeco3wo7a-de.a.run.app
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
   # OAuth Configuration (Production)
-  GITHUB_ID: ${{ secrets.PROD_GITHUB_ID }} # 改用生產環境的 ID
-  GITHUB_SECRET: ${{ secrets.PROD_GITHUB_SECRET }} # 改用生產環境的 Secret
+  GITHUB_ID: ${{ secrets.PROD_GITHUB_ID }}
+  GITHUB_SECRET: ${{ secrets.PROD_GITHUB_SECRET }}
 
 jobs:
   deploy:
@@ -64,7 +64,7 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy nextjs-app \
+          gcloud run deploy huashui-ai \
             --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
             --platform managed \
             --region ${{ env.REGION }} \
