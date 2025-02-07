@@ -29,8 +29,7 @@ RUN apk --no-cache add \
     openssl \
     openssl-dev
 
-WORKDIR /application
-
+WORKDIR /app
 # 添加 Tiptap Pro token
 COPY .npmrc ./
 RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
