@@ -23,7 +23,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat git
 
 # 安裝必要的 SSL 
-RUN apk add --no-cache openssl1.1-compat
+RUN apk --no-cache add \
+    openssl \
+    openssl-dev
 
 WORKDIR /app
 
