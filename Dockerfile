@@ -1,4 +1,4 @@
-FROM node:18-alpine3.16 AS base
+FROM node:18-alpine AS base
 
 # Declare build arguments
 ARG EMAIL_SERVER_HOST
@@ -24,8 +24,7 @@ RUN apk add --no-cache \
     libc6-compat \
     git \
     openssl \
-    openssl-dev \
-    openssl1.1-compat \ 
+    openssl-dev 
 WORKDIR /app
 
 # 添加 Tiptap Pro token
@@ -65,9 +64,6 @@ ENV HOSTNAME "0.0.0.0"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-
-# Install OpenSSL 1.1 compatibility in the runner stage
-RUN apk add --no-cache openssl1.1-compat
 
 # Copy necessary files
 COPY --from=builder /app/public ./public
