@@ -58,14 +58,14 @@ jobs:
             --build-arg EMAIL_SERVER_PASSWORD=${{ env.EMAIL_SERVER_PASSWORD }} \
             --build-arg EMAIL_FROM=${{ env.EMAIL_FROM }} \
             --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
             .
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }}
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy huashui-ai \
-            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/nextjs-app:${{ github.sha }} \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
             --platform managed \
             --region ${{ env.REGION }} \
             --port 8080 \
@@ -73,4 +73,4 @@ jobs:
             --service-account github-actions@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
             --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest" \
             --set-env-vars="NEXTAUTH_URL=${{ env.NEXTAUTH_URL }},NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }},GITHUB_ID=${{ env.GITHUB_ID }},GITHUB_SECRET=${{ env.GITHUB_SECRET }}"
-          echo "Service URL: $(gcloud run services describe nextjs-app --region ${{ env.REGION }} --format 'value(status.url)')"
+          echo "Service URL: $(gcloud run services describe huashui-ai --region ${{ env.REGION }} --format 'value(status.url)')"
