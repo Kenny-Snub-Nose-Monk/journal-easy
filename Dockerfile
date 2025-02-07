@@ -38,11 +38,11 @@ RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
 COPY package.json package-lock.json ./
 COPY prisma ./prisma/
 
-# 生成 Prisma Client
-RUN npx prisma generate
-
 # 如果使用 package-lock.json，確保它存在
 RUN npm ci
+
+# 生成 Prisma Client
+RUN npx prisma generate
 
 # 安裝完成後刪除 .npmrc（安全考慮）
 RUN rm -f .npmrc
