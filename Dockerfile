@@ -1,4 +1,4 @@
-FROM node:18-alpine3.17 AS bas
+FROM node:18-alpine3.17 AS base
 
 # Declare build arguments
 ARG EMAIL_SERVER_HOST
