@@ -20,48 +20,33 @@ ENV TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat git
-
-FROM alpine:3.16
-
-# 安裝必要的 SSL 
-RUN apk --no-cache add \
-    openssl \
-    openssl-dev
-
+RUN apk add --no-cache libc6-compat git openssl openssl-dev
 WORKDIR /app
+
 # 添加 Tiptap Pro token
-COPY .npmrc ./
+COPY .npmrc package.json package-lock.json ./
+COPY prisma ./prisma/
+
 RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
     echo "Adding token to .npmrc"; \
     echo "//registry.tiptap.dev/:_authToken=${TIPTAP_PRO_TOKEN}" >> .npmrc; \
     fi
 
-# 複製 package 相關文件
-COPY package.json package-lock.json ./
-COPY prisma ./prisma/
-
-# 如果使用 package-lock.json，確保它存在
+# Install dependencies
 RUN npm ci
-
-# 生成 Prisma Client
 RUN npx prisma generate
-
-# 安裝完成後刪除 .npmrc（安全考慮）
 RUN rm -f .npmrc
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+
+# Copy node_modules and other files
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/package.json ./package.json
 COPY . .
 
-# 排除 image-processor，因為它是獨立的服務
-FROM alpine:3.18
-
-RUN apk add --no-cache openssl1.1-compat
-
-# Generate Prisma Client
+# Build the application
 RUN npx prisma generate
 RUN npm run build
 
