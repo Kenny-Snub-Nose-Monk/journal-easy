@@ -49,8 +49,15 @@ jobs:
           rm gcp-sa-key.json
 
       - name: Build and Push Docker image
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
+          # 創建服務帳戶金鑰文件
+          echo "$GCP_SA_KEY" > /tmp/gcp-sa-key.json
+
+          # 構建 Docker 映像
           docker build \
+            --build-arg GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa-key.json \
             --build-arg GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }} \
             --build-arg EMAIL_SERVER_HOST=${{ env.EMAIL_SERVER_HOST }} \
             --build-arg EMAIL_SERVER_PORT=${{ env.EMAIL_SERVER_PORT }} \
@@ -60,6 +67,9 @@ jobs:
             --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
             .
+            
+          # 清理服務帳戶金鑰文件
+          rm /tmp/gcp-sa-key.json
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }}
 
       - name: Deploy to Cloud Run
