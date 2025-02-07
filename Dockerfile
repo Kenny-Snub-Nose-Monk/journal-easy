@@ -28,11 +28,12 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # 添加 Tiptap Pro token
-COPY .npmrc package.json package-lock.json ./
+COPY package.json package-lock.json ./
 COPY prisma ./prisma/
 
 RUN if [ -n "$TIPTAP_PRO_TOKEN" ]; then \
-    echo "Adding token to .npmrc"; \
+    echo "Configuring Tiptap Pro registry"; \
+    echo "@tiptap-pro:registry=https://registry.tiptap.dev/" >> .npmrc; \
     echo "//registry.tiptap.dev/:_authToken=${TIPTAP_PRO_TOKEN}" >> .npmrc; \
     fi
 
