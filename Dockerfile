@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:18-bullseye-slim AS base
 
 # Declare build arguments
 ARG EMAIL_SERVER_HOST
@@ -20,11 +20,10 @@ ENV TIPTAP_PRO_TOKEN=$TIPTAP_PRO_TOKEN
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache \
-    libc6-compat \
+RUN apt-get update && apt-get install -y \
     git \
     openssl \
-    openssl-dev 
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # 添加 Tiptap Pro token
@@ -63,8 +62,7 @@ ENV NODE_ENV production
 ENV PORT 8080
 ENV HOSTNAME "0.0.0.0"
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN groupadd -r nodejs && useradd -r -g nodejs nextjs
 
 # Copy necessary files
 COPY --from=builder /app/public ./public
