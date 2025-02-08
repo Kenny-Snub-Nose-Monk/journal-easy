@@ -92,6 +92,6 @@ jobs:
             --port 8080 \
             --allow-unauthenticated \
             --service-account github-actions@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
-            --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest,my-secret=my-secret:latest" \
+            --update-secrets="DATABASE_URL=DATABASE_URL:latest,NEXT_PUBLIC_IMAGE_PROCESSOR_URL=NEXT_PUBLIC_IMAGE_PROCESSOR_URL:latest" \
             --set-env-vars="NEXTAUTH_URL=${{ env.NEXTAUTH_URL }},NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }},GITHUB_ID=${{ env.GITHUB_ID }},GITHUB_SECRET=${{ env.GITHUB_SECRET }}"
           echo "Service URL: $(gcloud run services describe huashui-ai --region ${{ env.REGION }} --format 'value(status.url)')"
