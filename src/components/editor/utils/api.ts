@@ -2,6 +2,9 @@ import { compressImage } from './img'
 
 export async function uploadImageFn(file: File) {
   try {
+    console.log('Starting upload for file:', file.name)
+    console.log('Environment URL:', process.env.NEXT_PUBLIC_IMAGE_PROCESSOR_URL)
+
     // 獲取用戶信息
     const userRes = await fetch('/api/user/info')
     const userData = await userRes.json()
@@ -10,7 +13,7 @@ export async function uploadImageFn(file: File) {
     const compressedFile = await compressImage(file)
 
     const formData = new FormData()
-    formData.append('image', compressedFile)
+    formData.append('image', compressedFile, compressedFile.name)
     formData.append('userId', userId)
     formData.append('fileName', compressedFile.name)
 
@@ -20,13 +23,17 @@ export async function uploadImageFn(file: File) {
       size: compressedFile.size,
     })
 
-    const processorRes = await fetch(
-      `${process.env.NEXT_PUBLIC_IMAGE_PROCESSOR_URL}/compress`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    )
+    const processorUrl = `${process.env.NEXT_PUBLIC_IMAGE_PROCESSOR_URL}/compress`
+    console.log('Final URL before fetch:', processorUrl)
+
+    // Add request headers for better debugging
+    const processorRes = await fetch(processorUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: formData,
+    })
 
     if (!processorRes.ok) {
       const errorText = await processorRes.text()
@@ -34,6 +41,7 @@ export async function uploadImageFn(file: File) {
         status: processorRes.status,
         statusText: processorRes.statusText,
         error: errorText,
+        url: processorUrl,
       })
       throw new Error(
         `Upload failed: ${processorRes.status} ${processorRes.statusText}`
@@ -49,7 +57,11 @@ export async function uploadImageFn(file: File) {
 
     return processorData.url
   } catch (error) {
-    console.error('Upload error:', error)
+    console.error('Upload error details:', {
+      error,
+      env: process.env.NEXT_PUBLIC_IMAGE_PROCESSOR_URL,
+      file: file.name,
+    })
     throw error
   }
 }
