@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react'
 import {
   Sparkles,
   MoveUpRight,
-  SquareArrowUp,
+  CornerDownLeft,
   LoaderCircle,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,11 @@ import { CONTENT_WIDTH } from '@/constants' // 在這裏獲取內容寬度，不
 
 import { send } from './api'
 import { cn } from '@/lib/utils'
+import { MessagesType, genSystemMessage } from './messages'
+import ContinueMenu from './menus/continue-menu'
+import BrainStormMenu from './menus/brain-storm-menu'
+import OutlineMenu from './menus/outline-menu'
+import SummaryMenu from './menus/summary-menu'
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props
@@ -23,10 +28,25 @@ export default function AIIsland(props: { editor: Editor | null }) {
 
   const [instruction, setInstruction] = useState('')
 
+  function genMessages(instruction: string): MessagesType {
+    const messages: MessagesType = []
+    if (!instruction.trim()) return messages
+    // system message
+    messages.push(genSystemMessage())
+    // current message
+    messages.push({ role: 'user', content: instruction })
+    return messages
+  }
+  function handleClick() {
+    const messages = genMessages(instruction)
+    requestAI(messages)
+  }
+
   function handleKeydown(event: React.KeyboardEvent<HTMLInputElement>) {
     const { key } = event
     if (key === 'Enter') {
-      requestAI()
+      const messages = genMessages(instruction)
+      requestAI(messages)
     }
     if (key === 'Escape') {
       inputRef.current?.blur()
@@ -38,26 +58,25 @@ export default function AIIsland(props: { editor: Editor | null }) {
     }
   }
 
-  function requestAI() {
+  function requestAI(messages: MessagesType) {
     if (loading) return
     setLoading(true)
     inputRef.current?.blur()
     send(
-      instruction,
+      messages,
       (content: string) => {
         if (!content) return
         if (content.indexOf('\n') < 0) {
-          // 沒有换行符，直接插入内容
+          // 沒有換行符，直接插入內容
           editor?.commands.insertContent(content)
           return
         }
-        // 有换行符，则需要考虑换行
+        // 有換行符，則需要考慮換行
         const arr = content.split('\n')
         arr.forEach((c, index) => {
-          if (!c) return
-          editor?.commands.insertContent(c)
+          if (c) editor?.commands.insertContent(c)
           if (index < arr.length - 1) {
-            editor?.commands.enter() // 换行
+            editor?.commands.enter() // 換行
           }
         })
       },
@@ -77,7 +96,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
       setIsFocus(true)
     }
     function handleBlur() {
-      setIsFocus(false)
+      setTimeout(() => setIsFocus(false), 150)
     }
     inputRef.current.addEventListener('focus', handleFocus)
     inputRef.current.addEventListener('blur', handleBlur)
@@ -118,52 +137,38 @@ export default function AIIsland(props: { editor: Editor | null }) {
     >
       {isFocus && !loading && (
         <div className="ml-11">
-          <Button
-            variant="ghost"
-            className="p-2 hover:bg-inherit hover:text-muted-foreground"
-          >
-            續寫
-            <MoveUpRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="p-2 hover:bg-inherit hover:text-muted-foreground"
-          >
-            頭腦風暴
-            <MoveUpRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="p-2 hover:bg-inherit hover:text-muted-foreground"
-          >
-            寫大綱
-            <MoveUpRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="p-2 hover:bg-inherit hover:text-muted-foreground"
-          >
-            總結
-            <MoveUpRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="p-2 hover:bg-inherit hover:text-muted-foreground"
-          >
-            更多...
-          </Button>
+          <ContinueMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <BrainStormMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <OutlineMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <SummaryMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
         </div>
       )}
       <div
         className={cn(
           'rounded-2xl p-2 pl-4 border shadow flex items-center justify-start',
-          isFocus && 'border-primary'
+          isFocus && 'border-blue-600'
         )}
       >
         <Sparkles
           size={24}
           className={cn(
-            isFocus ? '' : 'opacity-50',
+            isFocus ? 'text-blue-600' : 'opacity-50',
             loading && 'animate-pulse'
           )}
         />
@@ -181,11 +186,11 @@ export default function AIIsland(props: { editor: Editor | null }) {
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-inherit hover:text-muted-foreground"
-            onClick={requestAI}
+            className={cn(isFocus ? 'text-blue-600' : 'opacity-50')}
+            onClick={handleClick}
             disabled={!instruction}
           >
-            {!loading && <SquareArrowUp size={24} />}
+            {!loading && <CornerDownLeft size={24} />}
             {loading && <LoaderCircle size={24} className="animate-spin" />}
           </Button>
         </div>

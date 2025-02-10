@@ -13,6 +13,7 @@ import {
   EVENT_KEY_CHANGE_UPDATING,
   EVENT_KEY_CHANGE_IS_STAR,
   CONTENT_WIDTH,
+  DOC_TITLE_INPUT_ID,
 } from '@/constants'
 
 interface IProps {
@@ -146,6 +147,7 @@ export default function Content(props: IProps) {
     <div className={`mx-auto my-10 mb-52`} style={{ width: `${fullWidth}px` }}>
       <div className="mx-10 mb-6 pb-4 border-b">
         <Input
+          id={DOC_TITLE_INPUT_ID}
           placeholder="請輸入標題..."
           value={title}
           maxLength={100}

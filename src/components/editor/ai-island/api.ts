@@ -1,4 +1,6 @@
 import OpenAI from 'openai'
+import { AI_RES_MAX_TOKENS } from '@/constants'
+import { MessagesType } from './messages'
 
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend
@@ -8,11 +10,11 @@ const openai = new OpenAI({
 })
 
 export async function send(
-  instruction: string,
+  messages: MessagesType,
   onData: (content: string) => void,
   callback: (done: boolean) => void
 ) {
-  if (!instruction.trim()) {
+  if (!messages || messages.length === 0) {
     callback(false)
     return
   }
@@ -20,8 +22,9 @@ export async function send(
   try {
     const stream = await openai.chat.completions.create({
       model: 'gpt-4o-mini-2024-07-18',
-      messages: [{ role: 'user', content: instruction }],
+      messages: [...messages],
       stream: true,
+      max_tokens: AI_RES_MAX_TOKENS,
     })
 
     for await (const chunk of stream) {
