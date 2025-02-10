@@ -8,7 +8,11 @@ import {
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from '@/constants' // 在這裏獲取內容寬度，不要直接使用數字
+import {
+  CONTENT_WIDTH,
+  EVENT_KEY_FOCUS_AI,
+  EVENT_KEY_AI_EDIT,
+} from '@/constants' // 在這裏獲取內容寬度，不要直接使用數字
 
 import { send } from './api'
 import { cn } from '@/lib/utils'
@@ -28,9 +32,11 @@ export default function AIIsland() {
     }
     if (key === 'Escape') {
       inputRef.current?.blur()
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: 'focus' })
     }
     if (key === 'Backspace' && !instruction) {
       inputRef.current?.blur()
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: 'focus' })
     }
   }
 

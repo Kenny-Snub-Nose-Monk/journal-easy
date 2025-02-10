@@ -24,10 +24,12 @@ export async function send(instruction: string, callback: () => void) {
 
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content
-      if (content) {
-        emitter.emit(EVENT_KEY_AI_EDIT, { content })
+      if (content == null) {
+        emitter.emit(EVENT_KEY_AI_EDIT, { type: 'enter' })
       }
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: 'insert', content })
     }
+    emitter.emit(EVENT_KEY_AI_EDIT, { type: 'enter' })
     callback()
   } catch (err) {
     console.error('OpenAI API error:', err)
