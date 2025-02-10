@@ -7,4 +7,5 @@ export const EVENT_KEY_DEL_DOC = 'E_K_DEL_DOC'
 export const EVENT_KEY_CHANGE_UPDATING = 'E_K_CHANGE_UPDATING'
 export const EVENT_KEY_CHANGE_IS_STAR = 'E_K_CHANGE_IS_STAR'
 
-export const EVENT_KEY_AI_EDIT = 'E_K_AI_edit'
+export const EVENT_KEY_AI_EDIT = 'E_K_AI_EDIT'
+export const EVENT_KEY_FOCUS_AI = 'E_K_FOCUS_AI'

@@ -10,7 +10,10 @@ const openai = new OpenAI({
 })
 
 export async function send(instruction: string, callback: () => void) {
-  if (!instruction) return
+  if (!instruction.trim()) {
+    callback()
+    return
+  }
 
   try {
     const stream = await openai.chat.completions.create({

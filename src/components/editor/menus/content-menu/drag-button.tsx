@@ -80,7 +80,7 @@ export default function DragButton(props: DragButtonProps) {
   return (
     <Popover open={menuOpen} onOpenChange={setMenuOpen}>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" tabIndex={-1} className="px-2">
           <GripVertical className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

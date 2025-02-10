@@ -14,7 +14,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
   return (
     <>
       <div
-        className={`mx-auto my-10 mb-24`}
+        className={`mx-auto my-10 mb-52`}
         style={{ width: `${fullWidth}px` }}
       >
         <Content
