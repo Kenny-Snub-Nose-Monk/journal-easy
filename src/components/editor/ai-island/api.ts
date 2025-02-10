@@ -1,6 +1,4 @@
 import OpenAI from 'openai'
-import emitter from '@/lib/emitter'
-import { EVENT_KEY_AI_EDIT } from '@/constants'
 
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend
@@ -9,9 +7,13 @@ const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
 })
 
-export async function send(instruction: string, callback: () => void) {
+export async function send(
+  instruction: string,
+  onData: (content: string) => void,
+  callback: (done: boolean) => void
+) {
   if (!instruction.trim()) {
-    callback()
+    callback(false)
     return
   }
 
@@ -25,14 +27,13 @@ export async function send(instruction: string, callback: () => void) {
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content
       if (content == null) {
-        emitter.emit(EVENT_KEY_AI_EDIT, { type: 'enter' })
+        callback(true)
       }
-      emitter.emit(EVENT_KEY_AI_EDIT, { type: 'insert', content })
+      onData(content ?? '')
     }
-    emitter.emit(EVENT_KEY_AI_EDIT, { type: 'enter' })
-    callback()
+    callback(true)
   } catch (err) {
     console.error('OpenAI API error:', err)
-    callback()
+    callback(false)
   }
 }

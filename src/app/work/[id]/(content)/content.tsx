@@ -12,6 +12,7 @@ import {
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_CHANGE_UPDATING,
   EVENT_KEY_CHANGE_IS_STAR,
+  CONTENT_WIDTH,
 } from '@/constants'
 
 interface IProps {
@@ -37,6 +38,8 @@ export default function Content(props: IProps) {
   const [notFound, setNotFound] = useState(defaultNotFound)
   // 標題
   const [title, setTitle] = useState(defaultTitle)
+
+  const fullWidth = CONTENT_WIDTH + 80 // 兩邊留白 40px
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value
@@ -137,7 +140,7 @@ export default function Content(props: IProps) {
     )
   }
   return (
-    <>
+    <div className={`mx-auto my-10 mb-52`} style={{ width: `${fullWidth}px` }}>
       <div className="mx-10 mb-6 pb-4 border-b">
         <Input
           placeholder="請輸入標題..."
@@ -149,6 +152,6 @@ export default function Content(props: IProps) {
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
       <TiptapEditor rawContent={editorContent} handleUpdate={handleUpdate} />
-    </>
+    </div>
   )
 }

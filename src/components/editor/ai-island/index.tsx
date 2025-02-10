@@ -1,4 +1,6 @@
 'use client'
+
+import { Editor } from '@tiptap/react'
 import { useState, useRef, useEffect } from 'react'
 import {
   Sparkles,
@@ -8,17 +10,14 @@ import {
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import {
-  CONTENT_WIDTH,
-  EVENT_KEY_FOCUS_AI,
-  EVENT_KEY_AI_EDIT,
-} from '@/constants' // 在這裏獲取內容寬度，不要直接使用數字
+import { CONTENT_WIDTH } from '@/constants' // 在這裏獲取內容寬度，不要直接使用數字
 
 import { send } from './api'
 import { cn } from '@/lib/utils'
 import emitter from '@/lib/emitter'
 
-export default function AIIsland() {
+export default function AIIsland(props: { editor: Editor | null }) {
+  const { editor } = props
   const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isFocus, setIsFocus] = useState(false)
@@ -32,11 +31,11 @@ export default function AIIsland() {
     }
     if (key === 'Escape') {
       inputRef.current?.blur()
-      emitter.emit(EVENT_KEY_AI_EDIT, { type: 'focus' })
+      editor?.commands.focus()
     }
     if (key === 'Backspace' && !instruction) {
       inputRef.current?.blur()
-      emitter.emit(EVENT_KEY_AI_EDIT, { type: 'focus' })
+      editor?.commands.focus()
     }
   }
 
@@ -44,23 +43,19 @@ export default function AIIsland() {
     if (loading) return
     setLoading(true)
     inputRef.current?.blur()
-    send(instruction, () => {
-      setLoading(false)
-      setInstruction('')
-      setTimeout(() => inputRef.current?.focus(), 100) // 延遲 focus 等待 input enable
-    })
+    send(
+      instruction,
+      (content: string) => {
+        editor?.commands.insertContent(content)
+      },
+      (done: boolean) => {
+        setLoading(false)
+        setInstruction('')
+        if (done) editor?.commands.enter()
+        editor?.commands.focus()
+      }
+    )
   }
-
-  // 監聽編輯器喚起 AI
-  useEffect(() => {
-    function handler() {
-      if (loading) return
-      if (!inputRef.current) return
-      inputRef.current.focus()
-    }
-    emitter.on(EVENT_KEY_FOCUS_AI, handler)
-    return () => emitter.off(EVENT_KEY_FOCUS_AI, handler)
-  }, [loading])
 
   // 監聽 input focus blur
   useEffect(() => {
@@ -78,7 +73,26 @@ export default function AIIsland() {
       inputRef.current.removeEventListener('focus', handleFocus)
       inputRef.current.removeEventListener('blur', handleBlur)
     }
-  }, [])
+  }, [inputRef, editor])
+
+  // 監聽空格輸入，focus AI island
+  useEffect(() => {
+    if (editor == null) return
+    function fn(event: KeyboardEvent) {
+      if (event.key !== ' ' && event.code !== 'Tab') return
+      if (editor == null) return
+      const selection = editor.state.selection
+      if (!selection.empty) return
+      const node = selection.$anchor.node()
+      if (node && node.isTextblock && node.textContent.trim() === '') {
+        event.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    editor.view.dom.addEventListener('keydown', fn)
+    return () => editor.view.dom.removeEventListener('keydown', fn)
+  }, [editor])
+  if (!editor) return null
 
   return (
     <div
