@@ -40,7 +40,8 @@ export default function Item(props: IProps) {
     if (!isCurrent) return // 只監聽當前文檔
 
     function handler(payload: any) {
-      const newTitle = payload as string
+      let newTitle = payload as string
+      if (!newTitle.trim()) newTitle = '<無標題>'
       setTitle(newTitle)
     }
 

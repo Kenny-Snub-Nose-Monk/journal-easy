@@ -117,7 +117,10 @@ export default function Content(props: IProps) {
 
   if (loading) {
     return (
-      <div className="flex flex-col space-y-3">
+      <div
+        className="flex flex-col space-y-3 mx-auto mt-10"
+        style={{ width: `${CONTENT_WIDTH}px` }}
+      >
         <Skeleton className="h-12 w-full" />
         <div className="space-y-2">
           <Skeleton className="h-6 w-full" />

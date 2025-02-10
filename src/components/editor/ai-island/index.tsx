@@ -14,7 +14,6 @@ import { CONTENT_WIDTH } from '@/constants' // 在這裏獲取內容寬度，不
 
 import { send } from './api'
 import { cn } from '@/lib/utils'
-import emitter from '@/lib/emitter'
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props
@@ -46,7 +45,21 @@ export default function AIIsland(props: { editor: Editor | null }) {
     send(
       instruction,
       (content: string) => {
-        editor?.commands.insertContent(content)
+        if (!content) return
+        if (content.indexOf('\n') < 0) {
+          // 沒有换行符，直接插入内容
+          editor?.commands.insertContent(content)
+          return
+        }
+        // 有换行符，则需要考虑换行
+        const arr = content.split('\n')
+        arr.forEach((c, index) => {
+          if (!c) return
+          editor?.commands.insertContent(c)
+          if (index < arr.length - 1) {
+            editor?.commands.enter() // 换行
+          }
+        })
       },
       (done: boolean) => {
         setLoading(false)
