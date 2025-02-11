@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { X, Sparkle, BetweenHorizonalStart, Replace } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import emitter from '@/lib/emitter'
 import { EVENT_KEY_FOCUS_AI } from '@/constants'
@@ -20,11 +20,14 @@ export default function ResultPanel(props: IProps) {
   // 插入編輯器，考慮換行
   function insertResultToEditor() {
     resList.forEach((c, index) => {
-      if (c) editor?.commands.insertContent(c)
+      if (c) {
+        editor?.commands.insertContent(c)
+      }
       if (index < resList.length - 1) {
         editor?.commands.enter() // 換行
       }
     })
+    editor?.commands.scrollIntoView()
   }
 
   useEffect(() => {
@@ -126,4 +129,7 @@ export default function ResultPanel(props: IProps) {
       </div>
     </div>
   )
+}
+function throttle(arg0: () => boolean | undefined, arg1: number): any {
+  throw new Error('Function not implemented.')
 }

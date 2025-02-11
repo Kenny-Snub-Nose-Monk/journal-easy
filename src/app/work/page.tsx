@@ -1,5 +1,4 @@
 import { db } from '@/db/db'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getUserInfo } from '@/lib/session'
 

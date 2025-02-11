@@ -1,8 +1,8 @@
 'use client'
 
 import { Editor } from '@tiptap/react'
-import { useState, useRef, useEffect } from 'react'
-
+import { useState, useRef, useEffect, useCallback } from 'react'
+import throttle from 'lodash/throttle'
 import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from '@/constants'
 import emitter from '@/lib/emitter'
 
@@ -25,6 +25,12 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [isSelectionEmpty, setIsSelectionEmpty] = useState(true)
   const [AIResult, setAIResult] = useState('')
 
+  // eslint-disable-next-line
+  const editorScrollIntoView = useCallback(
+    throttle(() => editor?.commands.scrollIntoView(), 500),
+    [editor]
+  )
+
   function requestAI(messages: MessagesType) {
     if (loading) return
     setLoading(true)
@@ -41,12 +47,16 @@ export default function AIIsland(props: { editor: Editor | null }) {
           if (content.indexOf('\n') < 0) {
             // 沒有換行符，直接插入內容
             editor?.commands.insertContent(content)
+            editorScrollIntoView()
             return
           }
           // 有換行符，則需要考慮換行
           const arr = content.split('\n')
           arr.forEach((c, index) => {
-            if (c) editor?.commands.insertContent(c)
+            if (c) {
+              editor?.commands.insertContent(c)
+              editorScrollIntoView()
+            }
             if (index < arr.length - 1) {
               editor?.commands.enter() // 換行
             }
