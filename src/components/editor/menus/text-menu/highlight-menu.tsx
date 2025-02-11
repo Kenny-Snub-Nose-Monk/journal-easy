@@ -18,7 +18,7 @@ export default function HighlightMenu(props: IProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" tabIndex={-1}>
           <Brush className="h-4 w-4" />
           &nbsp;
           <ChevronDown className="h-2 w-2" />
@@ -56,6 +56,7 @@ function ColorPanel(props: IProps) {
           onClick={() =>
             editor.chain().focus().setHighlight({ color: item.color }).run()
           }
+          tabIndex={-1}
         >
           {item.name}
         </Button>
@@ -65,6 +66,7 @@ function ColorPanel(props: IProps) {
         variant="outline"
         size="sm"
         onClick={() => editor.chain().focus().unsetHighlight().run()}
+        tabIndex={-1}
       >
         清空
       </Button>

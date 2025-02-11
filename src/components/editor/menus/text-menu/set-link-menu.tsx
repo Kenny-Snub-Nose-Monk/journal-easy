@@ -19,7 +19,7 @@ export default function SetLinkMenu(props: IProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" tabIndex={-1}>
           <Link className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

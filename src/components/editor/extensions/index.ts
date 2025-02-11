@@ -17,6 +17,7 @@ import { FileHandler } from '@tiptap-pro/extension-file-handler'
 import { uploadImageFn } from '@/components/editor/utils/api'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
 import { Table, TableCell, TableRow, TableHeader } from './table/index'
+import Selection from './selection'
 
 export const extensions = [
   Document,
@@ -76,4 +77,5 @@ export const extensions = [
     width: 2,
     class: 'ProseMirror-dropcursor border-black',
   }),
+  Selection,
 ]

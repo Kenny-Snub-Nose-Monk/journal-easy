@@ -20,7 +20,7 @@ export default function AlignMenu(props: IProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" tabIndex={-1}>
           <AlignLeft className="h-4 w-4" />
           &nbsp;
           <ChevronDown className="h-2 w-2" />
@@ -30,6 +30,7 @@ export default function AlignMenu(props: IProps) {
         <Button
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          tabIndex={-1}
         >
           <AlignLeft className="h-4 w-4" />
         </Button>
@@ -39,6 +40,7 @@ export default function AlignMenu(props: IProps) {
           variant={
             editor.isActive({ textAlign: 'center' }) ? 'secondary' : 'ghost'
           }
+          tabIndex={-1}
         >
           <AlignCenter className="h-4 w-4" />
         </Button>
@@ -48,6 +50,7 @@ export default function AlignMenu(props: IProps) {
           variant={
             editor.isActive({ textAlign: 'right' }) ? 'secondary' : 'ghost'
           }
+          tabIndex={-1}
         >
           <AlignRight className="h-4 w-4" />
         </Button>

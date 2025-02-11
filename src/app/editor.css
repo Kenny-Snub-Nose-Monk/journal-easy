@@ -1,5 +1,13 @@
 .tiptap > * {
   @apply mx-10;
+
+  .selection {
+    @apply inline;
+  }
+  .selection,
+  *::selection {
+    @apply bg-black/10 dark:bg-white/20;
+  }
 }
 
 /* placeholder */

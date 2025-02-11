@@ -1,6 +1,7 @@
 'use client'
 
 import { BubbleMenu, Editor } from '@tiptap/react'
+import AIMenu from './ai-menu'
 import BasicMenu from './basic-menu'
 import AlignMenu from './align-menu'
 import MoreMenu from './more-menu'
@@ -40,6 +41,7 @@ export default function TextMenu(props: IProps) {
       shouldShow={() => shouldShow(editor)}
     >
       <Wrapper>
+        <AIMenu editor={editor} />
         <ContentTypeMenu editor={editor} />
         <BasicMenu editor={editor} />
         <SetLinkMenu editor={editor} />

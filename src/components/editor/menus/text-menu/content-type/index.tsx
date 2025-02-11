@@ -26,7 +26,7 @@ export default function ContentTypeMenu(props: IProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" tabIndex={-1}>
           {getLabel()}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -40,6 +40,7 @@ export default function ContentTypeMenu(props: IProps) {
             size="sm"
             onClick={op.onClick}
             className="flex w-full rounded-none"
+            tabIndex={-1}
           >
             <op.Icon />
             {op.label}
