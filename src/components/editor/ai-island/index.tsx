@@ -119,9 +119,9 @@ export default function AIIsland(props: { editor: Editor | null }) {
     <div
       className="absolute bottom-0 bg-background"
       style={{
-        width: `${CONTENT_WIDTH}px`,
+        width: `${CONTENT_WIDTH + 10}px`,
         marginLeft: `-${CONTENT_WIDTH / 2}px`,
-        left: '50%',
+        left: '49%',
       }}
     >
       {/* 顯示 AI 輸出結果 （當有選中內容時，不直接插入到編輯器） */}

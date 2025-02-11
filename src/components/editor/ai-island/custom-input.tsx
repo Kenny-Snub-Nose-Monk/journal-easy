@@ -68,13 +68,14 @@ const CustomInput = forwardRef(
     return (
       <div
         className={cn(
-          'rounded-2xl p-2 pl-4 border-2 shadow flex items-center justify-start',
+          'rounded-2xl p-1 border-2 shadow flex items-center justify-start',
           isFocus && 'border-blue-600'
         )}
       >
         <Sparkles
-          size={24}
+          size={18}
           className={cn(
+            'ml-2',
             isFocus ? 'text-blue-600' : 'opacity-50',
             loading && 'animate-pulse'
           )}
@@ -88,7 +89,7 @@ const CustomInput = forwardRef(
             ref={inputRef}
             onKeyDown={handleKeydown}
             onChange={(e) => setInstruction(e.target.value)}
-            className="text-base bg-inherit border-none focus-visible:ring-offset-0 focus-visible:ring-0"
+            className="bg-inherit border-none focus-visible:ring-offset-0 focus-visible:ring-0"
           />
           <Button
             variant="ghost"
@@ -97,8 +98,8 @@ const CustomInput = forwardRef(
             onClick={handleClick}
             disabled={!instruction}
           >
-            {!loading && <CornerDownLeft size={24} />}
-            {loading && <LoaderCircle size={24} className="animate-spin" />}
+            {!loading && <CornerDownLeft size={18} />}
+            {loading && <LoaderCircle size={18} className="animate-spin" />}
           </Button>
         </div>
       </div>
