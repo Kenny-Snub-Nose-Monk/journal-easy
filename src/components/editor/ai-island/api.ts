@@ -27,6 +27,7 @@ export async function send(
         model: 'gpt-4o-mini-2024-07-18',
         messages: [...messages],
         stream: true,
+        stream_options: { include_usage: true },
         max_tokens: AI_RES_MAX_TOKENS,
       },
       {
