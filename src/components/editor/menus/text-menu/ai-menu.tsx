@@ -17,6 +17,8 @@ export default function AIMenu(props: IProps) {
   if (editor == null) return
   function handleClick() {
     emitter.emit(EVENT_KEY_FOCUS_AI)
+
+    editor?.commands.setTextSelection({ from: 0, to: 0 })
   }
   return (
     <TooltipProvider delayDuration={300}>
