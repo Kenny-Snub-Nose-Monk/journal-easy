@@ -12,7 +12,9 @@ const openai = new OpenAI({
 export async function send(
   messages: MessagesType,
   onData: (content: string) => void,
-  callback: (done: boolean) => void
+  callback: (done: boolean) => void,
+  onError: (msg: string) => void,
+  signal: AbortSignal
 ) {
   if (!messages || messages.length === 0) {
     callback(false)
@@ -20,12 +22,17 @@ export async function send(
   }
 
   try {
-    const stream = await openai.chat.completions.create({
-      model: 'gpt-4o-mini-2024-07-18',
-      messages: [...messages],
-      stream: true,
-      max_tokens: AI_RES_MAX_TOKENS,
-    })
+    const stream = await openai.chat.completions.create(
+      {
+        model: 'gpt-4o-mini-2024-07-18',
+        messages: [...messages],
+        stream: true,
+        max_tokens: AI_RES_MAX_TOKENS,
+      },
+      {
+        signal,
+      }
+    )
 
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content
@@ -36,7 +43,37 @@ export async function send(
     }
     callback(true)
   } catch (err) {
-    console.error('OpenAI API error:', err)
+    if (err instanceof Error && err.name === 'AbortError') {
+      console.log('Request was aborted')
+      onError('Request was aborted')
+    } else {
+      console.error('OpenAI API error:', err)
+      const errorMessage = mapOpenAIErrorToMessage(err)
+      onError(errorMessage)
+    }
     callback(false)
   }
+}
+
+// Helper function to map OpenAI API errors to user-friendly messages
+function mapOpenAIErrorToMessage(err: any): string {
+  if (err.response) {
+    switch (err.response.status) {
+      case 400:
+        return 'Bad Request: The request was unacceptable, often due to missing a required parameter.'
+      case 401:
+        return 'Unauthorized: No valid API key provided.'
+      case 403:
+        return "Forbidden: The API key doesn't have permissions to perform the request."
+      case 404:
+        return "Not Found: The requested resource doesn't exist."
+      case 429:
+        return "Too Many Requests: You've hit the rate limit or are sending too many requests."
+      case 500:
+        return "Server Error: Something went wrong on OpenAI's end."
+      default:
+        return `Unexpected Error: ${err.response.data?.message || 'An unknown error occurred.'}`
+    }
+  }
+  return 'Network Error: Please check your internet connection.'
 }

@@ -1,6 +1,11 @@
 import { forwardRef, ForwardedRef, useMemo } from 'react'
 import { Editor } from '@tiptap/react'
-import { Sparkles, CornerDownLeft, LoaderCircle } from 'lucide-react'
+import {
+  Sparkles,
+  CornerDownLeft,
+  LoaderCircle,
+  CircleStop,
+} from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -15,6 +20,7 @@ interface IProps {
   editor: Editor | null
   isSelectionEmpty: boolean
   onRequestAI: (message: MessagesType) => void
+  onAbortRequestAI: () => void
   instruction: string
   setInstruction: (instruction: string) => void
 }
@@ -23,12 +29,14 @@ const CustomInput = forwardRef(
     const {
       editor,
       onRequestAI,
+      onAbortRequestAI,
       setInstruction,
       isFocus,
       loading,
       isSelectionEmpty,
       instruction,
     } = props
+
     function genMessages(instruction: string): MessagesType {
       let messages: MessagesType = []
       if (!instruction.trim()) return messages
@@ -101,10 +109,14 @@ const CustomInput = forwardRef(
             {!loading && <CornerDownLeft size={18} />}
             {loading && <LoaderCircle size={18} className="animate-spin" />}
           </Button>
+          {loading && (
+            <Button variant="ghost" size="icon" onClick={onAbortRequestAI}>
+              <CircleStop size={18} />
+            </Button>
+          )}
         </div>
       </div>
     )
   }
 )
-CustomInput.displayName = 'CustomInput'
 export default CustomInput

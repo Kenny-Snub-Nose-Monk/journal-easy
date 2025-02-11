@@ -6,18 +6,16 @@ import throttle from 'lodash/throttle'
 import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from '@/constants'
 import emitter from '@/lib/emitter'
 
-import { send } from './api'
-import { MessagesType } from './messages'
 import {
   MenusWhenSelectionIsEmpty,
   MenusWhenSelectionIsNotEmpty,
 } from './menus'
 import ResultPanel from './result-panel'
 import CustomInput from './custom-input'
+import { useRequestAI } from './useRequestAI'
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props
-  const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isFocus, setIsFocus] = useState(false)
 
@@ -31,52 +29,14 @@ export default function AIIsland(props: { editor: Editor | null }) {
     [editor]
   )
 
-  function requestAI(messages: MessagesType) {
-    if (loading) return
-    setLoading(true)
-    setAIResult('')
-    inputRef.current?.blur()
-    // 發送 AI 請求
-    send(
-      messages,
-      // 請求中，獲取 AI 結果
-      (content: string) => {
-        if (!content) return
-        if (isSelectionEmpty) {
-          // 未選中內容，直接插入到編輯器中
-          if (content.indexOf('\n') < 0) {
-            // 沒有換行符，直接插入內容
-            editor?.commands.insertContent(content)
-            editorScrollIntoView()
-            return
-          }
-          // 有換行符，則需要考慮換行
-          const arr = content.split('\n')
-          arr.forEach((c, index) => {
-            if (c) {
-              editor?.commands.insertContent(c)
-              editorScrollIntoView()
-            }
-            if (index < arr.length - 1) {
-              editor?.commands.enter() // 換行
-            }
-          })
-        } else {
-          // 有選中內容，則另外顯示
-          setAIResult((r) => r + content)
-        }
-      },
-      // 請求完成
-      (done: boolean) => {
-        setLoading(false)
-        if (isSelectionEmpty) {
-          setInstruction('')
-          if (done) editor?.commands.enter()
-          editor?.commands.focus()
-        }
-      }
-    )
-  }
+  const { loading, requestAI, abortRequestAI } = useRequestAI({
+    editor,
+    isSelectionEmpty,
+    editorScrollIntoView,
+    setInstruction,
+    setAIResult,
+    inputRef,
+  })
 
   // 監聽 input focus blur
   useEffect(() => {
@@ -159,6 +119,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
         isSelectionEmpty={isSelectionEmpty}
         onRequestAI={requestAI}
         instruction={instruction}
+        onAbortRequestAI={abortRequestAI}
         setInstruction={setInstruction}
       />
       <p className="text-sm text-center my-1 text-muted-foreground opacity-50">
