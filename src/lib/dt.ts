@@ -24,3 +24,17 @@ export function timeAgo(timeString: string) {
     return seconds + ' 秒前'
   }
 }
+
+export function isOneWeekAgo(dt: Date) {
+  const now = new Date()
+  const diff = now.getTime() - dt.getTime()
+  const oneWeek = 7 * 24 * 3600 * 1000
+  return diff > oneWeek
+}
+
+export function isSameMonth(dt: Date) {
+  const now = new Date()
+  return (
+    now.getMonth() === dt.getMonth() && now.getFullYear() === dt.getFullYear()
+  )
+}

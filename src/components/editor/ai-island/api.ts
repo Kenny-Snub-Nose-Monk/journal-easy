@@ -1,6 +1,7 @@
 import OpenAI from 'openai'
 import { AI_RES_MAX_TOKENS } from '@/constants'
 import { MessagesType } from './messages'
+import { post } from '@/lib/ajax'
 
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend
@@ -11,7 +12,7 @@ const openai = new OpenAI({
 
 export async function send(
   messages: MessagesType,
-  onData: (content: string) => void,
+  onData: (content: string, usage: any) => void,
   callback: (done: boolean) => void,
   onError: (msg: string) => void,
   signal: AbortSignal
@@ -24,7 +25,7 @@ export async function send(
   try {
     const stream = await openai.chat.completions.create(
       {
-        model: 'gpt-4o-mini-2024-07-18',
+        model: 'gpt-3.5-turbo',
         messages: [...messages],
         stream: true,
         stream_options: { include_usage: true },
@@ -37,10 +38,13 @@ export async function send(
 
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content
+      const usage = chunk.usage
+
       if (content == null) {
         callback(true)
       }
-      onData(content ?? '')
+      console.log('usage', usage)
+      onData(content ?? '', usage)
     }
     callback(true)
   } catch (err) {

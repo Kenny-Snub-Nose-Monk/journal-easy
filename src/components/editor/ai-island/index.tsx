@@ -13,6 +13,7 @@ import {
 import ResultPanel from './result-panel'
 import CustomInput from './custom-input'
 import { useRequestAI } from './useRequestAI'
+import Info from './info'
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props
@@ -22,6 +23,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [instruction, setInstruction] = useState('')
   const [isSelectionEmpty, setIsSelectionEmpty] = useState(true)
   const [AIResult, setAIResult] = useState('')
+  const [tokenLimit, setTokenLimit] = useState(-1)
 
   // eslint-disable-next-line
   const editorScrollIntoView = useCallback(
@@ -36,6 +38,8 @@ export default function AIIsland(props: { editor: Editor | null }) {
     setInstruction,
     setAIResult,
     inputRef,
+    tokenLimit,
+    setTokenLimit,
   })
 
   // 監聽 input focus blur
@@ -122,9 +126,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
         onAbortRequestAI={abortRequestAI}
         setInstruction={setInstruction}
       />
-      <p className="text-sm text-center my-1 text-muted-foreground opacity-50">
-        注意，AI 可能會生成錯誤信息，請自行檢查判斷
-      </p>
+      <Info tokenLimit={tokenLimit} setTokenLimit={setTokenLimit} />
     </div>
   )
 }
