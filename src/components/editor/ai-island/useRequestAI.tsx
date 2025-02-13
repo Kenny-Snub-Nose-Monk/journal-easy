@@ -82,6 +82,8 @@ export const useRequestAI = ({
       if (done) editor?.commands.enter()
       editor?.commands.focus()
     }
+
+    editor?.setEditable(true)
   }
 
   function onError(msg: string) {
@@ -91,6 +93,8 @@ export const useRequestAI = ({
       title: 'Error happened, Please wait a second.',
       description: msg,
     })
+
+    editor?.setEditable(true)
   }
 
   const requestAI = useCallback(
@@ -112,6 +116,7 @@ export const useRequestAI = ({
       abortControllerRef.current = new AbortController()
 
       setLoading(true)
+      editor?.setEditable(false)
       setAIResult('')
       inputRef.current?.blur()
 
