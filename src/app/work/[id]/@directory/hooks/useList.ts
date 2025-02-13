@@ -36,6 +36,10 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           variant: 'destructive',
           description: resData.msg || '創建失敗',
         })
+
+        setTimeout(() => {
+          location.href = '/work/0'
+        }, 1500)
       })
     },
     [list, toast]

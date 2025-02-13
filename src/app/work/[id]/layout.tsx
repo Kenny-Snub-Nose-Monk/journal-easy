@@ -10,7 +10,7 @@ import { LogOut, Users } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
 import { getUserInfo } from '@/lib/session'
-import Trash from '../(dialog-pages)/trash'
+import Trash from '../trash'
 import StarList from '../(dialog-pages)/star-list'
 import SearchComp from '../(dialog-pages)/search'
 

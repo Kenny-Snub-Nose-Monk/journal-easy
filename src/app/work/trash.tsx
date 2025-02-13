@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import {
   Table,
@@ -20,10 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { IDoc } from '../[id]/@directory/type'
+import { IDoc } from './[id]/@directory/type'
 import { timeAgo } from '@/lib/dt'
-import { getDescendantsIds } from '../[id]/@directory/util'
-import { getDoc, updateParentId } from '../[id]/(content)/client-action'
+import { getDescendantsIds } from './[id]/@directory/util'
+import { getDoc, updateParentId } from './[id]/(content)/client-action'
 import { get, patch, del as ajaxDelete } from '@/lib/ajax'
 
 export default function Trash() {
@@ -38,8 +39,11 @@ export default function Trash() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>回收站</DialogTitle>
-          <TrashTable />
+          <DialogDescription>
+            注意，回收站的文檔將保留 30 天，然後徹底刪除
+          </DialogDescription>
         </DialogHeader>
+        <TrashTable />
       </DialogContent>
     </Dialog>
   )
