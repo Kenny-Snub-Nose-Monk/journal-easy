@@ -4,6 +4,6 @@ export interface IDoc {
   parentId: string | null
   createdAt?: string
   updatedAt?: string
-  isDeleted?: boolean | null
-  isStar?: boolean | null
+  isDeleted?: boolean
+  isStar?: boolean
 }
