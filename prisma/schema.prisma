@@ -82,6 +82,7 @@ model User {
     docs          Doc[]
     tokenUsage    TokenUsage[]
     lastDocId String?
+    isInvited Boolean?  @default(false)
 }
 
 model VerificationToken {
@@ -90,4 +91,10 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model InvitationCode {
+  id        Int     @id @default(autoincrement())
+  code      String   @unique
+  email     String
 }
