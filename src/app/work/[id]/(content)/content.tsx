@@ -96,6 +96,7 @@ export default function Content(props: IProps) {
         SetEditorContent(data.content)
         setLoading(false)
         setIsStar(data.isStar)
+        emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false, id }) // 切換文檔，重置標記
       })
     }
     emitter.on(EVENT_KEY_NAV_DOC, load)
