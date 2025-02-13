@@ -149,6 +149,7 @@ export const useRequestAI = ({
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
       abortControllerRef.current = null
+      editor?.setEditable(true)
       setLoading(false)
     }
   }, [])

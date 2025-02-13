@@ -68,20 +68,33 @@ export default function ResultPanel(props: IProps) {
     setInstruction('')
     editor?.commands.focus()
   }
-  if (!result) return null
+
   if (editor == null) return null
+  if (!result && !loading) return null
+
   return (
     <div className="border-2 border-blue-600 rounded-lg shadow p-4 pb-2 mb-2">
       <div className="max-h-72 overflow-y-auto">
         <div>
-          {resList.map((l, index) => {
-            if (l.trim() === '') return null
-            return (
-              <p key={index} className="text-sm my-2 first:mt-0">
-                {l}
-              </p>
-            )
-          })}
+          {!result && (
+            <div className="text-center">
+              <span className="text-sm text-muted-foreground">
+                AI 生成中......
+              </span>
+            </div>
+          )}
+          {result && (
+            <div>
+              {resList.map((l, index) => {
+                if (l.trim() === '') return null
+                return (
+                  <p key={index} className="text-sm my-2 first:mt-0">
+                    {l}
+                  </p>
+                )
+              })}
+            </div>
+          )}
         </div>
         <div className="flex justify-center mt-1" ref={menuRef}>
           {/* AI 結果的菜單：替換，插入，重新生成，取消 */}
@@ -129,7 +142,4 @@ export default function ResultPanel(props: IProps) {
       </div>
     </div>
   )
-}
-function throttle(arg0: () => boolean | undefined, arg1: number): any {
-  throw new Error('Function not implemented.')
 }

@@ -110,15 +110,14 @@ export default function AIIsland(props: { editor: Editor | null }) {
       }}
     >
       {/* 顯示 AI 輸出結果 （當有選中內容時，不直接插入到編輯器） */}
-      {AIResult && (
-        <ResultPanel
-          editor={editor}
-          loading={loading}
-          result={AIResult}
-          setResult={setAIResult}
-          setInstruction={setInstruction}
-        />
-      )}
+      <ResultPanel
+        editor={editor}
+        loading={loading}
+        result={AIResult}
+        setResult={setAIResult}
+        setInstruction={setInstruction}
+      />
+
       {/* AI 菜單，isSelectionEmpty 時顯示 （當有選中內容時，不顯示 AI 菜單） */}
       {isFocus && !loading && isSelectionEmpty && !AIResult && (
         <MenusWhenSelectionIsEmpty
