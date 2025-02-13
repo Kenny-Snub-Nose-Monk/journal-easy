@@ -112,6 +112,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
       {/* 顯示 AI 輸出結果 （當有選中內容時，不直接插入到編輯器） */}
       <ResultPanel
         editor={editor}
+        isSelectionEmpty={isSelectionEmpty}
         loading={loading}
         result={AIResult}
         setResult={setAIResult}
