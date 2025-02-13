@@ -20,8 +20,8 @@ model Doc {
     id        String   @id @default(cuid())
     title     String
     content   Json
-    isDeleted Boolean  @default(false)
-    isStar Boolean  @default(false)
+    isDeleted Boolean?
+    isStar Boolean?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     user      User     @relation(fields: [userId], references: [id])
