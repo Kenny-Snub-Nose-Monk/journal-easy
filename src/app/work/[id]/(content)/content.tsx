@@ -156,7 +156,11 @@ export default function Content(props: IProps) {
         />
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
-      <TiptapEditor rawContent={editorContent} handleUpdate={handleUpdate} />
+      <TiptapEditor
+        id={id}
+        rawContent={editorContent}
+        handleUpdate={handleUpdate}
+      />
     </div>
   )
 }

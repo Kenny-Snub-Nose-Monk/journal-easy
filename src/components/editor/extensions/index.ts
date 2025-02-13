@@ -16,6 +16,7 @@ import { ImageUpload } from './image-upload'
 import { FileHandler } from '@tiptap-pro/extension-file-handler'
 import { uploadImageFn } from '@/components/editor/utils/api'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
+import { CharacterCount } from '@tiptap/extension-character-count'
 import { Table, TableCell, TableRow, TableHeader } from './table/index'
 import Selection from './selection'
 
@@ -78,4 +79,5 @@ export const extensions = [
     class: 'ProseMirror-dropcursor border-black',
   }),
   Selection,
+  CharacterCount.configure({ limit: 50000 }),
 ]
