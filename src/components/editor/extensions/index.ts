@@ -45,7 +45,9 @@ export const extensions = [
         currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
       })
     },
-    onPaste: (currentEditor, files) => {
+    onPaste: (currentEditor, files, pasteContent) => {
+      if (pasteContent) return
+
       files.forEach(async (file) => {
         const url = await uploadImageFn(file)
         return currentEditor
