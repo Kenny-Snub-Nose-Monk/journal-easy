@@ -3,8 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Code, Zap } from 'lucide-react'
 import HomeNav from '@/components/home-nav'
 import Slogan from '@/components/Slogan'
-import StartButton from './start-button'
-import LearnButton from '@/components/LearnButton'
+import { StartButton, LearnButton } from '@/components/start-button'
 import QRCode from '@/components/QRCode'
 
 export default async function Home() {

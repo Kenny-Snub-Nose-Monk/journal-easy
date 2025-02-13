@@ -2,17 +2,17 @@ import Link from 'next/link'
 
 import SignInButton from '@/components/sigin-in-button'
 import { Button } from '@/components/ui/button'
-import { Zap, User } from 'lucide-react'
+import { Zap, User, Code } from 'lucide-react'
 import { getUserInfo } from '@/lib/session'
 
-export default async function StartButton() {
+export async function StartButton() {
   const user = await getUserInfo()
 
   if (user == null) {
     return (
       <SignInButton className="text-base" size="lg">
-        <User className="h-4 w-4" />
-        &nbsp;登入 / 註冊
+        <Zap className="h-4 w-4 mr-1" />
+        驗證邀請碼
       </SignInButton>
     )
   }
@@ -22,8 +22,8 @@ export default async function StartButton() {
     return (
       <Link href="/invitation-code">
         <Button className="text-base" size="lg">
-          <Zap className="h-4 w-4" />
-          &nbsp;驗證邀請碼
+          <Code className="h-4 w-4 mr-1" />
+          驗證邀請碼
         </Button>
       </Link>
     )
@@ -36,6 +36,17 @@ export default async function StartButton() {
       <Button className="text-base" size="lg">
         <Zap className="h-4 w-4" />
         &nbsp;開始使用
+      </Button>
+    </Link>
+  )
+}
+
+export function LearnButton() {
+  return (
+    <Link href="/join">
+      <Button variant="secondary" className="text-base" size="lg">
+        <Code className="h-4 w-4 mr-1" />
+        學習/參與開發
       </Button>
     </Link>
   )
