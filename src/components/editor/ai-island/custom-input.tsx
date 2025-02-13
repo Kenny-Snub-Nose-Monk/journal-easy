@@ -91,6 +91,7 @@ const CustomInput = forwardRef(
         <div className="flex-auto flex items-center justify-start">
           <Input
             placeholder={placeholder}
+            tabIndex={-1}
             value={instruction}
             maxLength={300}
             disabled={loading}

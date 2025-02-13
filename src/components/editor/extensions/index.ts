@@ -64,7 +64,7 @@ export const extensions = [
   TableRow,
   TableHeader,
   Placeholder.configure({
-    placeholder: '輸入 / 設置格式，輸入空格（或 tab）使用 AI',
+    placeholder: '輸入 / 設置格式，輸入空格使用 AI',
   }),
   TaskList,
   TaskItem.configure({

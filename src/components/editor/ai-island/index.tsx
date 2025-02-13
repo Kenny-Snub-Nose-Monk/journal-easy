@@ -45,11 +45,10 @@ export default function AIIsland(props: { editor: Editor | null }) {
   // 監聽 input focus blur
   useEffect(() => {
     if (!inputRef.current) return
-
     function handleFocus() {
       setIsFocus(true)
-
       setAIResult('')
+
       // 判斷是否有選中內容
       if (editor == null) return
       const { empty } = editor.state.selection
@@ -60,12 +59,34 @@ export default function AIIsland(props: { editor: Editor | null }) {
     }
     inputRef.current.addEventListener('focus', handleFocus)
     inputRef.current.addEventListener('blur', handleBlur)
+
     return () => {
       if (!inputRef.current) return
       inputRef.current.removeEventListener('focus', handleFocus)
-      inputRef.current.removeEventListener('blur', handleBlur)
+      inputRef.current.removeEventListener('blur', handleBlur) // eslint-disable-line
     }
   }, [inputRef, editor])
+
+  // 監聽空格輸入，focus AI island
+  useEffect(() => {
+    if (editor == null) return
+    function fn(event: KeyboardEvent) {
+      if (event.key !== ' ') return
+      if (editor == null) return
+      const selection = editor.state.selection
+      if (!selection.empty) return
+
+      if (['codeBlock'].some((type) => editor.isActive(type))) return
+
+      const node = selection.$anchor.node()
+      if (node && node.isTextblock && node.textContent.trim() === '') {
+        event.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    editor.view.dom.addEventListener('keydown', fn)
+    return () => editor.view.dom.removeEventListener('keydown', fn)
+  }, [editor])
 
   // 監聽編輯器 text-menu 中 Ask AI 菜單按鈕
   useEffect(() => {

@@ -30,25 +30,16 @@ export default function AIMenu(props: IProps) {
     }, 150)
   }
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleClick}
-            tabIndex={-1}
-            className="text-blue-500 hover:text-blue-500"
-            ref={buttonRef}
-          >
-            <Sparkles className="h-4 w-4 mr-1" />
-            Ask AI
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent className="text-background bg-foreground">
-          <span className="text-sm">按 Tab 鍵</span>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Button
+      size="sm"
+      variant="ghost"
+      onClick={handleClick}
+      tabIndex={-1}
+      className="text-blue-500 hover:text-blue-500"
+      ref={buttonRef}
+    >
+      <Sparkles className="h-4 w-4 mr-1" />
+      Ask AI
+    </Button>
   )
 }
