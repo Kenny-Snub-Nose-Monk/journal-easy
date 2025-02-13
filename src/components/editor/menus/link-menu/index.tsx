@@ -1,5 +1,5 @@
 import { BubbleMenu, Editor } from '@tiptap/react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Wrapper from '../bubble-menu-wrapper'
 import { LinkPreviewMenu } from './preview-menu'
 import { LinkEditPanel } from './edit-panel'
@@ -36,6 +36,23 @@ export default function LinkMenu(props: MenuProps) {
     setShowEdit(false)
     return null
   }
+
+  useEffect(() => {
+    if (!editor) return
+    const handleUpdate = () => {
+      // 每次編輯器狀態更新時，檢查連結的變化
+      const { href: currentHref } = editor.getAttributes('link') || {}
+      if (currentHref && currentHref !== href) {
+        setShowEdit(false) // 如果檢測到連結變化，設置showEdit為false
+      }
+    }
+    // 監聽編輯器選區改變
+    editor.on('transaction', handleUpdate)
+    // 清理函數
+    return () => {
+      editor.off('transaction', handleUpdate)
+    }
+  }, [editor, href])
 
   if (editor == null) return
 
