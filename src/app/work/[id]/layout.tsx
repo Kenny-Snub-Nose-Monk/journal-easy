@@ -31,7 +31,7 @@ export default async function Layout({
 
   return (
     <ResizablePanelGroup direction="horizontal" className="h-screen">
-      <ResizablePanel defaultSize={18}>
+      <ResizablePanel defaultSize={18} className="min-w-44 max-w-[500px]">
         <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
           <div>
             <UserSettingButton user={user} />
