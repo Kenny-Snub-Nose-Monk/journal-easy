@@ -5,9 +5,9 @@ import { getUserInfo } from '@/lib/session'
 
 export async function getDocList() {
   const user = await getUserInfo()
-  if (user == null) return []
 
-  const list = db.doc.findMany({
+  if (user == null || user.id === '') return []
+  const list = await db.doc.findMany({
     select: {
       id: true,
       title: true,
@@ -15,7 +15,7 @@ export async function getDocList() {
       isStar: true,
     },
     where: {
-      userId: user.id || '',
+      userId: user.id,
       isDeleted: false,
     },
     orderBy: {

@@ -90,6 +90,7 @@ export default function Content(props: IProps) {
         // 通過 id 找不到 doc
         if (data == null) {
           setNotFound(true)
+          setLoading(false)
           return
         }
         setTitle(data.title)
