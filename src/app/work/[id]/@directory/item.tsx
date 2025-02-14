@@ -7,19 +7,19 @@ import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { isDescendant, nav } from './util'
 import { IDoc } from './type'
-import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_CREATE_DOC } from '@/constants'
+import { EVENT_KEY_CREATE_DOC } from '@/constants'
 import ItemHandlers from './item-handlers'
 
 interface IProps {
   id: string
-  defaultTitle: string
+  title: string
   isStar: boolean
   paramId: string
   list: IDoc[]
 }
 
 export default function Item(props: IProps) {
-  const { id, defaultTitle, list = [], paramId, isStar } = props
+  const { id, title, list = [], paramId, isStar } = props
   const isCurrent = id === paramId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -33,23 +33,6 @@ export default function Item(props: IProps) {
     e.stopPropagation
     setShowChildren(!showChildren)
   }
-
-  // 修改標題時觸發事件
-  const [title, setTitle] = useState(defaultTitle || '<無標題>')
-  useEffect(() => {
-    if (!isCurrent) return // 只監聽當前文檔
-
-    function handler(payload: any) {
-      let newTitle = payload as string
-      if (!newTitle.trim()) newTitle = '<無標題>'
-      setTitle(newTitle)
-    }
-
-    emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler)
-    return () => {
-      emitter.off(EVENT_KEY_CHANGE_DOC_TITLE, handler) // 及時清理自定義事件
-    }
-  }, [isCurrent])
 
   // 滾動到當前標題
   useEffect(() => {
@@ -104,7 +87,7 @@ export default function Item(props: IProps) {
               <FileText className="h-4 w-4" />
             </div>
           )}
-          <span className="truncate flex-auto">{title}</span>
+          <span className="truncate flex-auto">{title || 'No Title'}</span>
         </div>
 
         {/* 操作按鈕 */}
@@ -130,7 +113,7 @@ export default function Item(props: IProps) {
               <Item
                 key={id}
                 id={id}
-                defaultTitle={title}
+                title={title}
                 paramId={paramId}
                 list={list}
                 isStar={!!isStar}

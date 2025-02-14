@@ -47,7 +47,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
             <Item
               key={id}
               id={id}
-              defaultTitle={title}
+              title={title}
               isStar={!!isStar}
               paramId={paramId}
               list={list}

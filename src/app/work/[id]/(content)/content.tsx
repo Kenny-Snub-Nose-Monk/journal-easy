@@ -45,7 +45,7 @@ export default function Content(props: IProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value
     // 更新資料庫
-    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true, id }) // 標記“修改中”
+    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, { id, newTitle }) // 標記“修改中”
     setTitle(newTitle)
     updateTitle(id, newTitle)
     // 觸發事件，以更新左側列表的文章標題

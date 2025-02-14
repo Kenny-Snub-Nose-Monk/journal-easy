@@ -1,23 +1,26 @@
 import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuid } from 'uuid'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import emitter from '@/lib/emitter'
-import { getDescendantsIds, nav } from '../util'
+import { nav, getDescendantsIds } from '../util'
 import { IDoc } from '../type'
 import {
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_DEL_DOC,
   EVENT_KEY_CHANGE_IS_STAR,
+  EVENT_KEY_CHANGE_DOC_TITLE,
 } from '@/constants'
 import { post, patch, IAjaxRes } from '@/lib/ajax'
 
 export default function useList(defaultList: IDoc[], paramId: string) {
   const { toast } = useToast()
   const [list, setList] = useState(defaultList)
+
   // 創建文檔
   const createDoc = useCallback(
     (parentId: string | null = null) => {
       const newId = uuid()
+
       // 更新列表
       setList([
         ...list,
@@ -27,16 +30,19 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           parentId,
         },
       ])
+
       // 跳轉
       nav(newId, 'create')
-      // 異步創建
+
+      // 非同步創建
       post('/api/doc', { id: newId, parentId }).then((resData: IAjaxRes) => {
         if (resData.errno === 0) return
+
+        // 提示錯誤
         toast({
           variant: 'destructive',
           description: resData.msg || '創建失敗',
         })
-
         setTimeout(() => {
           location.href = '/work/0'
         }, 1500)
@@ -44,6 +50,7 @@ export default function useList(defaultList: IDoc[], paramId: string) {
     },
     [list, toast]
   )
+
   // 創建文檔 - 綁定自定義事件
   useEffect(() => {
     function handleCreate(payload: any) {
@@ -52,7 +59,7 @@ export default function useList(defaultList: IDoc[], paramId: string) {
     }
     emitter.on(EVENT_KEY_CREATE_DOC, handleCreate)
     return () => {
-      emitter.off(EVENT_KEY_CREATE_DOC, handleCreate) // 及時清除自定義事件
+      emitter.off(EVENT_KEY_CREATE_DOC, handleCreate) //及時清除自定義事件
     }
   }, [createDoc])
 
@@ -63,7 +70,8 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       const descendantsIds = getDescendantsIds(id, list)
       // 要刪除的所有 ids ，包括當前節點
       const ids = [...descendantsIds, id]
-      // 異步執行軟刪除
+
+      // 非同步執行軟刪除
       patch('/api/doc', { ids, data: { isDeleted: true } }).then(
         (resData: IAjaxRes) => {
           if (resData.errno !== 0) {
@@ -78,9 +86,11 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           })
         }
       )
+
       // 更新 list
       const remainList = list.filter((i) => !ids.includes(i.id))
       setList(remainList)
+
       // 跳轉頁面
       if (id === paramId) {
         const length = remainList.length
@@ -90,6 +100,7 @@ export default function useList(defaultList: IDoc[], paramId: string) {
     },
     [list, toast, paramId]
   )
+
   // 刪除文檔 - 綁定自定義事件
   useEffect(() => {
     function handleDel(payload: any) {
@@ -98,11 +109,11 @@ export default function useList(defaultList: IDoc[], paramId: string) {
     }
     emitter.on(EVENT_KEY_DEL_DOC, handleDel)
     return () => {
-      emitter.off(EVENT_KEY_DEL_DOC, handleDel) // 及時清除自定義事件
+      emitter.off(EVENT_KEY_DEL_DOC, handleDel) //及時清除自定義事件
     }
   }, [deleteDoc])
 
-  // 監聽 isStar 變化
+  // 監聽 isStar 狀態變化
   useEffect(() => {
     function handler(payload: any) {
       const { isStar = false, id: docId = '' } = payload
@@ -115,7 +126,29 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       })
     }
     emitter.on(EVENT_KEY_CHANGE_IS_STAR, handler)
-    return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler) // 及时銷毀自定義事件
+
+    return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler) // 及時銷毀自定義事件
   }, [])
+
+  // 監聽修改標題
+  useEffect(() => {
+    function handler(payload: any) {
+      const { newTitle = '<無標題>', id: docId = '' } = payload
+      if (!docId) return
+      setList((prevList) => {
+        return prevList.map((i) => {
+          if (i.id === docId) {
+            const newDoc = { ...i, title: newTitle }
+            return newDoc
+          }
+          return i
+        })
+      })
+    }
+    emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler)
+
+    return () => emitter.off(EVENT_KEY_CHANGE_DOC_TITLE, handler) // 及時銷毀自定義事件
+  }, [])
+
   return { list }
 }
