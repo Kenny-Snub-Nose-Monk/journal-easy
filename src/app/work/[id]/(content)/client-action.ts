@@ -7,8 +7,8 @@ export async function getDoc(id: string) {
   const url = `/api/doc/${id}`
   const res = await fetch(url)
   const { errno, msg, data } = await get(url)
-  if (errno === 0) return data
-  else return msg
+  if (errno !== 0) return null
+  return data
 }
 async function updateDoc(
   id: string,
