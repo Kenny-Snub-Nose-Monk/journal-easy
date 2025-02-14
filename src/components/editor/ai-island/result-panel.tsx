@@ -1,10 +1,14 @@
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { X, Sparkle, BetweenHorizonalStart, Replace } from 'lucide-react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import emitter from '@/lib/emitter'
 import { EVENT_KEY_FOCUS_AI } from '@/constants'
+import markdownit from 'markdown-it'
+
+const md = markdownit()
+
 interface IProps {
   editor: Editor | null
   isSelectionEmpty: boolean
@@ -23,18 +27,18 @@ export default function ResultPanel(props: IProps) {
     setInstruction,
   } = props
   const menuRef = useRef<HTMLDivElement>(null)
-  const resList = result.split('\n') // 考慮換行
+  const resultHtml = md.render(result)
+  const innerHtml = { __html: resultHtml }
+
+  console.log(result)
 
   // 插入編輯器，考慮換行
   function insertResultToEditor() {
-    resList.forEach((c, index) => {
-      if (c.trim() === '') return
-      editor?.commands.insertContent(c)
-      if (index < resList.length - 1) {
-        editor?.commands.enter() // 換行
-      }
-    })
-    editor?.commands.scrollIntoView()
+    if (editor == null) return
+    if (result) {
+      editor.commands.insertContent(resultHtml)
+    }
+    editor.commands.scrollIntoView()
   }
 
   useEffect(() => {
@@ -77,11 +81,11 @@ export default function ResultPanel(props: IProps) {
   }
 
   if (editor == null) return null
-  if (isSelectionEmpty) return null
+  // if (isSelectionEmpty) return null
   if (!result && !loading) return null
 
   return (
-    <div className="border-2 border-blue-600 rounded-lg shadow p-4 pb-2 mb-2">
+    <div className="border-2 border-blue-600 rounded-lg shadow-lg p-4 pb-2 mb-2">
       <div className="max-h-72 overflow-y-auto">
         <div>
           {!result && (
@@ -92,23 +96,17 @@ export default function ResultPanel(props: IProps) {
             </div>
           )}
           {result && (
-            <div>
-              {resList.map((l, index) => {
-                if (l.trim() === '') return null
-                return (
-                  <p key={index} className="text-sm my-2 first:mt-0">
-                    {l}
-                  </p>
-                )
-              })}
-            </div>
+            <div
+              dangerouslySetInnerHTML={innerHtml}
+              className="prose dark:prose-invert max-w-none"
+            ></div>
           )}
         </div>
         <div className="flex justify-center mt-1" ref={menuRef}>
           {/* AI 結果的菜單：替換，插入，重新生成，取消 */}
           <Button
             onClick={onReplace}
-            disabled={loading}
+            disabled={loading || isSelectionEmpty}
             variant="ghost"
             className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
             tabIndex={-1}

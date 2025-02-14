@@ -1,8 +1,7 @@
 'use client'
 
 import { Editor } from '@tiptap/react'
-import { useState, useRef, useEffect, useCallback } from 'react'
-import throttle from 'lodash/throttle'
+import { useState, useRef, useEffect } from 'react'
 import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from '@/constants'
 import emitter from '@/lib/emitter'
 
@@ -25,16 +24,9 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [AIResult, setAIResult] = useState('')
   const [tokenLimit, setTokenLimit] = useState(-1)
 
-  // eslint-disable-next-line
-  const editorScrollIntoView = useCallback(
-    throttle(() => editor?.commands.scrollIntoView(), 500),
-    [editor]
-  )
-
   const { loading, requestAI, abortRequestAI } = useRequestAI({
     editor,
     isSelectionEmpty,
-    editorScrollIntoView,
     setInstruction,
     setAIResult,
     inputRef,

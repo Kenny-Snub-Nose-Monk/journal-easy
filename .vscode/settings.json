@@ -13,7 +13,8 @@
     "Textblock",
     "Tiptap",
     "Pilcrow",
-    "rowspan"
+    "rowspan",
+    "markdownit"
   ],
   "files.associations": {
     "*.css": "tailwindcss"

@@ -8,7 +8,6 @@ import { post } from '@/lib/ajax'
 interface UseRequestAIProps {
   editor: Editor | null
   isSelectionEmpty: boolean
-  editorScrollIntoView: () => void
   setInstruction: React.Dispatch<React.SetStateAction<string>>
   setAIResult: React.Dispatch<React.SetStateAction<string>>
   inputRef: React.RefObject<HTMLInputElement>
@@ -19,7 +18,6 @@ interface UseRequestAIProps {
 export const useRequestAI = ({
   editor,
   isSelectionEmpty,
-  editorScrollIntoView,
   setInstruction,
   setAIResult,
   inputRef,
@@ -49,40 +47,15 @@ export const useRequestAI = ({
         post('/api/gpt/token-usage', { total_tokens })
       }
 
-      if (!content) return
-
-      if (isSelectionEmpty) {
-        if (content.indexOf('\n') < 0) {
-          editor?.commands.insertContent(content)
-          editorScrollIntoView()
-          return
-        }
-
-        const arr = content.split('\n')
-        arr.forEach((c, index) => {
-          if (c) {
-            editor?.commands.insertContent(c)
-            editorScrollIntoView()
-          }
-          if (index < arr.length - 1) {
-            editor?.commands.enter()
-          }
-        })
-      } else {
+      if (content) {
         setAIResult((r) => r + content)
       }
     },
-    [editor, isSelectionEmpty, editorScrollIntoView, setAIResult, setTokenLimit]
+    [editor, isSelectionEmpty, setAIResult, setTokenLimit]
   )
 
-  function onSuccess(done: boolean) {
+  function onSuccess() {
     setLoading(false)
-    if (isSelectionEmpty) {
-      setInstruction('')
-      if (done) editor?.commands.enter()
-      editor?.commands.focus()
-    }
-
     editor?.setEditable(true)
   }
 
@@ -136,7 +109,6 @@ export const useRequestAI = ({
       loading,
       editor,
       isSelectionEmpty,
-      editorScrollIntoView,
       setInstruction,
       setAIResult,
       inputRef,
