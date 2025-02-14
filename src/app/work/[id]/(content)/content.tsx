@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
 import TiptapEditor from '@/components/editor'
@@ -51,6 +51,13 @@ export default function Content(props: IProps) {
     // 觸發事件，以更新左側列表的文章標題
     emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, newTitle)
   }
+
+  useEffect(() => {
+    document.title = title || '<No Title>'
+  }, [title])
+
+  const titleInputRef = useRef<HTMLInputElement>(null)
+
   // 編輯器內容
   const [editorContent, SetEditorContent] = useState(defaultContent)
   function handleUpdate(content: string) {
@@ -82,6 +89,7 @@ export default function Content(props: IProps) {
           setTitle('')
           SetEditorContent('')
           setLoading(false)
+          setTimeout(() => titleInputRef.current?.focus(), 200)
         }, 200)
         return
       }
@@ -90,6 +98,7 @@ export default function Content(props: IProps) {
         // 通過 id 找不到 doc
         if (data == null) {
           setNotFound(true)
+          setTitle('Not Found')
           setLoading(false)
           return
         }
@@ -155,6 +164,7 @@ export default function Content(props: IProps) {
           maxLength={100}
           onChange={handleChange}
           className="border-none p-0 text-4xl font-bold focus-visible:ring-transparent"
+          ref={titleInputRef}
         />
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
