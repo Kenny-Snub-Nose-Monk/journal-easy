@@ -23,6 +23,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [isSelectionEmpty, setIsSelectionEmpty] = useState(true)
   const [AIResult, setAIResult] = useState('')
   const [tokenLimit, setTokenLimit] = useState(-1)
+  const [delay, setDelay] = useState(0) // 每次請求間隔時間
 
   const { loading, requestAI, abortRequestAI } = useRequestAI({
     editor,
@@ -32,6 +33,8 @@ export default function AIIsland(props: { editor: Editor | null }) {
     inputRef,
     tokenLimit,
     setTokenLimit,
+    delay,
+    setDelay,
   })
 
   // 監聽 input focus blur
@@ -90,6 +93,17 @@ export default function AIIsland(props: { editor: Editor | null }) {
     return () => emitter.off(EVENT_KEY_FOCUS_AI, fn) // 及時清除自定義事件
   }, [inputRef, isFocus])
 
+  // 間隔時間遞減
+  useEffect(() => {
+    const t = setInterval(() => {
+      setDelay((prev) => {
+        if (prev === 0) return 0
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(t)
+  }, [delay])
+
   if (!editor) return null
 
   return (
@@ -138,6 +152,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
         instruction={instruction}
         onAbortRequestAI={abortRequestAI}
         setInstruction={setInstruction}
+        delay={delay}
       />
       <Info tokenLimit={tokenLimit} setTokenLimit={setTokenLimit} />
     </div>

@@ -2,8 +2,10 @@ import { Editor } from '@tiptap/react'
 import { useCallback, useRef, useState } from 'react'
 import { MessagesType } from './messages'
 import { send } from './api'
+import { ToastAction } from '@/components/ui/toast'
 import { toast } from '@/hooks/use-toast'
 import { post } from '@/lib/ajax'
+import { AI_REQUEST_DELAY } from '@/constants'
 
 interface UseRequestAIProps {
   editor: Editor | null
@@ -13,6 +15,8 @@ interface UseRequestAIProps {
   inputRef: React.RefObject<HTMLInputElement>
   tokenLimit: number
   setTokenLimit: React.Dispatch<React.SetStateAction<number>>
+  delay: number
+  setDelay: React.Dispatch<React.SetStateAction<number>>
 }
 
 export const useRequestAI = ({
@@ -23,6 +27,8 @@ export const useRequestAI = ({
   inputRef,
   tokenLimit,
   setTokenLimit,
+  delay,
+  setDelay,
 }: UseRequestAIProps) => {
   const [loading, setLoading] = useState(false)
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -57,6 +63,7 @@ export const useRequestAI = ({
   function onSuccess() {
     setLoading(false)
     editor?.setEditable(true)
+    setDelay(AI_REQUEST_DELAY)
   }
 
   function onError(msg: string) {
@@ -73,6 +80,15 @@ export const useRequestAI = ({
   const requestAI = useCallback(
     async (messages: MessagesType) => {
       if (loading) return
+
+      if (delay > 0) {
+        toast({
+          title: '提示',
+          description: `請等待 ${delay} 秒後再試`,
+          action: <ToastAction altText="知道了">知道了</ToastAction>,
+        })
+        return
+      }
 
       if (tokenLimit <= 0) {
         onError('AI tokens 使用量已超出限制，請先領取或購買')

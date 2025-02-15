@@ -23,6 +23,7 @@ interface IProps {
   onAbortRequestAI: () => void
   instruction: string
   setInstruction: (instruction: string) => void
+  delay: number
 }
 const CustomInput = forwardRef(
   (props: IProps, inputRef: ForwardedRef<HTMLInputElement>) => {
@@ -35,6 +36,7 @@ const CustomInput = forwardRef(
       loading,
       isSelectionEmpty,
       instruction,
+      delay,
     } = props
 
     function genMessages(instruction: string): MessagesType {
@@ -114,6 +116,9 @@ const CustomInput = forwardRef(
             onCompositionEnd={handleCompositionEnd}
             className="bg-inherit border-none focus-visible:ring-offset-0 focus-visible:ring-0"
           />
+          {delay > 0 && (
+            <span className="text-xs text-gray-400 ml-2">{delay}s</span>
+          )}
           <Button
             variant="ghost"
             size="icon"
