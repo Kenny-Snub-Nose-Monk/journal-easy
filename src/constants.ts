@@ -5,7 +5,7 @@ export const RIGHT_PANEL_DOM_ID = 'RIGHT_PANEL_DOM_ID'
 export const AI_RES_MAX_TOKENS = 1000 // AI 返回结果最大長度
 export const AI_CONTEXT_MAX_LENGTH = 600 // 上下文最大長度，請求 AI 接口時
 export const AI_DEFAULT_TOKEN_LIMIT = 10000 // AI default token limit
-export const AI_REQUEST_DELAY = 10 // AI 請求間隔時間
+export const AI_REQUEST_DELAY = 2 // AI 請求間隔時間
 export const MAX_DOC_COUNT = 100 // 最大文檔數量
 
 export const EVENT_KEY_CHANGE_DOC_TITLE = 'E_K_CHANGE_DOC_TITLE'

@@ -31,6 +31,7 @@ export const useRequestAI = ({
   setDelay,
 }: UseRequestAIProps) => {
   const [loading, setLoading] = useState(false)
+  const [prevMessages, setPrevMessages] = useState<MessagesType>([])
   const abortControllerRef = useRef<AbortController | null>(null)
 
   const insertContent = useCallback(
@@ -107,6 +108,7 @@ export const useRequestAI = ({
       setLoading(true)
       editor?.setEditable(false)
       setAIResult('')
+      setPrevMessages(messages)
       inputRef.current?.blur()
 
       try {
@@ -142,9 +144,15 @@ export const useRequestAI = ({
     }
   }, [])
 
+  function reRequestAI() {
+    // console.log('reRequestAI...', prevMessages)
+    requestAI(prevMessages)
+  }
+
   return {
     loading,
     requestAI,
     abortRequestAI,
+    reRequestAI,
   }
 }
