@@ -14,7 +14,7 @@ export default async function Home() {
       <HomeNav />
       <div className="flex flex-col justify-center text-start md:text-center mx-6">
         <section className="md:flex md:justify-center">
-          <h2 className="text-4xl lg:text-5xl font-extrabold">划水 AI ，</h2>
+          <h2 className="text-4xl lg:text-5xl font-extrabold">滑水 AI ，</h2>
           <h2 className="text-4xl lg:text-5xl mt-2 md:mt-0">
             智能寫作，高效工作
           </h2>
@@ -38,7 +38,7 @@ async function MainButton() {
     return (
       <SignInButton className="text-base" size="lg">
         <User className="h-4 w-4" />
-        &nbsp;登录 / 注册
+        &nbsp;登錄 / 註冊
       </SignInButton>
     )
   }
@@ -48,7 +48,7 @@ async function MainButton() {
       <Link href="/invitation-code">
         <Button className="text-base" size="lg">
           <Zap className="h-4 w-4 mr-1" />
-          验证邀请码
+          驗證邀請碼
         </Button>
       </Link>
     )
@@ -60,7 +60,7 @@ function LearnButton() {
     <Link href="/join">
       <Button variant="secondary" className="text-base" size="lg">
         <Code className="h-4 w-4 mr-1" />
-        学习项目/参与开发
+        學習項目/參與開發
       </Button>
     </Link>
   )
