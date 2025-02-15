@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Search as SearchIcon,
@@ -40,7 +39,6 @@ export default function Search() {
   )
 }
 function SearchPanel() {
-  const router = useRouter()
   // input elem
   const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
@@ -80,7 +78,7 @@ function SearchPanel() {
   function handleClick(doc: IDoc) {
     const { isDeleted, id } = doc
     if (isDeleted) return
-    router.push(`/work/${id}`)
+    location.href = `/work/${id}`
   }
   return (
     <div className="h-96 overflow-y-auto">

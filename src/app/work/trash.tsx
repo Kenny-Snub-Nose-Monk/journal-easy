@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -49,7 +48,6 @@ export default function Trash() {
   )
 }
 function TrashTable() {
-  const router = useRouter()
   const { toast } = useToast()
   const [list, setList] = useState<IDoc[]>([])
   const [loading, setLoading] = useState(true)
@@ -92,7 +90,7 @@ function TrashTable() {
       data: { isDeleted: false },
     })
     if (errno === 0) {
-      router.push(`/work/${id}`)
+      location.href = `/work/${id}`
     } else {
       toast({
         variant: 'destructive',
