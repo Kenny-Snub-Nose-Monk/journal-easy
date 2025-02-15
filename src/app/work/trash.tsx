@@ -54,13 +54,14 @@ function TrashTable() {
 
   // 加載數據
   const load = useCallback(async () => {
-    const url = `/api/doc?isDeleted=true`
+    const url = `/api/doc?isDeleted=1`
     const { data: list } = await get(url)
 
     return list
   }, [])
   useEffect(() => {
     load().then((l) => {
+      console.log('load trash list', l)
       setList(l)
       setLoading(false)
     })

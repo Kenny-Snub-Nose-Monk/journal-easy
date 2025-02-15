@@ -41,12 +41,12 @@ export async function PATCH(
   const body = await request.json()
   try {
     await db.doc.update({
-      where: { id, userId: user.id },
+      where: { id, userId: user.id, isDeleted: false },
       data: body,
     })
     return Response.json(genSuccessData())
   } catch (ex) {
     console.error('Update doc error', ex)
-    return Response.json(genErrorData('Update doc error'))
+    return Response.json(genErrorData('update doc error'))
   }
 }

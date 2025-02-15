@@ -4,7 +4,7 @@ export async function getDoc(id: string) {
   const user = await getUserInfo()
   if (user == null) return null
   const doc = await db.doc.findUnique({
-    where: { id, userId: user.id },
+    where: { id, userId: user.id, isDeleted: false },
   })
   return doc
 }
