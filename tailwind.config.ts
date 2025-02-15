@@ -104,29 +104,30 @@ const config = {
               'margin-top': '1em',
               'margin-bottom': '1em',
             },
-            code: {
-              color: '#f56565', // This is text-red-500
-              backgroundColor: '#f7fafc', // Optional: Light background for code blocks
-              padding: '0.25rem', // Optional: Padding for code blocks
-              borderRadius: '0.25rem', // Optional: Rounded corners for code blocks
-              '&::before': {
-                display: 'none',
-              },
-              '&::after': {
-                display: 'none',
-              },
+            'ul>li::marker': {
+              color: 'var(--tw-prose-body);',
             },
+            'code::before': {
+              content: 'none',
+            },
+            'code::after': {
+              content: 'none',
+            },
+            code: {
+              'background-color': 'var(--tw-prose-pre-bg)',
+              color: 'var(--tw-prose-pre-code)',
+              padding: '0.125em 0.25em',
+              margin: '0 0.25em',
+              'border-radius': '0.25em',
+              'font-weight': 'normal',
+            },
+            '--tw-prose-invert-pre-bg': 'rgb(255 255 255 / 0.1)',
           },
         },
       },
     },
   },
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
-  variants: {
-    extend: {
-      display: ['group-hover'],
-    },
-  },
 } satisfies Config
 
 export default config
