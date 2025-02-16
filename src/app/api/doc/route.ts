@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       return Response.json(genErrorData('Origin doc not found'))
     }
 
-    title = originDoc.title + ' 复制'
+    title = (originDoc.title || '<No Title>') + ' Copy'
     content = originDoc.content
     parentId = originDoc.parentId
   }
