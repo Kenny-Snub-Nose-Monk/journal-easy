@@ -74,14 +74,6 @@ function TrashTable() {
   }
   // 恢復
   async function restore(id: string, parentId: string | null) {
-    // 判斷 parentId 文檔是否還存在，可能被刪除了
-    if (parentId) {
-      const parentDoc = await getDoc(parentId)
-      if (parentDoc == null) {
-        // 未找到 parentDoc ，則先設置 parentId 未 null
-        await updateParentId(id, null)
-      }
-    }
     // 所有下級文檔
     const descendantsIds = getDescendantsIds(id, list)
     const ids = [...descendantsIds, id]
@@ -90,6 +82,16 @@ function TrashTable() {
       ids,
       data: { isDeleted: false },
     })
+
+    // 判斷 parentId 文檔是否還存在，可能被刪除了
+    if (parentId) {
+      const parentDoc = await getDoc(parentId)
+      if (parentDoc == null) {
+        // 未找到 parentDoc ，則先設置 parentId 未 null
+        await updateParentId(id, null)
+      }
+    }
+
     if (errno === 0) {
       location.href = `/work/${id}`
     } else {
