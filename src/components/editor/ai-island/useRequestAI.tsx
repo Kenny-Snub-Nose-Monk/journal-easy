@@ -132,6 +132,8 @@ export const useRequestAI = ({
       inputRef,
       tokenLimit,
       setTokenLimit,
+      delay,
+      setDelay,
     ]
   )
 

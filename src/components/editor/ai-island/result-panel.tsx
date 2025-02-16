@@ -30,8 +30,6 @@ export default function ResultPanel(props: IProps) {
   const resultHtml = md.render(result)
   const innerHtml = { __html: resultHtml }
 
-  console.log(result)
-
   // 插入編輯器，考慮換行
   function insertResultToEditor() {
     if (editor == null) return

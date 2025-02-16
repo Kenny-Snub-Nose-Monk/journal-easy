@@ -25,7 +25,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [tokenLimit, setTokenLimit] = useState(-1)
   const [delay, setDelay] = useState(0) // 每次請求間隔時間
 
-  const { loading, requestAI, abortRequestAI } = useRequestAI({
+  const { loading, requestAI, abortRequestAI, reRequestAI } = useRequestAI({
     editor,
     isSelectionEmpty,
     setInstruction,
@@ -102,7 +102,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
       })
     }, 1000)
     return () => clearInterval(t)
-  }, [delay])
+  })
 
   if (!editor) return null
 
@@ -123,6 +123,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
         result={AIResult}
         setResult={setAIResult}
         setInstruction={setInstruction}
+        reRequestAI={reRequestAI}
       />
 
       {/* AI 菜單，isSelectionEmpty 時顯示 （當有選中內容時，不顯示 AI 菜單） */}
