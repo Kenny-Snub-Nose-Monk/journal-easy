@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sendErrorAlert } from '@/utils/emailService'
+import { sendErrorAlert } from '@/lib/mailer'
 
 export async function POST(request: Request) {
   console.log('Received error alert request with method:', request.method)
@@ -12,6 +12,15 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
+      )
+    }
+
+    // Skip email sending in development environment
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Development environment: Skipping error alert email')
+      return NextResponse.json(
+        { message: 'Error logged (email skipped in development)' },
+        { status: 200 }
       )
     }
 
