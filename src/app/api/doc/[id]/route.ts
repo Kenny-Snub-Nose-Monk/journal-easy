@@ -5,6 +5,7 @@ import {
   genErrorData,
   genUnAuthData,
 } from '@/app/api/utils/gen-res-data'
+import { sendErrorAlert } from '@/lib/mailer'
 
 // 添加這個條件檢查
 if (process.env.NODE_ENV === 'development') {
@@ -19,15 +20,19 @@ export async function GET(
   const user = await getUserInfo()
   if (user == null) return Response.json(genUnAuthData())
   const { id } = params
-  const doc = await db.doc.findUnique({
-    where: { id, userId: user.id, isDeleted: false },
-  })
-
-  if (doc == null) {
-    return Response.json(genErrorData('Doc not found'))
+  try {
+    const doc = await db.doc.findUnique({
+      where: { id, userId: user.id, isDeleted: false },
+    })
+    if (doc == null) {
+      return Response.json(genErrorData('Doc not found'))
+    }
+    return Response.json(genSuccessData(doc))
+  } catch (ex: any) {
+    console.error('Get doc error', ex)
+    sendErrorAlert(ex, 'Get doc error')
+    return Response.json(genErrorData('Get doc error'))
   }
-
-  return Response.json(genSuccessData(doc))
 }
 
 // 更新單個 doc 内容
@@ -46,7 +51,7 @@ export async function PATCH(
     })
     return Response.json(genSuccessData())
   } catch (ex) {
-    console.error('Update doc error', ex)
+    sendErrorAlert(ex, 'Update doc error')
     return Response.json(genErrorData('update doc error'))
   }
 }

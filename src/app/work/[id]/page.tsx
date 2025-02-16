@@ -1,5 +1,4 @@
 import Content from './(content)/content'
-import { CONTENT_WIDTH } from '@/constants'
 import { getDoc } from './action'
 
 export default async function OneWork({ params }: { params: { id: string } }) {

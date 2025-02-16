@@ -7,6 +7,7 @@ import {
   genUnAuthData,
 } from '@/app/api/utils/gen-res-data'
 import { MAX_DOC_COUNT } from '@/constants'
+import { sendErrorAlert } from '@/lib/mailer'
 
 // 創建 doc
 export async function POST(request: Request) {
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
     return Response.json(genSuccessData(doc))
   } catch (ex) {
     console.error('Create doc error', ex)
+    sendErrorAlert(ex, 'Create doc error')
     return Response.json(genErrorData('Create doc error'))
   }
 }
