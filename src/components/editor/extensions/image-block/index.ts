@@ -6,13 +6,14 @@ import ImageBlockView from './image-block-view'
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     imageBlock: {
-      setImageBlock: (attributes: { src: string; ratio: number }) => ReturnType
+      setImageBlock: (attributes: { src: string }) => ReturnType
       setImageBlockAt: (attributes: {
         src: string
         pos: number | Range
       }) => ReturnType
       setImageBlockAlign: (align: 'left' | 'center' | 'right') => ReturnType
       setImageBlockWidth: (width: number) => ReturnType
+      setImageBlockRatio: (ratio: number) => ReturnType
     }
   }
 }
@@ -77,7 +78,7 @@ const ImageBlock = BaseImage.extend({
         ({ commands }) => {
           return commands.insertContent({
             type: 'imageBlock',
-            attrs: { src: attrs.src, ratio: attrs.ratio },
+            attrs: { src: attrs.src },
           })
         },
 
@@ -103,6 +104,14 @@ const ImageBlock = BaseImage.extend({
         ({ commands }) =>
           commands.updateAttributes('imageBlock', {
             width: `${Math.max(0, Math.min(100, width))}%`,
+          }),
+
+      // 設置比例
+      setImageBlockRatio:
+        (ratio) =>
+        ({ commands }) =>
+          commands.updateAttributes('imageBlock', {
+            ratio,
           }),
     }
   },

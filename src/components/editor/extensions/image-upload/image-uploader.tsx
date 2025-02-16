@@ -3,22 +3,24 @@ import { cn } from '@/lib/utils'
 import { Image as ImageIcon, Upload } from 'lucide-react'
 import useUploader from './hooks/useUploader'
 import useDropZone from './hooks/useDropZone'
-import { Button } from '@/components/ui/button'
 import { getWidthPercent } from '@/components/editor/utils/img'
 
 interface ImageUploadViewProps {
   onUpload: (url: string, ratio: number) => void
+  setCurUploaderRange: () => void
 }
 
 export default function ImageUploadView(props: ImageUploadViewProps) {
-  const { onUpload } = props
+  const { onUpload, setCurUploaderRange } = props
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [widthPercent, setWidthPercent] = useState<number>(100)
   const imgRef = useRef<HTMLImageElement>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
-  function handleUploadClick(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault()
+
+  function handleUploadClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (draggedInside) return
+    setCurUploaderRange() // 設置當前上傳圖片的位置
     fileInputRef.current?.click()
   }
 
@@ -82,15 +84,12 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
         <div className="text-sm font-medium text-center text-neutral-400 dark:text-neutral-500">
           {draggedInside ? '圖片文件放在這裡' : '拖拉圖片到此處上傳'}
         </div>
-        <div className="mt-4">
-          <Button
-            disabled={draggedInside}
-            size="sm"
-            onClick={handleUploadClick}
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            上傳圖片
-          </Button>
+        <div
+          className="mt-4 inline-flex items-center bg-secondary-foreground text-secondary px-2 cursor-pointer rounded"
+          onClick={handleUploadClick}
+        >
+          <Upload className="w-4 h-4 mr-1" />
+          上傳圖片
         </div>
       </div>
       <input

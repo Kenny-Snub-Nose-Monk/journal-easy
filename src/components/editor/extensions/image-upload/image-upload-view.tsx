@@ -1,5 +1,6 @@
+import { Range } from '@tiptap/core'
 import { Editor, NodeViewWrapper } from '@tiptap/react'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import ImageUploader from './image-uploader'
 import { getWidthPercent } from '@/components/editor/utils/img'
 
@@ -9,28 +10,37 @@ interface ImageUploadViewProps {
 }
 
 export default function ImageUploadView(props: ImageUploadViewProps) {
-  const { getPos, editor } = props
+  const { editor } = props
+  const [range, setRange] = useState<Range | null>(null)
+  function setCurUploaderRange() {
+    const { from, to } = editor.state.selection
+    // console.log('range ', from, to)
+    setRange({ from, to })
+  }
 
   const onUpload = useCallback(
     (url: string, ratio: number) => {
       const width = getWidthPercent(ratio)
-      if (url) {
+      if (url && range) {
         editor
           .chain()
-          .setImageBlock({ src: url, ratio }) // 插入圖片 imageBlock Node
+          .setImageBlockAt({ src: url, pos: range }) // 插入圖片 imageBlock Node
           .setImageBlockWidth(width)
-          .deleteRange({ from: getPos(), to: getPos() }) // 刪除當前 imageUpload Node
+          .setImageBlockRatio(ratio) // 刪除當前 imageUpload Node
           .focus()
           .run()
       }
     },
-    [getPos, editor]
+    [editor, range]
   )
 
   return (
     <NodeViewWrapper>
       <div className="p-0 m-0" data-drag-handle>
-        <ImageUploader onUpload={onUpload} />
+        <ImageUploader
+          onUpload={onUpload}
+          setCurUploaderRange={setCurUploaderRange}
+        />
       </div>
     </NodeViewWrapper>
   )
