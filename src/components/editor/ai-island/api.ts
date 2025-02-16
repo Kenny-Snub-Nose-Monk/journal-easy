@@ -1,7 +1,6 @@
 import OpenAI from 'openai'
 import { AI_RES_MAX_TOKENS } from '@/constants'
 import { MessagesType } from './messages'
-import { post } from '@/lib/ajax'
 
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend
@@ -43,7 +42,6 @@ export async function send(
       if (content == null) {
         callback(true)
       }
-      console.log('usage', usage)
       onData(content ?? '', usage)
     }
     callback(true)
@@ -54,6 +52,7 @@ export async function send(
     } else {
       console.error('OpenAI API error:', err)
       const errorMessage = mapOpenAIErrorToMessage(err)
+      await sendErrorAlertToAPI(err, 'OpenAI API Error in send function')
       onError(errorMessage)
     }
     callback(false)
@@ -81,4 +80,32 @@ function mapOpenAIErrorToMessage(err: any): string {
     }
   }
   return 'Network Error: Please check your internet connection.'
+}
+
+async function sendErrorAlertToAPI(error: any, context: string) {
+  try {
+    // Ensure error object is properly formatted
+    const errorData = {
+      error: {
+        message: error?.message || 'Unknown error',
+        stack: error?.stack || new Error().stack || 'No stack trace',
+      },
+      context: context || 'No context provided',
+    }
+
+    const response = await fetch('/api/gpt/error-alert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(errorData),
+    })
+
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      console.error('Error alert failed:', errorResponse)
+    }
+  } catch (err) {
+    console.error('Failed to send error alert:', err)
+  }
 }

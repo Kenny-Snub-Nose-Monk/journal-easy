@@ -54,6 +54,7 @@
     "@tiptap/suggestion": "^2.9.1",
     "@types/lodash.debounce": "^4.0.9",
     "@types/markdown-it": "^14.1.2",
+    "@types/nodemailer": "^6.4.17",
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "browser-image-compression": "^2.0.2",
