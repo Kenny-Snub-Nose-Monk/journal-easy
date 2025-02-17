@@ -139,4 +139,8 @@ const CustomInput = forwardRef(
     )
   }
 )
+
+// Add display name
+CustomInput.displayName = 'CustomInput'
+
 export default CustomInput
