@@ -8,7 +8,11 @@ export async function getDoc(id: string) {
     if (user == null) return null
 
     const doc = await db.doc.findUnique({
-      where: { id, userId: user.id, isDeleted: false },
+      where: { id, isDeleted: false },
+      select: {
+        title: true,
+        isStar: true,
+      },
     })
 
     return doc

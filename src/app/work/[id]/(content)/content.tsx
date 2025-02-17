@@ -19,19 +19,12 @@ import {
 interface IProps {
   defaultId: string
   defaultTitle: string
-  defaultContent: string
   defaultNotFound: boolean
   defaultIsStar: boolean | null
 }
 
 export default function Content(props: IProps) {
-  const {
-    defaultId,
-    defaultTitle,
-    defaultContent,
-    defaultNotFound,
-    defaultIsStar,
-  } = props
+  const { defaultId, defaultTitle, defaultNotFound, defaultIsStar } = props
   const [id, setId] = useState(defaultId)
   // loading
   const [loading, setLoading] = useState(false)
@@ -58,13 +51,6 @@ export default function Content(props: IProps) {
 
   const titleInputRef = useRef<HTMLInputElement>(null)
 
-  // 編輯器內容
-  const [editorContent, SetEditorContent] = useState(defaultContent)
-  function handleUpdate(content: string) {
-    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true, id }) // 標記“修改中”
-    updateContent(id, content)
-  }
-
   // isStar
   const [isStar, setIsStar] = useState(defaultIsStar)
 
@@ -89,7 +75,6 @@ export default function Content(props: IProps) {
         // 用 setTimeout 模擬 loading 效果（還有，不用 setTimeout 無法徹底清除編輯器之前的内容）
         setTimeout(() => {
           setTitle('')
-          SetEditorContent('')
           setLoading(false)
           setTimeout(() => titleInputRef.current?.focus(), 200)
         }, 200)
@@ -105,7 +90,6 @@ export default function Content(props: IProps) {
           return
         }
         setTitle(data.title)
-        SetEditorContent(data.content)
         setLoading(false)
         setIsStar(data.isStar)
         emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false, id }) // 切換文檔，重置標記
@@ -158,11 +142,7 @@ export default function Content(props: IProps) {
         />
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
-      <TiptapEditor
-        id={id}
-        rawContent={editorContent}
-        handleUpdate={handleUpdate}
-      />
+      <TiptapEditor id={id} />
     </div>
   )
 }

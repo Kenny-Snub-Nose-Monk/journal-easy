@@ -16,29 +16,16 @@ import { EVENT_KEY_CHANGE_CHAR_COUNT, RIGHT_PANEL_DOM_ID } from '@/constants'
 
 interface IProps {
   id: string
-  rawContent: string
-  handleUpdate: (content: string) => void
-}
-
-// Output JSON
-function get_content(rawContent: string) {
-  try {
-    return JSON.parse(rawContent)
-  } catch (error) {
-    return undefined
-  }
 }
 
 const TiptapEditor = (props: IProps) => {
-  const { id, rawContent, handleUpdate } = props
+  const { id } = props
   const menuContainerRef = useRef(null)
 
   const editor = useEditor({
     extensions,
-    content: get_content(rawContent),
     onUpdate: ({ editor }) => {
       const data = editor.getJSON()
-      handleUpdate(JSON.stringify(data))
       updateCharacterCount()
     },
     editorProps: {
