@@ -91,5 +91,5 @@ jobs:
             --region ${{ env.REGION }} \
             --port 8080 \
             --allow-unauthenticated \
-            --update-secrets="DATABASE_URL=DATABASE_URL:latest" \
+            --update-secrets="DATABASE_URL=DATABASE_URL:latest"
           echo "Service URL: $(gcloud run services describe huashui-ai --region ${{ env.REGION }} --format 'value(status.url)')"
