@@ -20,6 +20,7 @@ model Doc {
     id        String   @id @default(cuid())
     title     String
     content   Json
+    contentBinary   Bytes?
     isDeleted Boolean  @default(false)
     isStar    Boolean  @default(false)
     createdAt DateTime @default(now())

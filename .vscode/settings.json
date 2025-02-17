@@ -4,6 +4,7 @@
     "colspan",
     "colwidth",
     "dropcursor",
+    "hocuspocus",
     "hookform",
     "Horizonal",
     "huashui",
@@ -14,7 +15,9 @@
     "Tiptap",
     "Pilcrow",
     "rowspan",
-    "markdownit"
+    "markdownit",
+    "uparrow",
+    "Ydoc"
   ],
   "files.associations": {
     "*.css": "tailwindcss"
