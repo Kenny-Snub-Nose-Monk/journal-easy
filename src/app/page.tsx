@@ -25,9 +25,9 @@ export default async function Home() {
           <LearnButton />
         </section>
       </div>
-      <div className="w-32 md:w-48 fixed bottom-2 right-2">
+      {/* <div className="w-32 md:w-48 fixed bottom-2 right-2">
         <QRCode />
-      </div>
+      </div> */}
     </main>
   )
 }
@@ -43,16 +43,16 @@ async function MainButton() {
     )
   }
   // @ts-ignore
-  if (!user.isInvited) {
-    return (
-      <Link href="/invitation-code">
-        <Button className="text-base" size="lg">
-          <Zap className="h-4 w-4 mr-1" />
-          驗證邀請碼
-        </Button>
-      </Link>
-    )
-  }
+  // if (!user.isInvited) {
+  //   return (
+  //     <Link href="/invitation-code">
+  //       <Button className="text-base" size="lg">
+  //         <Zap className="h-4 w-4 mr-1" />
+  //         驗證邀請碼
+  //       </Button>
+  //     </Link>
+  //   )
+  // }
   return <StartButton />
 }
 function LearnButton() {
