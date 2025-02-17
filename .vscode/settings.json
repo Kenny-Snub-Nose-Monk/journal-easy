@@ -14,7 +14,9 @@
     "Tiptap",
     "Pilcrow",
     "rowspan",
-    "markdownit"
+    "markdownit",
+    "uparrow",
+    "Ydoc"
   ],
   "files.associations": {
     "*.css": "tailwindcss"

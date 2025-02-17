@@ -15,6 +15,14 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Ydoc {
+  id        String   @id @default(cuid())
+  contentJSON   String?
+  contentBinary   Bytes?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // data model
 model Doc {
     id        String   @id @default(cuid())
