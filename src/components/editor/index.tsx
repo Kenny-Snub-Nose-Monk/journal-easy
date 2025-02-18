@@ -62,7 +62,6 @@ const TiptapEditor = (props: IProps) => {
       url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
       name: id,
       document: ydoc,
-      connect: false, // connect later
     })
   }, [id, ydoc])
 
