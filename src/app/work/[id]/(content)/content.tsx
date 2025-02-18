@@ -13,6 +13,7 @@ import {
   CONTENT_WIDTH,
   DOC_TITLE_INPUT_ID,
   LAST_DOC_ID_KEY,
+  EVENT_KEY_CHANGE_DOC_USER_ID,
 } from '@/constants'
 
 interface IProps {
@@ -20,7 +21,9 @@ interface IProps {
   defaultTitle: string
   defaultNotFound: boolean
   defaultIsStar: boolean | null
+  defaultDocUserId: string
   userInfo: {
+    id: string
     name: string
     email: string
     avatar: string
@@ -28,9 +31,23 @@ interface IProps {
 }
 
 export default function Content(props: IProps) {
-  const { defaultId, defaultTitle, defaultNotFound, defaultIsStar, userInfo } =
-    props
+  const {
+    defaultId,
+    defaultTitle,
+    defaultNotFound,
+    defaultIsStar,
+    defaultDocUserId,
+    userInfo,
+  } = props
+
   const [id, setId] = useState(defaultId)
+
+  // doc user id
+  const [docUserId, setDocUserId] = useState(defaultDocUserId)
+  useEffect(() => {
+    emitter.emit(EVENT_KEY_CHANGE_DOC_USER_ID, { docUserId, id })
+  }, [docUserId, id])
+
   // loading
   const [loading, setLoading] = useState(false)
   // 找不到文章
@@ -91,11 +108,13 @@ export default function Content(props: IProps) {
         // 通過 id 找不到 doc
         if (data == null) {
           setNotFound(true)
+          setDocUserId('')
           setTitle('Not Found')
           setLoading(false)
           return
         }
         setTitle(data.title)
+        setDocUserId(data.userId)
         setLoading(false)
         setIsStar(data.isStar)
       })
@@ -144,6 +163,7 @@ export default function Content(props: IProps) {
           onChange={handleChange}
           className="border-none p-0 text-4xl font-bold focus-visible:ring-transparent"
           ref={titleInputRef}
+          disabled={userInfo.id !== docUserId}
         />
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
