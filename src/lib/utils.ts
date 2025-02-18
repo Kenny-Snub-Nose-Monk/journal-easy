@@ -10,3 +10,6 @@ export function getHourStamp() {
   const hourStamp = now / (60 * 60 * 1000)
   return Math.floor(hourStamp)
 }
+
+export const getRandomElement = (list: any) =>
+  list[Math.floor(Math.random() * list.length)]

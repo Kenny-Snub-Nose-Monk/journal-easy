@@ -29,9 +29,6 @@ async function updateDoc(
 export const updateTitle = debounce(async (id: string, title: string) => {
   return await updateDoc(id, { title })
 }, 1000)
-export const updateContent = debounce(async (id: string, content: string) => {
-  return await updateDoc(id, { content })
-}, 1000)
 
 export const updateParentId = async (id: string, parentId: string | null) => {
   return await updateDoc(id, { parentId })

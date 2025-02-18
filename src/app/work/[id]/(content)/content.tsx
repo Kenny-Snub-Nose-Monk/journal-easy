@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
 import TiptapEditor from '@/components/editor'
-import { getDoc, updateContent, updateTitle } from './client-action'
+import { getDoc, updateTitle } from './client-action'
 import emitter from '@/lib/emitter'
 import {
   EVENT_KEY_CHANGE_DOC_TITLE,
@@ -21,10 +21,16 @@ interface IProps {
   defaultTitle: string
   defaultNotFound: boolean
   defaultIsStar: boolean | null
+  userInfo: {
+    name: string
+    email: string
+    avatar: string
+  }
 }
 
 export default function Content(props: IProps) {
-  const { defaultId, defaultTitle, defaultNotFound, defaultIsStar } = props
+  const { defaultId, defaultTitle, defaultNotFound, defaultIsStar, userInfo } =
+    props
   const [id, setId] = useState(defaultId)
   // loading
   const [loading, setLoading] = useState(false)
@@ -142,7 +148,7 @@ export default function Content(props: IProps) {
         />
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
-      <TiptapEditor id={id} />
+      <TiptapEditor id={id} userInfo={userInfo} />
     </div>
   )
 }

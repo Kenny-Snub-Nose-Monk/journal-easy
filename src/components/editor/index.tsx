@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useCallback, useState, useMemo } from 'react'
+import { useRef, useEffect, useCallback, useState, useMemo, use } from 'react'
 import { createPortal } from 'react-dom'
 import { useEditor, EditorContent } from '@tiptap/react'
 import { HocuspocusProvider, WebSocketStatus } from '@hocuspocus/provider'
@@ -20,12 +20,23 @@ import {
   EVENT_KEY_CHANGE_CHAR_COUNT,
   RIGHT_PANEL_DOM_ID,
   EDITOR_CHARACTER_LIMIT,
+  COLLABORATE_EDIT_USER_COLORS,
+  EVENT_KEY_CHANGE_COLLAB_STATE,
+  EVENT_KEY_CHANGE_COLLAB_USERS,
 } from '@/constants'
+import { getRandomElement } from '@/lib/utils'
 import { useToast } from '../ui/use-toast'
 import throttle from 'lodash.throttle'
 
+interface IUserInfo {
+  name: string
+  email: String
+  avatar: string
+}
+
 interface IProps {
   id: string
+  userInfo: IUserInfo
 }
 
 const limitToast = throttle(
@@ -41,7 +52,7 @@ const limitToast = throttle(
 )
 
 const TiptapEditor = (props: IProps) => {
-  const { id } = props
+  const { id, userInfo } = props
   const { toast } = useToast()
   const menuContainerRef = useRef(null)
 
@@ -64,14 +75,18 @@ const TiptapEditor = (props: IProps) => {
         CollaborationCursor.configure({
           provider,
           user: {
-            name: '雙越老師', // 先寫死
-            color: '#fb7185',
+            name: userInfo.name || userInfo.email,
+            avatar: userInfo.avatar,
+            color: getRandomElement(COLLABORATE_EDIT_USER_COLORS), // random color
           },
         }),
       ],
       onCreate: ({ editor }) => {
-        provider?.on('synced', () => {
-          console.log('editor provider synced...')
+        // provider?.on('synced', () => {
+        //   console.log('editor provider synced...')
+        // })
+        provider?.on('authenticationFailed', (reason: any) => {
+          console.log('editor provider authentication failed...', reason)
         })
       },
       onUpdate: ({ editor }) => {
@@ -94,7 +109,7 @@ const TiptapEditor = (props: IProps) => {
         },
       },
     },
-    [id, ydoc, provider]
+    [id, ydoc, provider, userInfo]
   )
 
   const countLimitToast = useCallback(() => {
@@ -114,6 +129,20 @@ const TiptapEditor = (props: IProps) => {
   }, [id, editor])
   useEffect(updateCharacterCount)
 
+  // update collaborative state
+  useEffect(() => {
+    provider?.on('status', (event: { status: WebSocketStatus }) => {
+      emitter.emit(EVENT_KEY_CHANGE_COLLAB_STATE, { status: event.status, id })
+    })
+  }, [provider, id])
+  // get collaboration users
+  useEffect(() => {
+    const users = editor?.storage.collaborationCursor?.users || []
+    if (users.length <= 0) return
+    emitter.emit(EVENT_KEY_CHANGE_COLLAB_USERS, { users, id })
+  }, [editor?.storage.collaborationCursor?.users, id])
+
+  // AI island element
   const [rightPanelDiv, setRightPanelDiv] = useState<HTMLElement | null>(null)
   useEffect(() => {
     setRightPanelDiv(document.getElementById(RIGHT_PANEL_DOM_ID))
