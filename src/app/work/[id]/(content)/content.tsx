@@ -72,7 +72,7 @@ export default function Content(props: IProps) {
 
       // 剛創建的新文檔，不用查詢內容（查也是空的）
       if (type === 'create') {
-        // 用 setTimeout 模擬 loading 效果（還有，不用 setTimeout 無法徹底清除編輯器之前的内容）
+        // 用 setTimeout 模擬 loading 效果
         setTimeout(() => {
           setTitle('')
           setLoading(false)
@@ -123,7 +123,7 @@ export default function Content(props: IProps) {
           className="underline cursor-pointer"
           onClick={() => emitter.emit(EVENT_KEY_CREATE_DOC)}
         >
-          创建新文檔
+          創建新文檔
         </span>
       </p>
     )

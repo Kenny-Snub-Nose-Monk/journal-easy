@@ -27,6 +27,7 @@ export const extensions = [
   StarterKit.configure({
     document: false,
     dropcursor: false,
+    history: false, // disable default history, use collaborate edit
   }),
   Underline,
   TextAlign.configure({

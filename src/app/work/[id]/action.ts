@@ -15,7 +15,10 @@ export async function getDoc(id: string) {
       },
     })
 
-    return doc
+    return {
+      doc,
+      user,
+    }
   } catch (err: any) {
     console.error('getDoc error: ', err)
     sendErrorAlert(err, 'getDoc error')
