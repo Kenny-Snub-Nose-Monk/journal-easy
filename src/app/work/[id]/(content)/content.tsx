@@ -131,7 +131,7 @@ export default function Content(props: IProps) {
         className="flex flex-col space-y-3 mx-auto mt-10"
         style={{ width: `${CONTENT_WIDTH}px` }}
       >
-        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full mb-1" />
         <div className="space-y-2">
           <Skeleton className="h-6 w-full" />
           <Skeleton className="h-6 w-full" />
