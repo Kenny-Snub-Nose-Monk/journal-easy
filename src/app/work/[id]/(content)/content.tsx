@@ -9,7 +9,6 @@ import {
   EVENT_KEY_CHANGE_DOC_TITLE,
   EVENT_KEY_NAV_DOC,
   EVENT_KEY_CREATE_DOC,
-  EVENT_KEY_CHANGE_UPDATING,
   EVENT_KEY_CHANGE_IS_STAR,
   CONTENT_WIDTH,
   DOC_TITLE_INPUT_ID,
@@ -43,12 +42,13 @@ export default function Content(props: IProps) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value
-    // 更新資料庫
-    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, { id, newTitle }) // 標記“修改中”
     setTitle(newTitle)
+
+    // 更新資料庫
     updateTitle(id, newTitle)
+
     // 觸發事件，以更新左側列表的文章標題
-    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, newTitle)
+    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, { id, newTitle })
   }
 
   useEffect(() => {
@@ -98,7 +98,6 @@ export default function Content(props: IProps) {
         setTitle(data.title)
         setLoading(false)
         setIsStar(data.isStar)
-        emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false, id }) // 切換文檔，重置標記
       })
     }
     emitter.on(EVENT_KEY_NAV_DOC, load)

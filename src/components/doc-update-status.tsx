@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Check, PencilLine } from 'lucide-react'
 import {
   Tooltip,
   TooltipContent,
@@ -11,7 +10,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import emitter from '@/lib/emitter'
 import {
-  EVENT_KEY_CHANGE_UPDATING,
   EVENT_KEY_CHANGE_CHAR_COUNT,
   EVENT_KEY_CHANGE_COLLAB_STATE,
   EVENT_KEY_CHANGE_COLLAB_USERS,
@@ -31,18 +29,6 @@ interface IProps {
 }
 export default function DocUpdateStatus(props: IProps) {
   const { id } = props
-  // 更新狀態 “修改中” 或 “已更新”
-  const [updating, setUpdating] = useState(false)
-  useEffect(() => {
-    function handler(payload: any) {
-      const { updating = false, id: docId = '' } = payload
-      if (docId === id) setUpdating(updating)
-    }
-    emitter.on(EVENT_KEY_CHANGE_UPDATING, handler)
-    return () => {
-      emitter.off(EVENT_KEY_CHANGE_UPDATING, handler) // 及時銷毀自定義事件
-    }
-  }, [id])
 
   // 字符數量
   const [characterCount, setCharacterCount] = useState(-1)
@@ -120,18 +106,7 @@ export default function DocUpdateStatus(props: IProps) {
         <span className="text-muted-foreground ml-1">{collaborativeState}</span>
       </div>
       <span className="text-muted-foreground text-sm ml-3 inline-flex items-center">
-        {updating && (
-          <>
-            <PencilLine className="w-4 h-4 mr-1" />
-            修改中...
-          </>
-        )}
-        {!updating && (
-          <>
-            <Check className="w-4 h-4 mr-1" />
-            已保存，共 {characterCount >= 0 ? characterCount : '---'} 字
-          </>
-        )}
+        共 {characterCount >= 0 ? characterCount : '---'} 字
       </span>
     </>
   )
