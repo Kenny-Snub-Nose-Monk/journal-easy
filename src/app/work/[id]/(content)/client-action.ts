@@ -1,7 +1,5 @@
 import debounce from 'lodash.debounce'
 import { get, patch } from '@/lib/ajax'
-import emitter from '@/lib/emitter'
-import { EVENT_KEY_CHANGE_UPDATING } from '@/constants'
 
 export async function getDoc(id: string) {
   const url = `/api/doc/${id}`
@@ -21,8 +19,6 @@ async function updateDoc(
 ) {
   const url = `/api/doc/${id}`
   const res = await patch(url, data)
-
-  emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false, id }) // 標記“已更新”
 
   return res
 }
