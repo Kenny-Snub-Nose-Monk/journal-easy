@@ -62,8 +62,20 @@ const TiptapEditor = (props: IProps) => {
       url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
       name: id,
       document: ydoc,
+      connect: false, // connect later
     })
   }, [id, ydoc])
+
+  // connect and disconnect
+  useEffect(() => {
+    if (!provider.isConnected) {
+      provider.connect()
+    }
+    return () => {
+      provider.disconnect()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   const editor = useEditor(
     {
