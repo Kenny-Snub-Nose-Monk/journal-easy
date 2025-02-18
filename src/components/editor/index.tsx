@@ -3,6 +3,7 @@
 import { useRef, useEffect, useCallback, useState, useMemo, use } from 'react'
 import { createPortal } from 'react-dom'
 import { useEditor, EditorContent } from '@tiptap/react'
+import { Skeleton } from '@/components/ui/skeleton'
 import { HocuspocusProvider, WebSocketStatus } from '@hocuspocus/provider'
 import * as Y from 'yjs'
 import Collaboration from '@tiptap/extension-collaboration'
@@ -25,12 +26,13 @@ import {
   EVENT_KEY_CHANGE_COLLAB_USERS,
 } from '@/constants'
 import { getRandomElement } from '@/lib/utils'
+import { get } from '@/lib/ajax'
 import { useToast } from '../ui/use-toast'
 import throttle from 'lodash.throttle'
 
 interface IUserInfo {
   name: string
-  email: String
+  email: string
   avatar: string
 }
 
@@ -56,12 +58,18 @@ const TiptapEditor = (props: IProps) => {
   const { toast } = useToast()
   const menuContainerRef = useRef(null)
 
+  // content loading
+  const [contentLoading, setContentLoading] = useState(true)
+  useEffect(() => setContentLoading(true), [id])
+
+  // Yjs document and provider
   const ydoc = useMemo(() => new Y.Doc(), [])
   const provider = useMemo(() => {
     return new HocuspocusProvider({
       url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
       name: id,
       document: ydoc,
+      connect: false, // connect later
     })
   }, [id, ydoc])
 
@@ -71,6 +79,7 @@ const TiptapEditor = (props: IProps) => {
       provider.connect()
     }
     return () => {
+      provider.configuration.websocketProvider.disconnect() // https://github.com/ueberdosis/hocuspocus/issues/594#issuecomment-1740599461
       provider.disconnect()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,17 +96,34 @@ const TiptapEditor = (props: IProps) => {
           provider,
           user: {
             name: userInfo.name || userInfo.email,
+            email: userInfo.email,
             avatar: userInfo.avatar,
             color: getRandomElement(COLLABORATE_EDIT_USER_COLORS), // random color
           },
         }),
       ],
       onCreate: ({ editor }) => {
-        // provider?.on('synced', () => {
-        //   console.log('editor provider synced...')
-        // })
-        provider?.on('authenticationFailed', (reason: any) => {
-          console.log('editor provider authentication failed...', reason)
+        provider?.on('open', async () => {
+          // console.log('editor provider open...')
+          // 當 JSON 轉換為 Yjs doc 失敗時獲取文檔內容並設置內容。一段時間後我們將刪除此代碼（幾乎所有文檔都已轉換）。
+          const { errno, data } = await get(`/api/doc/${id}`)
+          if (errno !== 0) return
+          // console.log('data....', data)
+          const { contentBinary, content } = data
+          if (contentBinary == null && content) {
+            console.log('注意：編輯器通過 JSON 格式設置內容 1 ', id)
+            editor.commands.setContent(JSON.parse(content))
+            setContentLoading(false)
+          }
+          if (editor.isEmpty && content) {
+            console.log('注意：編輯器通過 JSON 格式設置內容 2 ', id)
+            editor.commands.setContent(JSON.parse(content))
+            setContentLoading(false)
+          }
+        })
+        provider?.on('synced', () => {
+          // console.log('editor provider synced...')
+          setContentLoading(false)
         })
       },
       onUpdate: ({ editor }) => {
@@ -127,6 +153,7 @@ const TiptapEditor = (props: IProps) => {
     limitToast(toast)
   }, [toast])
 
+  // 更新字符計數
   const updateCharacterCount = useCallback(() => {
     const characterCount = editor?.storage.characterCount || {
       characters: () => 0,
@@ -136,28 +163,49 @@ const TiptapEditor = (props: IProps) => {
       count: characterCount.characters(),
       id,
     })
-    // characterCount.words() 可統計英文單詞數量，但不適用中文
+    // characterCount.words() 可以統計英文單詞數量，但不適用於中文
   }, [id, editor])
   useEffect(updateCharacterCount)
 
-  // update collaborative state
+  // 更新協作狀態
   useEffect(() => {
     provider?.on('status', (event: { status: WebSocketStatus }) => {
       emitter.emit(EVENT_KEY_CHANGE_COLLAB_STATE, { status: event.status, id })
     })
   }, [provider, id])
-  // get collaboration users
+
+  // 獲取協作用戶
   useEffect(() => {
     const users = editor?.storage.collaborationCursor?.users || []
     if (users.length <= 0) return
-    emitter.emit(EVENT_KEY_CHANGE_COLLAB_USERS, { users, id })
+
+    const emails: string[] = []
+    const filteredUsers = users.filter((user: IUserInfo) => {
+      if (emails.includes(user.email)) {
+        // console.log('重複用戶...', user.email, emails)
+        return false
+      }
+      emails.push(user.email)
+      return true
+    })
+
+    emitter.emit(EVENT_KEY_CHANGE_COLLAB_USERS, { users: filteredUsers, id })
   }, [editor?.storage.collaborationCursor?.users, id])
 
-  // AI island element
+  // AI 島元素
   const [rightPanelDiv, setRightPanelDiv] = useState<HTMLElement | null>(null)
   useEffect(() => {
     setRightPanelDiv(document.getElementById(RIGHT_PANEL_DOM_ID))
   }, [])
+
+  if (contentLoading) {
+    return (
+      <div className="space-y-2 mx-10">
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-full" />
+      </div>
+    )
+  }
 
   return (
     <>
