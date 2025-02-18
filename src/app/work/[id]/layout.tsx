@@ -68,7 +68,7 @@ export default async function Layout({
           className="h-screen flex flex-col relative"
         >
           {/* top bar */}
-          <TopBar defaultId={id} />
+          <TopBar defaultId={id} user={user} />
           {/* content */}
           <div
             id="work-content-scroll-container"

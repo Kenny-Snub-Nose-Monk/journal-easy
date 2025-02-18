@@ -6,9 +6,10 @@ export default async function OneWork({ params }: { params: { id: string } }) {
 
   const data = await getDoc(id)
   const notFound = !data
-  const { title = '', isStar = false } = data?.doc || {}
+  const { title = '', isStar = false, userId = '' } = data?.doc || {}
 
   const userInfo = {
+    id: data?.user?.id || '',
     name: data?.user?.name || '',
     email: data?.user?.email || '',
     avatar: data?.user?.image || '',
@@ -20,6 +21,7 @@ export default async function OneWork({ params }: { params: { id: string } }) {
       defaultTitle={title}
       defaultNotFound={notFound}
       defaultIsStar={isStar}
+      defaultDocUserId={userId}
       userInfo={userInfo}
     />
   )

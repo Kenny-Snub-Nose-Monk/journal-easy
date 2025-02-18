@@ -9,10 +9,11 @@ import { EVENT_KEY_CHANGE_IS_STAR } from '@/constants'
 interface IProps {
   id: string
   defaultIsStar?: boolean
+  disabled?: boolean
   className?: string
 }
 export default function StarDocButton(props: IProps) {
-  const { id, defaultIsStar = false, className = '' } = props
+  const { id, defaultIsStar = false, className = '', disabled = false } = props
   const { toast } = useToast()
 
   // 監聽 isStar 狀態
@@ -46,6 +47,7 @@ export default function StarDocButton(props: IProps) {
       size="sm"
       onClick={handleUpdateIsStar}
       className={cn('focus-visible:ring-transparent', className)}
+      disabled={disabled}
     >
       <Star className="h-4 w-4 mr-1" />
       {isStar ? '已收藏' : '收藏'}
