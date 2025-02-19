@@ -6,5 +6,5 @@ export interface IDoc {
   updatedAt?: string
   isDeleted?: boolean
   isStar?: boolean
-  sharePassword?: string
+  sharePassword: string | null
 }

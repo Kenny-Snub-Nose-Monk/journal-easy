@@ -14,7 +14,7 @@ interface IProps {
   id: string
   title: string
   isStar: boolean
-  sharePassword?: string
+  sharePassword?: string | null
   paramId: string
   list: IDoc[]
   level?: number
