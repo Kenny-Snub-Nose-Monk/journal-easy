@@ -176,7 +176,7 @@ export default function Content(props: IProps) {
       </div>
       {userInfo.id !== docUserId && (
         <div className="mx-10 -mt-4 mb-4">
-          <div className="inline-flex items-center">
+          <div className="inline-flex items-center text-sm">
             <Share size={16} className="mr-1 text-muted-foreground" />
             <span className="text-muted-foreground mr-2">此為共享文檔</span>
             <Link href="/work/" className="underline">
