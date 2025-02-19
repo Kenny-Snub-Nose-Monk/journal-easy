@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
-import { Share, Forward } from 'lucide-react'
+import { Share } from 'lucide-react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
@@ -18,14 +18,17 @@ import {
   LAST_DOC_ID_KEY,
   EVENT_KEY_CHANGE_DOC_USER_ID,
 } from '@/constants'
+import useDocAuthority from './hooks/useDocAuthority'
 
 interface IProps {
-  defaultId: string
-  defaultTitle: string
   defaultNotFound: boolean
-  defaultIsStar: boolean | null
-  defaultDocUserId: string
-  defaultSharePassword: string
+  defaultDoc: {
+    defaultId: string
+    defaultTitle: string
+    defaultIsStar: boolean | null
+    defaultSharePassword: string
+    defaultDocUserId: string
+  }
   userInfo: {
     id: string
     name: string
@@ -35,15 +38,14 @@ interface IProps {
 }
 
 export default function Content(props: IProps) {
+  const { defaultNotFound, defaultDoc, userInfo } = props
   const {
     defaultId,
     defaultTitle,
-    defaultNotFound,
     defaultIsStar,
-    defaultDocUserId,
     defaultSharePassword,
-    userInfo,
-  } = props
+    defaultDocUserId,
+  } = defaultDoc
 
   const [id, setId] = useState(defaultId)
 
@@ -52,6 +54,19 @@ export default function Content(props: IProps) {
   useEffect(() => {
     emitter.emit(EVENT_KEY_CHANGE_DOC_USER_ID, { docUserId, id })
   }, [docUserId, id])
+
+  // share password
+  const [sharePassword, setSharePassword] = useState(defaultSharePassword)
+  useEffect(() => {
+    emitter.emit(EVENT_KEY_CHANGE_IS_SHARED, { sharePassword, id })
+  }, [sharePassword, id])
+  // If cur user has authority
+  const { authority, UnauthorizedText } = useDocAuthority(
+    id,
+    userInfo.id,
+    docUserId,
+    sharePassword
+  )
 
   // record last doc id
   useEffect(() => {
@@ -92,13 +107,6 @@ export default function Content(props: IProps) {
   useEffect(() => {
     emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar, id })
   }, [isStar, id])
-
-  // share password
-  const [sharePassword, setSharePassword] = useState(defaultSharePassword)
-
-  useEffect(() => {
-    emitter.emit(EVENT_KEY_CHANGE_IS_SHARED, { sharePassword, id })
-  }, [sharePassword, id])
 
   // 獲取文章內容
   useEffect(() => {
@@ -197,7 +205,10 @@ export default function Content(props: IProps) {
           </div>
         </div>
       )}
-      <TiptapEditor id={id} userInfo={userInfo} />
+      {authority && <TiptapEditor id={id} userInfo={userInfo} />}
+      {!authority && (
+        <p className="mx-10 mt-44 text-center">{UnauthorizedText}</p>
+      )}
     </div>
   )
 }
