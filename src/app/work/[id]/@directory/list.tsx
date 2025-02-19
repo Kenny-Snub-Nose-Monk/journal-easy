@@ -42,13 +42,14 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
       {list
         .filter((i) => i.parentId == null) // 頂級目錄
         .map((doc) => {
-          const { id, title, isStar } = doc
+          const { id, title, isStar, sharePassword } = doc
           return (
             <Item
               key={id}
               id={id}
               title={title}
               isStar={!!isStar}
+              sharePassword={sharePassword}
               paramId={paramId}
               list={list}
             />
