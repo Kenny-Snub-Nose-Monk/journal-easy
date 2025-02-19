@@ -1,5 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
+import { Share, Forward } from 'lucide-react'
+import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
 import TiptapEditor from '@/components/editor'
@@ -48,6 +50,13 @@ export default function Content(props: IProps) {
     emitter.emit(EVENT_KEY_CHANGE_DOC_USER_ID, { docUserId, id })
   }, [docUserId, id])
 
+  // record last doc id
+  useEffect(() => {
+    if (userInfo.id === docUserId) {
+      localStorage.setItem(LAST_DOC_ID_KEY, id) // 保存最後一次打開的文檔 id
+    }
+  }, [id, userInfo, docUserId])
+
   // loading
   const [loading, setLoading] = useState(false)
   // 找不到文章
@@ -83,8 +92,6 @@ export default function Content(props: IProps) {
 
   // 獲取文章內容
   useEffect(() => {
-    localStorage.setItem(LAST_DOC_ID_KEY, id) // 保存最后一次打开的文档 id
-
     function load(payload: any) {
       const { id, type } = payload || {}
       if (!id) return
@@ -167,6 +174,17 @@ export default function Content(props: IProps) {
         />
         {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
       </div>
+      {userInfo.id !== docUserId && (
+        <div className="mx-10 -mt-4 mb-4">
+          <div className="inline-flex items-center">
+            <Share size={16} className="mr-1 text-muted-foreground" />
+            <span className="text-muted-foreground mr-2">此為共享文檔</span>
+            <Link href="/work/" className="underline">
+              跳轉到我的文檔
+            </Link>
+          </div>
+        </div>
+      )}
       <TiptapEditor id={id} userInfo={userInfo} />
     </div>
   )
