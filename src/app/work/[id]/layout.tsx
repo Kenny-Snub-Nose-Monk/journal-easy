@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -6,9 +7,10 @@ import {
 } from '@/components/ui/resizable'
 import TopBar from './top-bar'
 import { Separator } from '@/components/ui/separator'
-import { LogOut, Users } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import UserSettingButton from '@/components/user-setting-button'
 import SignOutButton from '@/components/sign-out-button'
+import HomeNav from '@/components/home-nav'
 import { getUserInfo } from '@/lib/session'
 import Trash from '../trash'
 import StarList from '../(dialog-pages)/star-list'
@@ -34,7 +36,8 @@ export default async function Layout({
   // Is my own doc
   let isMyOwnDoc = true
   const data = await getDoc(id)
-  if (data?.doc?.userId !== user.id) {
+  const { userId: docUserId, sharePassword } = data?.doc || {}
+  if (docUserId !== user.id) {
     isMyOwnDoc = false
   }
   // main section
@@ -53,7 +56,23 @@ export default async function Layout({
   )
 
   if (!isMyOwnDoc) {
-    return mainSection
+    if (!sharePassword) {
+      // not shared yet
+      return (
+        <div className="min-h-screen flex flex-col justify-center text-center">
+          <HomeNav />
+          <p>
+            無權限訪問該文件，
+            <Link href="/work/" className="underline">
+              跳轉到我的文件
+            </Link>
+          </p>
+        </div>
+      )
+    } else {
+      // shared doc
+      return mainSection
+    }
   }
 
   return (

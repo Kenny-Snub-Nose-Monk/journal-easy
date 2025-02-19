@@ -9,9 +9,16 @@ export default async function OneWork({ params }: { params: { id: string } }) {
   const {
     title = '',
     isStar = false,
-    sharePassword = '',
+    sharePassword,
     userId = '',
   } = data?.doc || {}
+  const defaultDoc = {
+    defaultId: id,
+    defaultTitle: title,
+    defaultIsStar: isStar,
+    defaultSharePassword: sharePassword || '',
+    defaultDocUserId: userId,
+  }
 
   const userInfo = {
     id: data?.user?.id || '',
@@ -22,12 +29,8 @@ export default async function OneWork({ params }: { params: { id: string } }) {
 
   return (
     <Content
-      defaultId={id}
-      defaultTitle={title}
       defaultNotFound={notFound}
-      defaultIsStar={isStar}
-      defaultSharePassword={sharePassword || ''}
-      defaultDocUserId={userId}
+      defaultDoc={defaultDoc}
       userInfo={userInfo}
     />
   )
