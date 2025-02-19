@@ -50,6 +50,7 @@ export default function TopBar(props: IProps) {
 
   // doc user id
   const [docUserId, setDocUserId] = useState('')
+
   useEffect(() => {
     function handler(payload: any) {
       const { docUserId = '', id: docId } = payload || {}

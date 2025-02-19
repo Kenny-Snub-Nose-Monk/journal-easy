@@ -14,6 +14,7 @@ import Trash from '../trash'
 import StarList from '../(dialog-pages)/star-list'
 import SearchComp from '../(dialog-pages)/search'
 import { RIGHT_PANEL_DOM_ID } from '@/constants'
+import { getDoc } from './(content)/client-action'
 
 export default async function Layout({
   params,
@@ -29,6 +30,31 @@ export default async function Layout({
     redirect('/user-info')
   }
   const { id = '0' } = params
+
+  // Is my own doc
+  let isMyOwnDoc = true
+  const data = await getDoc(id)
+  if (data?.doc?.userId !== user.id) {
+    isMyOwnDoc = false
+  }
+  // main section
+  const mainSection = (
+    <div id={RIGHT_PANEL_DOM_ID} className="h-screen flex flex-col relative">
+      {/* top bar */}
+      <TopBar defaultId={id} user={user} />
+      {/* content */}
+      <div
+        id="work-content-scroll-container"
+        className="flex-auto overflow-y-auto"
+      >
+        {children}
+      </div>
+    </div>
+  )
+
+  if (!isMyOwnDoc) {
+    return mainSection
+  }
 
   return (
     <ResizablePanelGroup direction="horizontal" className="h-screen">
@@ -62,22 +88,7 @@ export default async function Layout({
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={82}>
-        <div
-          id={RIGHT_PANEL_DOM_ID}
-          className="h-screen flex flex-col relative"
-        >
-          {/* top bar */}
-          <TopBar defaultId={id} user={user} />
-          {/* content */}
-          <div
-            id="work-content-scroll-container"
-            className="flex-auto overflow-y-auto"
-          >
-            {children}
-          </div>
-        </div>
-      </ResizablePanel>
+      <ResizablePanel defaultSize={82}>{mainSection}</ResizablePanel>
     </ResizablePanelGroup>
   )
 }
