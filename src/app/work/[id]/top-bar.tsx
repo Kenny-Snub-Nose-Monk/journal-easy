@@ -12,6 +12,7 @@ import Logo from '@/components/Logo'
 import ChangeTheme from '@/components/change-theme'
 import emitter from '@/lib/emitter'
 import { EVENT_KEY_NAV_DOC, EVENT_KEY_CHANGE_DOC_USER_ID } from '@/constants'
+import ShareDocButton from '@/components/share-doc-button'
 import StarDocButton from '@/components/star-doc-button'
 import DocUpdateStatus from '@/components/doc-update-status'
 import { Separator } from '@/components/ui/separator'
@@ -69,10 +70,7 @@ export default function TopBar(props: IProps) {
       <div className="flex-1 text-end">
         {/* 後續再拆分組件 */}
         <div className="inline-flex items-center">
-          {/* <Button variant="ghost" size="sm">
-            <Forward className="h-4 w-4" />
-            &nbsp;分享
-          </Button> */}
+          <ShareDocButton id={id} disabled={docUserId !== user.id} />
           <StarDocButton id={id} disabled={docUserId !== user.id} />
           <TopBarHandlers id={id} disabled={docUserId !== user.id} />
           <ChangeTheme />
