@@ -12,6 +12,7 @@ export async function getDoc(id: string) {
       select: {
         title: true,
         isStar: true,
+        sharePassword: true,
         userId: true,
       },
     })
