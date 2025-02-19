@@ -12,6 +12,7 @@ import {
   EVENT_KEY_NAV_DOC,
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_CHANGE_IS_STAR,
+  EVENT_KEY_CHANGE_IS_SHARED,
   CONTENT_WIDTH,
   DOC_TITLE_INPUT_ID,
   LAST_DOC_ID_KEY,
@@ -24,6 +25,7 @@ interface IProps {
   defaultNotFound: boolean
   defaultIsStar: boolean | null
   defaultDocUserId: string
+  defaultSharePassword: string
   userInfo: {
     id: string
     name: string
@@ -39,6 +41,7 @@ export default function Content(props: IProps) {
     defaultNotFound,
     defaultIsStar,
     defaultDocUserId,
+    defaultSharePassword,
     userInfo,
   } = props
 
@@ -90,6 +93,13 @@ export default function Content(props: IProps) {
     emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar, id })
   }, [isStar, id])
 
+  // share password
+  const [sharePassword, setSharePassword] = useState(defaultSharePassword)
+
+  useEffect(() => {
+    emitter.emit(EVENT_KEY_CHANGE_IS_SHARED, { sharePassword, id })
+  }, [sharePassword, id])
+
   // 獲取文章內容
   useEffect(() => {
     function load(payload: any) {
@@ -98,6 +108,7 @@ export default function Content(props: IProps) {
       setId(id) // 切換 id ，重要！
       setIsStar(false)
       setNotFound(false)
+      setSharePassword('')
       setLoading(true)
 
       // 剛創建的新文檔，不用查詢內容（查也是空的）
@@ -124,6 +135,7 @@ export default function Content(props: IProps) {
         setDocUserId(data.userId)
         setLoading(false)
         setIsStar(data.isStar)
+        setSharePassword(data.sharePassword)
       })
     }
     emitter.on(EVENT_KEY_NAV_DOC, load)
