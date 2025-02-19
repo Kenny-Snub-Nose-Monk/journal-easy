@@ -28,6 +28,7 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           id: newId,
           title: '',
           parentId,
+          sharePassword: null,
         },
       ])
 
