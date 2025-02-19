@@ -206,6 +206,7 @@ export default function Content(props: IProps) {
         </div>
       )}
       {authority && <TiptapEditor id={id} userInfo={userInfo} />}
+      {/* {authority && <p className="mx-10">editor</p>} */}
       {!authority && (
         <p className="mx-10 mt-44 text-center">{UnauthorizedText}</p>
       )}

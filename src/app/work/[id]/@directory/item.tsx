@@ -1,6 +1,6 @@
 'use client'
 
-import { FileText, ChevronDown, ChevronRight, Plus } from 'lucide-react'
+import { File, FileOutput, ChevronDown, ChevronRight, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import emitter from '@/lib/emitter'
@@ -14,12 +14,22 @@ interface IProps {
   id: string
   title: string
   isStar: boolean
+  sharePassword?: string
   paramId: string
   list: IDoc[]
+  level?: number
 }
 
 export default function Item(props: IProps) {
-  const { id, title, list = [], paramId, isStar } = props
+  const {
+    id,
+    title,
+    list = [],
+    paramId,
+    isStar,
+    sharePassword,
+    level = 0,
+  } = props
   const isCurrent = id === paramId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -84,7 +94,11 @@ export default function Item(props: IProps) {
         >
           {!hasChildren && (
             <div className="w-4 mr-1">
-              <FileText className="h-4 w-4" />
+              {!!sharePassword ? (
+                <FileOutput className="h-4 w-4" />
+              ) : (
+                <File className="h-4 w-4" />
+              )}
             </div>
           )}
           <span className="truncate flex-auto">{title || 'No Title'}</span>
@@ -108,7 +122,7 @@ export default function Item(props: IProps) {
       {hasChildren && showChildren && (
         <div className="ml-3">
           {children.map((doc) => {
-            const { id, title, isStar } = doc
+            const { id, title, isStar, sharePassword } = doc
             return (
               <Item
                 key={id}
@@ -117,6 +131,8 @@ export default function Item(props: IProps) {
                 paramId={paramId}
                 list={list}
                 isStar={!!isStar}
+                sharePassword={sharePassword}
+                level={level + 1}
               />
             )
           })}
