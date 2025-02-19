@@ -15,6 +15,7 @@ import { getUserInfo } from '@/lib/session'
 import Trash from '../trash'
 import StarList from '../(dialog-pages)/star-list'
 import SearchComp from '../(dialog-pages)/search'
+import ShareList from '../share-list'
 import { RIGHT_PANEL_DOM_ID } from '@/constants'
 import { getDoc } from './(content)/client-action'
 
@@ -83,13 +84,7 @@ export default async function Layout({
             <UserSettingButton user={user} />
             <SearchComp />
             <StarList />
-            {/* <Button
-              className="w-full justify-start px-2 font-bold hover:bg-card"
-              variant="ghost"
-            >
-              <Users className="h-4 w-4" />
-              &nbsp;&nbsp;共同編輯
-            </Button> */}
+            <ShareList />
           </div>
           <Separator className="my-4" />
           <div className="flex-auto overflow-y-auto">{directory}</div>
