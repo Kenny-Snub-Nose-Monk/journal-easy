@@ -75,6 +75,7 @@ const TiptapEditor = (props: IProps) => {
 
   // connect and disconnect
   useEffect(() => {
+    console.log('provider.isConnected', provider)
     if (!provider.isConnected) {
       provider.connect()
     }
@@ -105,25 +106,17 @@ const TiptapEditor = (props: IProps) => {
       onCreate: ({ editor }) => {
         provider?.on('open', async () => {
           // console.log('editor provider open...')
-          // 當 JSON 轉換為 Yjs doc 失敗時獲取文檔內容並設置內容。一段時間後我們將刪除此代碼（幾乎所有文檔都已轉換）。
+          // Get doc content, and set content, when JSON convert to Yjs doc failed. We will remove this code after a long time (almost all docs have been converted).
           const { errno, data } = await get(`/api/doc/${id}`)
           if (errno !== 0) return
           // console.log('data....', data)
           const { contentBinary, content } = data
           if (contentBinary == null && content) {
-            console.log('注意：編輯器通過 JSON 格式設置內容 1 ', id)
             editor.commands.setContent(JSON.parse(content))
-            setContentLoading(false)
           }
           if (editor.isEmpty && content) {
-            console.log('注意：編輯器通過 JSON 格式設置內容 2 ', id)
             editor.commands.setContent(JSON.parse(content))
-            setContentLoading(false)
           }
-        })
-        provider?.on('synced', () => {
-          // console.log('editor provider synced...')
-          setContentLoading(false)
         })
       },
       onUpdate: ({ editor }) => {

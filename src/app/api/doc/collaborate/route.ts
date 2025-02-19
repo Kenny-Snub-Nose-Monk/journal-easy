@@ -5,6 +5,8 @@ import { Logger } from '@hocuspocus/extension-logger'
 import * as Y from 'yjs'
 import { db } from '@/db/db'
 import { sendErrorAlert } from '@/lib/mailer'
+import { basicExts } from './extensions'
+
 const hocuspocusServer = HocusPocusServer.configure({
   // save doc JSON content to db
   onStoreDocument: async (data: any) => {
@@ -33,7 +35,7 @@ const hocuspocusServer = HocusPocusServer.configure({
     new Database({
       // fetch doc content from db
       fetch: async ({ documentName }: any) => {
-        console.log('Fetch db db ... ', documentName)
+        // console.log('Fetch db db ... ', documentName)
         let res: any = null
         try {
           res = await db.doc.findUnique({
@@ -43,7 +45,7 @@ const hocuspocusServer = HocusPocusServer.configure({
               content: true,
             },
           })
-          console.log('hocuspocus db fetch res ... ', res)
+          console.log('hocuspocus db fetch res ... ', documentName)
         } catch (err: any) {
           console.error('hocuspocus db fetch error', err)
           sendErrorAlert('hocuspocus db fetch error', err.message || 'error')
@@ -51,14 +53,21 @@ const hocuspocusServer = HocusPocusServer.configure({
         if (res == null) return null
         if (res.contentBinary) return res.contentBinary // return binary content if exists
         if (res.content == null) return null
-        console.log('hocuspocus db fetch res.content ...', res.content)
-        const bytes = TiptapTransformer.toYdoc(
-          JSON.parse(res.content),
-          'default'
-        ) // JSON to Yjs doc
-        const state = Y.encodeStateAsUpdate(bytes) // Yjs doc to binary
-        console.log('hocuspocus db fetch state ...... ', state)
-        return state
+        try {
+          // console.log('hocuspocus db fetch res.content ...', res.content)
+          const bytes = TiptapTransformer.toYdoc(
+            JSON.parse(res.content),
+            'default',
+            basicExts
+          ) // JSON to Yjs doc
+          // console.log('hocuspocus db fetch bytes ...', bytes)
+          const state = Y.encodeStateAsUpdate(bytes) // Yjs doc to binary
+          // console.log('hocuspocus db fetch state ...... ', state)
+          return state
+        } catch (ex) {
+          console.log('hocuspocus db fetch error ...', ex)
+        }
+        return null
       },
       // store doc contentBinary to db
       store: async ({ documentName, state }: any) => {
@@ -70,7 +79,7 @@ const hocuspocusServer = HocusPocusServer.configure({
               contentBinary: state,
             },
           })
-          console.log('hocuspocus db store res ... ', res)
+          console.log('hocuspocus db store res ... ', documentName)
         } catch (err: any) {
           console.error('hocuspocus db store error', err)
           sendErrorAlert('hocuspocus db store error', err.message || 'error')
@@ -85,6 +94,7 @@ export async function GET() {
   headers.set('Upgrade', 'websocket')
   return new Response('Upgrade Required', { status: 426, headers })
 }
+
 export function SOCKET(
   client: import('ws').WebSocket,
   _request: import('http').IncomingMessage,
