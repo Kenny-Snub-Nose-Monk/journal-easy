@@ -60,6 +60,7 @@ const TiptapEditor = (props: IProps) => {
 
   // content loading
   const [contentLoading, setContentLoading] = useState(true)
+
   useEffect(() => setContentLoading(true), [id])
 
   // Yjs document and provider
@@ -112,11 +113,19 @@ const TiptapEditor = (props: IProps) => {
           // console.log('data....', data)
           const { contentBinary, content } = data
           if (contentBinary == null && content) {
+            console.log('Notice: editor setContent by JSON format 1 ', id)
             editor.commands.setContent(JSON.parse(content))
+            setContentLoading(false)
           }
           if (editor.isEmpty && content) {
+            console.log('Notice: editor setContent by JSON format 2 ', id)
             editor.commands.setContent(JSON.parse(content))
+            setContentLoading(false)
           }
+        })
+        provider?.on('synced', () => {
+          // console.log('editor provider synced...')
+          setContentLoading(false)
         })
       },
       onUpdate: ({ editor }) => {

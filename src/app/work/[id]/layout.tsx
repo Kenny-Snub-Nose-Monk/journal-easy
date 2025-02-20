@@ -17,7 +17,7 @@ import StarList from '../(dialog-pages)/star-list'
 import SearchComp from '../(dialog-pages)/search'
 import ShareList from '../share-list'
 import { RIGHT_PANEL_DOM_ID } from '@/constants'
-import { getDoc } from './(content)/client-action'
+import { getDoc } from './action'
 
 export default async function Layout({
   params,
@@ -36,7 +36,9 @@ export default async function Layout({
 
   // Is my own doc
   let isMyOwnDoc = true
+
   const data = await getDoc(id)
+
   const { userId: docUserId, sharePassword } = data?.doc || {}
   if (docUserId !== user.id) {
     isMyOwnDoc = false
