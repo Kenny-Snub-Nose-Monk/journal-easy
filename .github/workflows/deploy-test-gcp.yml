@@ -28,7 +28,7 @@ env:
   GITHUB_SECRET: ${{ secrets.PROD_GITHUB_SECRET }}
 
   # Collaborative Edit
-  # COLLABORATIVE_EDIT_URL: ${{ secrets.NEXT_PUBLIC_COLLABORATE_EDIT_URL }}
+  COLLABORATIVE_EDIT_URL: ${{ secrets.NEXT_PUBLIC_COLLABORATE_EDIT_URL }}
 
   # Image Processor
   IMAGE_PROCESSOR_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_PROCESSOR_URL }}
@@ -111,6 +111,8 @@ jobs:
             --region ${{ env.REGION }} \
             --port 8080 \
             --allow-unauthenticated \
+            --revision-suffix=$(date +%Y%m%d-%H%M%S) \
+            --no-traffic-split \
             --set-env-vars="NEXTAUTH_URL=${{ env.NEXTAUTH_URL }}" \
             --set-env-vars="NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }}" \
             --set-env-vars="GITHUB_ID=${{ env.GITHUB_ID }}" \
@@ -123,7 +125,7 @@ jobs:
             --set-env-vars="GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }}" \
             --set-env-vars="TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }}" \
             --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.PROJECT_ID }}" \
-            --set-env-vars="NEXT_PUBLIC_COLLABORATE_EDIT_URL=https://collab-edit-server-970033855966.asia-east1.run.app" \
+            --set-env-vars="NEXT_PUBLIC_COLLABORATE_EDIT_URL=${{ env.COLLABORATIVE_EDIT_URL }}" \
             --set-env-vars="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=${{ env.IMAGE_PROCESSOR_URL }}" \
             --update-secrets="DATABASE_URL=DATABASE_URL:latest" \
 
