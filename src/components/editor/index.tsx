@@ -76,7 +76,6 @@ const TiptapEditor = (props: IProps) => {
 
   // connect and disconnect
   useEffect(() => {
-    console.log('provider.isConnected', provider)
     if (!provider.isConnected) {
       provider.connect()
     }
