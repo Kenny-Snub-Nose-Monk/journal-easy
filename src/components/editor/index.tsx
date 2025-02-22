@@ -65,37 +65,16 @@ const TiptapEditor = (props: IProps) => {
 
   // Yjs document and provider
   const ydoc = useMemo(() => new Y.Doc(), [])
-  // const provider = useMemo(() => {
-  //   return new HocuspocusProvider({
-  //     url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
-  //     name: id,
-  //     document: ydoc,
-  //     connect: false, // connect later
-  //   })
-  // }, [id, ydoc])
-
-  const [provider, setProvider] = useState<HocuspocusProvider | null>(null)
-
-  useEffect(() => {
-    const url = 'https://huashui-ai-970033855966.asia-east1.run.app'
-    if (!url) {
-      console.error('Collaborate edit URL is not defined')
-      return
-    }
-
-    try {
-      const newProvider = new HocuspocusProvider({
-        url,
-        name: id,
-        document: new Y.Doc(),
-        connect: false, // 先設置為 false，等確認配置正確後再連接
-      })
-
-      setProvider(newProvider)
-    } catch (error) {
-      console.error('Failed to initialize HocuspocusProvider:', error)
-    }
-  }, [id])
+  const provider = useMemo(() => {
+    return new HocuspocusProvider({
+      url:
+        process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
+        'https://collab-edit-server-970033855966.asia-east1.run.app',
+      name: id,
+      document: ydoc,
+      connect: false, // connect later
+    })
+  }, [id, ydoc])
 
   // connect and disconnect
   useEffect(() => {
