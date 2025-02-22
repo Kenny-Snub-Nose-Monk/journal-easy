@@ -63,26 +63,43 @@ const TiptapEditor = (props: IProps) => {
 
   useEffect(() => setContentLoading(true), [id])
 
-  useEffect(() => {
-    const collaborateEditUrl = process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL
-    if (!collaborateEditUrl) {
-      console.error('Collaborate edit URL is not defined')
-    }
-  }, [])
-
   // Yjs document and provider
   const ydoc = useMemo(() => new Y.Doc(), [])
-  const provider = useMemo(() => {
-    return new HocuspocusProvider({
-      url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
-      name: id,
-      document: ydoc,
-      connect: false, // connect later
-    })
-  }, [id, ydoc])
+  // const provider = useMemo(() => {
+  //   return new HocuspocusProvider({
+  //     url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
+  //     name: id,
+  //     document: ydoc,
+  //     connect: false, // connect later
+  //   })
+  // }, [id, ydoc])
+
+  const [provider, setProvider] = useState<HocuspocusProvider | null>(null)
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL
+    if (!url) {
+      console.error('Collaborate edit URL is not defined')
+      return
+    }
+
+    try {
+      const newProvider = new HocuspocusProvider({
+        url,
+        name: id,
+        document: new Y.Doc(),
+        connect: false, // 先設置為 false，等確認配置正確後再連接
+      })
+
+      setProvider(newProvider)
+    } catch (error) {
+      console.error('Failed to initialize HocuspocusProvider:', error)
+    }
+  }, [id])
 
   // connect and disconnect
   useEffect(() => {
+    if (!provider) return
     if (!provider.isConnected) {
       provider.connect()
     }
@@ -91,7 +108,7 @@ const TiptapEditor = (props: IProps) => {
       provider.disconnect()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, provider])
 
   const editor = useEditor(
     {
