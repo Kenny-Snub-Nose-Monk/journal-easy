@@ -20,7 +20,7 @@ env:
   # Application Configuration
   GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
   TIPTAP_PRO_TOKEN: ${{ secrets.TIPTAP_PRO_TOKEN }}
-  NEXTAUTH_URL: https://huashui-ai-abeco3wo7a-de.a.run.app
+  NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
   # OAuth Configuration (Production)
@@ -28,10 +28,10 @@ env:
   GITHUB_SECRET: ${{ secrets.PROD_GITHUB_SECRET }}
 
   # Collaborative Edit
-  COLLABORATIVE_EDIT_URL: ${{ secrets.COLLABORATIVE_EDIT_URL }}
+  COLLABORATIVE_EDIT_URL: ${{ secrets.NEXT_PUBLIC_COLLABORATE_EDIT_URL }}
 
   # Image Processor
-  IMAGE_PROCESSOR_URL: ${{ secrets.IMAGE_PROCESSOR_URL }}
+  IMAGE_PROCESSOR_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_PROCESSOR_URL }}
 
 jobs:
   deploy:
