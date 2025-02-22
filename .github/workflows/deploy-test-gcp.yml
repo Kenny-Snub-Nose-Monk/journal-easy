@@ -112,7 +112,7 @@ jobs:
             --port 8080 \
             --allow-unauthenticated \
             --revision-suffix=$(date +%Y%m%d-%H%M%S) \
-            --no-traffic-split \
+            --no-traffic \
             --set-env-vars="NEXTAUTH_URL=${{ env.NEXTAUTH_URL }}" \
             --set-env-vars="NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }}" \
             --set-env-vars="GITHUB_ID=${{ env.GITHUB_ID }}" \
