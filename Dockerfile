@@ -2,6 +2,7 @@ FROM node:18-bullseye-slim AS base
 
 # 在構建時需要的參數
 ARG TIPTAP_PRO_TOKEN
+ARG GOOGLE_CLOUD_BUCKET_NAME
 
 # Install dependencies only when needed
 FROM base AS deps
