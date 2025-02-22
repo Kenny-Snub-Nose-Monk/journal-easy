@@ -126,6 +126,5 @@ jobs:
             --set-env-vars="NEXT_PUBLIC_COLLABORATE_EDIT_URL=${{ env.COLLABORATIVE_EDIT_URL }}" \
             --set-env-vars="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=${{ env.IMAGE_PROCESSOR_URL }}" \
             --update-secrets="DATABASE_URL=DATABASE_URL:latest" \
-            --no-cache
 
           echo "Service URL: $(gcloud run services describe huashui-ai --region ${{ env.REGION }} --format 'value(status.url)')"
