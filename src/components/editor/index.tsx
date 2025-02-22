@@ -63,6 +63,13 @@ const TiptapEditor = (props: IProps) => {
 
   useEffect(() => setContentLoading(true), [id])
 
+  useEffect(() => {
+    const collaborateEditUrl = process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL
+    if (!collaborateEditUrl) {
+      console.error('Collaborate edit URL is not defined')
+    }
+  }, [])
+
   // Yjs document and provider
   const ydoc = useMemo(() => new Y.Doc(), [])
   const provider = useMemo(() => {
