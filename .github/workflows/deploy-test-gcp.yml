@@ -15,7 +15,7 @@ env:
   EMAIL_SERVER_PORT: ${{ secrets.EMAIL_SERVER_PORT }}
   EMAIL_SERVER_USER: ${{ secrets.EMAIL_SERVER_USER }}
   EMAIL_SERVER_PASSWORD: ${{ secrets.EMAIL_SERVER_PASSWORD }}
-  EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+  EMAIL_SERVER_FROM: ${{ secrets.EMAIL_SERVER_FROM }}
 
   # Application Configuration
   GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
@@ -105,7 +105,7 @@ jobs:
             --set-env-vars="EMAIL_SERVER_PORT=${{ env.EMAIL_SERVER_PORT }}" \
             --set-env-vars="EMAIL_SERVER_USER=${{ env.EMAIL_SERVER_USER }}" \
             --set-env-vars="EMAIL_SERVER_PASSWORD=${{ env.EMAIL_SERVER_PASSWORD }}" \
-            --set-env-vars="EMAIL_FROM=${{ env.EMAIL_FROM }}" \
+            --set-env-vars="EMAIL_FROM=${{ env.EMAIL_SERVER_FROM }}" \
             --set-env-vars="GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }}" \
             --set-env-vars="TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }}" \
             --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.PROJECT_ID }}" \
