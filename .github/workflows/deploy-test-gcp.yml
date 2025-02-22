@@ -89,6 +89,14 @@ jobs:
           # Push image
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }}
 
+      - name: Check Environment Variables
+        run: |
+          echo "Checking COLLABORATIVE_EDIT_URL..."
+          echo "Value: ${{ env.COLLABORATIVE_EDIT_URL }}"
+          if [ -z "${{ env.COLLABORATIVE_EDIT_URL }}" ]; then
+            echo "Warning: COLLABORATIVE_EDIT_URL is empty!"
+          fi
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy huashui-ai \
