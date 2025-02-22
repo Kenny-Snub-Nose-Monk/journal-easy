@@ -77,7 +77,7 @@ const TiptapEditor = (props: IProps) => {
   const [provider, setProvider] = useState<HocuspocusProvider | null>(null)
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL
+    const url = 'https://huashui-ai-970033855966.asia-east1.run.app'
     if (!url) {
       console.error('Collaborate edit URL is not defined')
       return
