@@ -76,17 +76,10 @@ jobs:
 
           # Build Docker image
           docker build \
-            --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
-            --build-arg GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa-key.json \
-            --build-arg GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }} \
-            --build-arg EMAIL_SERVER_HOST=${{ env.EMAIL_SERVER_HOST }} \
-            --build-arg EMAIL_SERVER_PORT=${{ env.EMAIL_SERVER_PORT }} \
-            --build-arg EMAIL_SERVER_USER=${{ env.EMAIL_SERVER_USER }} \
-            --build-arg EMAIL_SERVER_PASSWORD=${{ env.EMAIL_SERVER_PASSWORD }} \
-            --build-arg EMAIL_FROM=${{ env.EMAIL_FROM }} \
-            --progress=plain \
-            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
-            .
+          --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
+          --progress=plain \
+          -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
+          .
             
           # Cleanup
           rm /tmp/gcp-sa-key.json
@@ -120,7 +113,7 @@ jobs:
             --set-env-vars="EMAIL_SERVER_PORT=${{ env.EMAIL_SERVER_PORT }}" \
             --set-env-vars="EMAIL_SERVER_USER=${{ env.EMAIL_SERVER_USER }}" \
             --set-env-vars="EMAIL_SERVER_PASSWORD=${{ env.EMAIL_SERVER_PASSWORD }}" \
-            --set-env-vars="EMAIL_FROM=${{ env.EMAIL_SERVER_FROM }}" \
+            --set-env-vars="EMAIL_SERVER_FROM=${{ env.EMAIL_SERVER_FROM }}" \
             --set-env-vars="GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }}" \
             --set-env-vars="TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }}" \
             --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.PROJECT_ID }}" \

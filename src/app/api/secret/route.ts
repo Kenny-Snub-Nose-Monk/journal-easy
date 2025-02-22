@@ -12,7 +12,7 @@ export async function GET() {
 
   // Email 相關
   const emailServer = await getSecret('EMAIL_SERVER')
-  const emailFrom = await getSecret('EMAIL_FROM')
+  const emailFrom = await getSecret('EMAIL_SERVER_FROM')
   const nextAuthUrl = await getSecret('NEXTAUTH_URL')
 
   // Google Cloud 相關
