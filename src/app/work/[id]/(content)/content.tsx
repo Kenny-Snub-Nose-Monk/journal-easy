@@ -51,6 +51,7 @@ export default function Content(props: IProps) {
 
   // doc user id
   const [docUserId, setDocUserId] = useState(defaultDocUserId)
+
   useEffect(() => {
     emitter.emit(EVENT_KEY_CHANGE_DOC_USER_ID, { docUserId, id })
   }, [docUserId, id])
@@ -112,6 +113,7 @@ export default function Content(props: IProps) {
   useEffect(() => {
     function load(payload: any) {
       const { id, type } = payload || {}
+
       if (!id) return
       setId(id) // 切換 id ，重要！
       setIsStar(false)
@@ -166,6 +168,7 @@ export default function Content(props: IProps) {
       </div>
     )
   }
+
   if (notFound) {
     return (
       <p>

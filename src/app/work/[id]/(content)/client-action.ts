@@ -3,7 +3,6 @@ import { get, patch } from '@/lib/ajax'
 
 export async function getDoc(id: string) {
   const url = `/api/doc/${id}`
-  const res = await fetch(url)
   const { errno, msg, data } = await get(url)
   if (errno !== 0) return null
   return data

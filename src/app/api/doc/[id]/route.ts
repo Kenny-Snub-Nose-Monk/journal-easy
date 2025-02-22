@@ -18,12 +18,14 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const user = await getUserInfo()
+
   if (user == null) return Response.json(genUnAuthData())
   const { id } = params
   try {
     const doc = await db.doc.findUnique({
-      where: { id, userId: user.id, isDeleted: false },
+      where: { id, isDeleted: false },
     })
+
     if (doc == null) {
       return Response.json(genErrorData('Doc not found'))
     }
