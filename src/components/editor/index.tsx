@@ -67,7 +67,9 @@ const TiptapEditor = (props: IProps) => {
   const ydoc = useMemo(() => new Y.Doc(), [])
   const provider = useMemo(() => {
     return new HocuspocusProvider({
-      url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
+      url:
+        process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
+        'https://collab-edit-server-970033855966.asia-east1.run.app',
       name: id,
       document: ydoc,
       connect: false, // connect later
@@ -171,9 +173,9 @@ const TiptapEditor = (props: IProps) => {
   useEffect(updateCharacterCount)
 
   // 更新協作狀態
+  // update collaborative state
   useEffect(() => {
     provider?.on('status', (event: { status: WebSocketStatus }) => {
-      console.log('provider status...', event.status)
       emitter.emit(EVENT_KEY_CHANGE_COLLAB_STATE, { status: event.status, id })
     })
   }, [provider, id])
