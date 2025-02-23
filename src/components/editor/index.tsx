@@ -69,7 +69,7 @@ const TiptapEditor = (props: IProps) => {
     return new HocuspocusProvider({
       url:
         process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
-        'https://collab-edit-server-970033855966.asia-east1.run.app',
+        'wss://collab-edit-server-970033855966.asia-east1.run.app',
       name: id,
       document: ydoc,
       connect: false, // connect later
