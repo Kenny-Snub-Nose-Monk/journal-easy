@@ -67,9 +67,7 @@ const TiptapEditor = (props: IProps) => {
   const ydoc = useMemo(() => new Y.Doc(), [])
   const provider = useMemo(() => {
     return new HocuspocusProvider({
-      url:
-        process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
-        'https://collab-edit-server-970033855966.asia-east1.run.app',
+      url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
       name: id,
       document: ydoc,
       connect: false, // connect later
@@ -78,16 +76,17 @@ const TiptapEditor = (props: IProps) => {
 
   // connect and disconnect
   useEffect(() => {
-    if (!provider) return
-    if (!provider.isConnected) {
-      provider.connect()
-    }
+    provider.connect()
+    // if (!provider) return
+    // if (!provider.isConnected) {
+
+    // }
     return () => {
       provider.configuration.websocketProvider.disconnect() // https://github.com/ueberdosis/hocuspocus/issues/594#issuecomment-1740599461
       provider.disconnect()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, provider])
+  }, [id])
 
   const editor = useEditor(
     {
@@ -174,6 +173,7 @@ const TiptapEditor = (props: IProps) => {
   // 更新協作狀態
   useEffect(() => {
     provider?.on('status', (event: { status: WebSocketStatus }) => {
+      console.log('provider status...', event.status)
       emitter.emit(EVENT_KEY_CHANGE_COLLAB_STATE, { status: event.status, id })
     })
   }, [provider, id])
