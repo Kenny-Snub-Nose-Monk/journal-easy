@@ -69,7 +69,7 @@ const TiptapEditor = (props: IProps) => {
     return new HocuspocusProvider({
       url:
         process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
-        'wss://journal-easy.com/collaborate/',
+        'https://ws.journal-easy.com/collaborate/',
       name: id,
       document: ydoc,
       connect: false, // connect later
