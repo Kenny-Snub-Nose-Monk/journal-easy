@@ -90,6 +90,17 @@ const TiptapEditor = (props: IProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
+  // is connected in-time
+  const [isConnected, setIsConnected] = useState(false)
+  const [isConnectedTimeout, setIsConnectedTimeout] = useState(false)
+  useEffect(() => {
+    setTimeout(() => {
+      if (isConnected) return
+      setIsConnectedTimeout(true)
+    }, 6 * 1000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+
   const editor = useEditor(
     {
       extensions: [
@@ -124,6 +135,14 @@ const TiptapEditor = (props: IProps) => {
         provider?.on('synced', () => {
           // console.log('editor provider synced...')
           setContentLoading(false)
+        })
+
+        provider?.on('connect', () => {
+          setIsConnected(true)
+        })
+
+        provider?.on('close', () => {
+          setIsConnected(false)
         })
       },
       onUpdate: ({ editor }) => {
@@ -198,6 +217,16 @@ const TiptapEditor = (props: IProps) => {
   useEffect(() => {
     setRightPanelDiv(document.getElementById(RIGHT_PANEL_DOM_ID))
   }, [])
+
+  if (!isConnected && isConnectedTimeout) {
+    return (
+      <div className="mx-10">
+        <p className="text-sm text-muted-foreground">
+          協同編輯服務連接失敗，請稍後重試~
+        </p>
+      </div>
+    )
+  }
 
   if (contentLoading) {
     return (
