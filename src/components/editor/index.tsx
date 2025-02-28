@@ -120,11 +120,6 @@ const TiptapEditor = (props: IProps) => {
             editor.commands.setContent(JSON.parse(content))
             setContentLoading(false)
           }
-          if (editor.isEmpty && content) {
-            console.log('Notice: editor setContent by JSON format 2 ', id)
-            editor.commands.setContent(JSON.parse(content))
-            setContentLoading(false)
-          }
         })
         provider?.on('synced', () => {
           // console.log('editor provider synced...')
