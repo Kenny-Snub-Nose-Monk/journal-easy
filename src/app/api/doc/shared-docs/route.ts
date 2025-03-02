@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     },
     where: {
       userId: user.id || '',
+      isDeleted: false,
       // sharePassword is not null and not empty
       NOT: {
         OR: [
