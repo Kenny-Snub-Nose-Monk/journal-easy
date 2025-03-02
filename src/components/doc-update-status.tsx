@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import {
   Tooltip,
   TooltipContent,
@@ -8,48 +7,26 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import emitter from '@/lib/emitter'
-import { EVENT_KEY_CHANGE_COLLAB_USERS } from '@/constants'
 import { cn } from '@/lib/utils'
-import { useEditorStore } from '@/stores/editor-store'
-
-interface IUserInfo {
-  clientId: string
-  name: string
-  email: string
-  avatar: string
-}
+import { useEditorStore, ICollabUser } from '@/stores/editor-store'
 
 interface IProps {
   id: string
 }
 export default function DocUpdateStatus(props: IProps) {
-  const { id } = props
-
   // 字符數量
   const characterCount = useEditorStore((s) => s.characterCount)
 
   // collaborative state
   const collaborativeState = useEditorStore((s) => s.collaborativeState)
   // collaborative users
-  const [collaborativeUsers, setCollaborativeUsers] = useState<IUserInfo[]>([])
-  useEffect(() => {
-    function handler(payload: any) {
-      const { users = [], id: docId = '' } = payload
-      // console.log('users...', users.length, users)
-      if (docId === id) setCollaborativeUsers(users)
-    }
-    emitter.on(EVENT_KEY_CHANGE_COLLAB_USERS, handler)
-    return () => {
-      emitter.off(EVENT_KEY_CHANGE_COLLAB_USERS, handler) // 及时销毁自定义事件
-    }
-  }, [id])
+  const collaborativeUsers = useEditorStore((s) => s.collaborativeUsers)
 
   return (
     <>
       {/* collaborative users */}
       <div className="ml-5 flex">
-        {collaborativeUsers.map((user: IUserInfo) => {
+        {collaborativeUsers.map((user: ICollabUser) => {
           let { clientId, name, avatar, email } = user || {}
           if (!name) name = email
           if (!name) return null

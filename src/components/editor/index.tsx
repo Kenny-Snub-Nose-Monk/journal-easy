@@ -21,7 +21,6 @@ import {
   RESIZABLE_RIGHT_PANEL_ID,
   EDITOR_CHARACTER_LIMIT,
   COLLABORATE_EDIT_USER_COLORS,
-  EVENT_KEY_CHANGE_COLLAB_USERS,
   EVENT_KEY_FOCUS_CONTENT,
 } from '@/constants'
 import { getRandomElement } from '@/lib/utils'
@@ -29,9 +28,8 @@ import { get } from '@/lib/ajax'
 import { useToast } from '../ui/use-toast'
 import throttle from 'lodash.throttle'
 import { TextSelection } from '@tiptap/pm/state'
-import { User } from 'next-auth'
 import { useUserStore } from '@/stores/user-store'
-import { useEditorStore } from '@/stores/editor-store'
+import { useEditorStore, ICollabUser } from '@/stores/editor-store'
 
 interface IProps {
   id: string
@@ -191,20 +189,25 @@ const TiptapEditor = (props: IProps) => {
     })
   }, [provider, setCollaborativeState])
 
+  const setCollaborativeUsers = useEditorStore((s) => s.setCollaborativeUsers)
   // 獲取協作用戶
   useEffect(() => {
-    const users = editor?.storage.collaborationCursor?.users || []
-    if (users.length <= 0) return
+    const users = (editor?.storage.collaborationCursor?.users ||
+      []) as ICollabUser[]
+    if (users.length <= 0) {
+      setCollaborativeUsers([])
+      return
+    }
 
     const emails: string[] = []
-    const filteredUsers = users.filter((user: User) => {
+    const filteredUsers = users.filter((user: ICollabUser) => {
       if (user.email == null) return false
       emails.push(user.email)
       return true
     })
 
-    emitter.emit(EVENT_KEY_CHANGE_COLLAB_USERS, { users: filteredUsers, id })
-  }, [editor?.storage.collaborationCursor?.users, id])
+    setCollaborativeUsers(filteredUsers)
+  }, [editor?.storage.collaborationCursor?.users, setCollaborativeUsers])
 
   // AI 島元素
   const [rightPanelDiv, setRightPanelDiv] = useState<HTMLElement | null>(null)
