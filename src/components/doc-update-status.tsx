@@ -14,13 +14,19 @@ interface IProps {
   id: string
 }
 export default function DocUpdateStatus(props: IProps) {
+  const { id } = props
+
   // 字符數量
   const characterCount = useEditorStore((s) => s.characterCount)
+
+  const editorDocId = useEditorStore((s) => s.docId)
 
   // collaborative state
   const collaborativeState = useEditorStore((s) => s.collaborativeState)
   // collaborative users
   const collaborativeUsers = useEditorStore((s) => s.collaborativeUsers)
+
+  if (id !== editorDocId) return null
 
   return (
     <>

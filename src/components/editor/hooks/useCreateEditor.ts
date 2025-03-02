@@ -12,9 +12,15 @@ import {
   COLLABORATE_EDIT_USER_COLORS,
 } from '@/constants'
 import { useUserStore } from '@/stores/user-store'
+import { useEditorStore } from '@/stores/editor-store'
 
 export default function useCreateEditor(id: string) {
   const userInfo = useUserStore((s) => s.userInfo)
+
+  const setDocId = useEditorStore((s) => s.setDocId)
+  useEffect(() => {
+    setDocId(id)
+  }, [id, setDocId])
 
   const [loading, setLoading] = useState(true)
 
