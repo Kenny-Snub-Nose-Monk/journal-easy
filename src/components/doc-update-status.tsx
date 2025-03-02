@@ -9,10 +9,7 @@ import {
 } from '@/components/ui/tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import emitter from '@/lib/emitter'
-import {
-  EVENT_KEY_CHANGE_COLLAB_STATE,
-  EVENT_KEY_CHANGE_COLLAB_USERS,
-} from '@/constants'
+import { EVENT_KEY_CHANGE_COLLAB_USERS } from '@/constants'
 import { cn } from '@/lib/utils'
 import { useEditorStore } from '@/stores/editor-store'
 
@@ -33,17 +30,7 @@ export default function DocUpdateStatus(props: IProps) {
   const characterCount = useEditorStore((s) => s.characterCount)
 
   // collaborative state
-  const [collaborativeState, setCollaborativeState] = useState('connecting')
-  useEffect(() => {
-    function handler(payload: any) {
-      const { status = 'connecting', id: docId = '' } = payload
-      if (docId === id) setCollaborativeState(status)
-    }
-    emitter.on(EVENT_KEY_CHANGE_COLLAB_STATE, handler)
-    return () => {
-      emitter.off(EVENT_KEY_CHANGE_COLLAB_STATE, handler) // 及时销毁自定义事件
-    }
-  }, [id])
+  const collaborativeState = useEditorStore((s) => s.collaborativeState)
   // collaborative users
   const [collaborativeUsers, setCollaborativeUsers] = useState<IUserInfo[]>([])
   useEffect(() => {

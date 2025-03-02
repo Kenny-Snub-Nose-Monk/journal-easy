@@ -21,7 +21,6 @@ import {
   RESIZABLE_RIGHT_PANEL_ID,
   EDITOR_CHARACTER_LIMIT,
   COLLABORATE_EDIT_USER_COLORS,
-  EVENT_KEY_CHANGE_COLLAB_STATE,
   EVENT_KEY_CHANGE_COLLAB_USERS,
   EVENT_KEY_FOCUS_CONTENT,
 } from '@/constants'
@@ -184,11 +183,13 @@ const TiptapEditor = (props: IProps) => {
 
   // 更新協作狀態
   // update collaborative state
+  const setCollaborativeState = useEditorStore((s) => s.setCollaborativeState)
+
   useEffect(() => {
     provider?.on('status', (event: { status: WebSocketStatus }) => {
-      emitter.emit(EVENT_KEY_CHANGE_COLLAB_STATE, { status: event.status, id })
+      setCollaborativeState(event.status)
     })
-  }, [provider, id])
+  }, [provider, setCollaborativeState])
 
   // 獲取協作用戶
   useEffect(() => {
