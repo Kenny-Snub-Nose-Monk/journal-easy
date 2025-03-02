@@ -18,7 +18,6 @@ import { TableRowMenu, TableColMenu } from './menus/table-menu'
 import AIIsland from './ai-island'
 import emitter from '@/lib/emitter'
 import {
-  EVENT_KEY_CHANGE_CHAR_COUNT,
   RESIZABLE_RIGHT_PANEL_ID,
   EDITOR_CHARACTER_LIMIT,
   COLLABORATE_EDIT_USER_COLORS,
@@ -33,6 +32,7 @@ import throttle from 'lodash.throttle'
 import { TextSelection } from '@tiptap/pm/state'
 import { User } from 'next-auth'
 import { useUserStore } from '@/stores/user-store'
+import { useEditorStore } from '@/stores/editor-store'
 
 interface IProps {
   id: string
@@ -170,18 +170,16 @@ const TiptapEditor = (props: IProps) => {
     limitToast(toast)
   }, [toast])
 
-  // 更新字符計數
+  // update character count
+  const setCharacterCount = useEditorStore((s) => s.setCharacterCount)
   const updateCharacterCount = useCallback(() => {
     const characterCount = editor?.storage.characterCount || {
       characters: () => 0,
       words: () => 0,
     }
-    emitter.emit(EVENT_KEY_CHANGE_CHAR_COUNT, {
-      count: characterCount.characters(),
-      id,
-    })
-    // characterCount.words() 可以統計英文單詞數量，但不適用於中文
-  }, [id, editor])
+    setCharacterCount(characterCount.characters())
+    // characterCount.words() 可統計英文單詞數量，但不適用於中文
+  }, [editor, setCharacterCount])
   useEffect(updateCharacterCount)
 
   // 更新協作狀態

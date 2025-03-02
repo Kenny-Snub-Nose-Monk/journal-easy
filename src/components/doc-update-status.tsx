@@ -10,12 +10,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import emitter from '@/lib/emitter'
 import {
-  EVENT_KEY_CHANGE_CHAR_COUNT,
   EVENT_KEY_CHANGE_COLLAB_STATE,
   EVENT_KEY_CHANGE_COLLAB_USERS,
 } from '@/constants'
 import { cn } from '@/lib/utils'
-import debounce from 'lodash.debounce'
+import { useEditorStore } from '@/stores/editor-store'
 
 interface IUserInfo {
   clientId: string
@@ -31,17 +30,7 @@ export default function DocUpdateStatus(props: IProps) {
   const { id } = props
 
   // 字符數量
-  const [characterCount, setCharacterCount] = useState(-1)
-  useEffect(() => {
-    const handler = debounce((payload: any) => {
-      const { count = 0, id: docId = '' } = payload
-      if (docId === id) setCharacterCount(count)
-    }, 300)
-    emitter.on(EVENT_KEY_CHANGE_CHAR_COUNT, handler)
-    return () => {
-      emitter.off(EVENT_KEY_CHANGE_CHAR_COUNT, handler) // 及時銷毀自定義事件
-    }
-  }, [id])
+  const characterCount = useEditorStore((s) => s.characterCount)
 
   // collaborative state
   const [collaborativeState, setCollaborativeState] = useState('connecting')
