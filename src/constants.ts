@@ -1,5 +1,5 @@
 export const CONTENT_WIDTH = 800 // 内容寬度
-
+export const EDITOR_PADDING_BOTTOM = 200
 export const DOC_TITLE_INPUT_ID = 'DOC_TITLE_INPUT_ID'
 export const RIGHT_PANEL_DOM_ID = 'RIGHT_PANEL_DOM_ID'
 export const AI_RES_MAX_TOKENS = 1000 // AI 返回结果最大長度
