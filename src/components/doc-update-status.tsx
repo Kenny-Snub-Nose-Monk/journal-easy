@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { useEditorStore, ICollabUser } from '@/stores/editor-store'
 
@@ -26,7 +27,7 @@ export default function DocUpdateStatus(props: IProps) {
   // collaborative users
   const collaborativeUsers = useEditorStore((s) => s.collaborativeUsers)
 
-  if (id !== editorDocId) return null
+  if (id !== editorDocId) return <Skeleton className="h-6 w-32 ml-3" />
 
   return (
     <>

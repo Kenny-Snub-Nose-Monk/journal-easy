@@ -18,9 +18,6 @@ export default function useCreateEditor(id: string) {
   const userInfo = useUserStore((s) => s.userInfo)
 
   const setDocId = useEditorStore((s) => s.setDocId)
-  useEffect(() => {
-    setDocId(id)
-  }, [id, setDocId])
 
   const [loading, setLoading] = useState(true)
 
@@ -99,6 +96,7 @@ export default function useCreateEditor(id: string) {
         provider?.on('synced', () => {
           // console.log('editor provider synced...')
           setLoading(false)
+          setDocId(id)
         })
         provider?.on('connect', () => {
           // console.log('editor provider connect...')
