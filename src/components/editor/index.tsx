@@ -24,11 +24,13 @@ import {
   COLLABORATE_EDIT_USER_COLORS,
   EVENT_KEY_CHANGE_COLLAB_STATE,
   EVENT_KEY_CHANGE_COLLAB_USERS,
+  EVENT_KEY_FOCUS_CONTENT,
 } from '@/constants'
 import { getRandomElement } from '@/lib/utils'
 import { get } from '@/lib/ajax'
 import { useToast } from '../ui/use-toast'
 import throttle from 'lodash.throttle'
+import { TextSelection } from '@tiptap/pm/state'
 import { User } from 'next-auth'
 import { useUserStore } from '@/stores/user-store'
 
@@ -210,6 +212,32 @@ const TiptapEditor = (props: IProps) => {
   useEffect(() => {
     setRightPanelDiv(document.getElementById(RESIZABLE_RIGHT_PANEL_ID))
   }, [])
+
+  // insert a paragraph at the beginning where title input enter
+  useEffect(() => {
+    // 聚焦到編輯器內容區域
+    function focusContent() {
+      if (!editor) return
+
+      const { dispatch } = editor.view
+      const { tr, schema } = editor.state
+
+      // 聚焦到內容區域
+      editor.chain().focus()
+      // 創建段落 node
+      const newParagraph = schema.nodes.paragraph.create(null, null)
+      // 創建一個在文章開頭插入段落的事務
+      const transaction = tr.insert(0, newParagraph)
+      // 文檔的開始位置
+      const startPos = transaction.doc.resolve(0)
+      // 光標選擇到文檔開始的位置
+      transaction.setSelection(TextSelection.near(startPos))
+      // 派發事務
+      dispatch(transaction)
+    }
+    emitter.on(EVENT_KEY_FOCUS_CONTENT, focusContent)
+    return () => emitter.off(EVENT_KEY_FOCUS_CONTENT, focusContent)
+  }, [editor])
 
   if (!isConnected && isConnectedTimeout) {
     return (
