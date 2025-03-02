@@ -19,7 +19,7 @@ import AIIsland from './ai-island'
 import emitter from '@/lib/emitter'
 import {
   EVENT_KEY_CHANGE_CHAR_COUNT,
-  RIGHT_PANEL_DOM_ID,
+  RESIZABLE_RIGHT_PANEL_ID,
   EDITOR_CHARACTER_LIMIT,
   COLLABORATE_EDIT_USER_COLORS,
   EVENT_KEY_CHANGE_COLLAB_STATE,
@@ -29,16 +29,11 @@ import { getRandomElement } from '@/lib/utils'
 import { get } from '@/lib/ajax'
 import { useToast } from '../ui/use-toast'
 import throttle from 'lodash.throttle'
-
-interface IUserInfo {
-  name: string
-  email: string
-  avatar: string
-}
+import { User } from 'next-auth'
+import { useUserStore } from '@/stores/user-store'
 
 interface IProps {
   id: string
-  userInfo: IUserInfo
 }
 
 const limitToast = throttle(
@@ -54,9 +49,10 @@ const limitToast = throttle(
 )
 
 const TiptapEditor = (props: IProps) => {
-  const { id, userInfo } = props
+  const { id } = props
   const { toast } = useToast()
   const menuContainerRef = useRef(null)
+  const userInfo = useUserStore((s) => s.userInfo)
 
   // content loading
   const [contentLoading, setContentLoading] = useState(true)
@@ -111,9 +107,9 @@ const TiptapEditor = (props: IProps) => {
         CollaborationCursor.configure({
           provider,
           user: {
-            name: userInfo.name || userInfo.email,
-            email: userInfo.email,
-            avatar: userInfo.avatar,
+            name: userInfo?.name || userInfo?.email,
+            email: userInfo?.email,
+            avatar: userInfo?.image,
             color: getRandomElement(COLLABORATE_EDIT_USER_COLORS), // random color
           },
         }),
@@ -200,11 +196,8 @@ const TiptapEditor = (props: IProps) => {
     if (users.length <= 0) return
 
     const emails: string[] = []
-    const filteredUsers = users.filter((user: IUserInfo) => {
-      if (emails.includes(user.email)) {
-        // console.log('重複用戶...', user.email, emails)
-        return false
-      }
+    const filteredUsers = users.filter((user: User) => {
+      if (user.email == null) return false
       emails.push(user.email)
       return true
     })
@@ -215,7 +208,7 @@ const TiptapEditor = (props: IProps) => {
   // AI 島元素
   const [rightPanelDiv, setRightPanelDiv] = useState<HTMLElement | null>(null)
   useEffect(() => {
-    setRightPanelDiv(document.getElementById(RIGHT_PANEL_DOM_ID))
+    setRightPanelDiv(document.getElementById(RESIZABLE_RIGHT_PANEL_ID))
   }, [])
 
   if (!isConnected && isConnectedTimeout) {

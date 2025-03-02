@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils'
 import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { isDescendant, nav } from './util'
-import { IDoc } from './type'
-import { EVENT_KEY_CREATE_DOC } from '@/constants'
+import { IDoc } from '@/stores/docs-store'
+import useDocs from '../hooks/useDocs'
 import ItemHandlers from './item-handlers'
 
 interface IProps {
@@ -15,30 +15,32 @@ interface IProps {
   title: string
   isStar: boolean
   sharePassword?: string | null
-  paramId: string
-  list: IDoc[]
+  curDocId: string
+  docs: IDoc[]
   level?: number
 }
 
 export default function Item(props: IProps) {
+  const { createDoc } = useDocs()
   const {
     id,
     title,
-    list = [],
-    paramId,
+    docs = [],
+    curDocId,
     isStar,
     sharePassword,
     level = 0,
   } = props
-  const isCurrent = id === paramId
+  const isCurrent = id === curDocId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
 
-  const children = list.filter((i) => i.parentId === id)
+  const children = docs.filter((i) => i.parentId === id)
   const hasChildren = children.length > 0
   const [showChildren, setShowChildren] = useState(
-    hasChildren ? isDescendant(id, paramId, list) : false
+    hasChildren ? isDescendant(id, curDocId, docs) : false
   )
+
   function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation
     setShowChildren(!showChildren)
@@ -63,8 +65,7 @@ export default function Item(props: IProps) {
 
   // 新建子節點
   function createDocHandler(parentId: string | null) {
-    emitter.emit(EVENT_KEY_CREATE_DOC, { parentId })
-    setShowChildren(true)
+    createDoc({ parentId })
   }
 
   return (
@@ -106,7 +107,7 @@ export default function Item(props: IProps) {
 
         {/* 操作按鈕 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
-          <ItemHandlers id={id} isStar={isStar} />
+          <ItemHandlers id={id} />
         </div>
 
         {/* 創建文檔 */}
@@ -128,8 +129,8 @@ export default function Item(props: IProps) {
                 key={id}
                 id={id}
                 title={title}
-                paramId={paramId}
-                list={list}
+                curDocId={curDocId}
+                docs={docs}
                 isStar={!!isStar}
                 sharePassword={sharePassword}
                 level={level + 1}

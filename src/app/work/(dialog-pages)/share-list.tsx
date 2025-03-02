@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { IDoc } from './[id]/@directory/type'
+import { IDoc } from '@/stores/docs-store'
 import { get } from '@/lib/ajax'
 
 export default function ShareList() {
@@ -46,7 +46,6 @@ function ShareListContent() {
     })
   }, [])
 
-  // 点击，跳转
   function handleClick(doc: IDoc) {
     const { id } = doc
     location.href = `/work/${id}`

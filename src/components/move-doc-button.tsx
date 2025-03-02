@@ -15,7 +15,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { get, patch } from '@/lib/ajax'
-import { IDoc } from '@/app/work/[id]/@directory/type'
+import { IDoc } from '@/stores/docs-store'
 import { isDescendant } from '@/app/work/[id]/@directory/util'
 
 export default function MoveDocButton(props: {

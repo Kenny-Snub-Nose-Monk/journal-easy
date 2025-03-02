@@ -18,7 +18,8 @@
     "rowspan",
     "markdownit",
     "uparrow",
-    "Ydoc"
+    "Ydoc",
+    "zustand"
   ],
   "files.associations": {
     "*.css": "tailwindcss"

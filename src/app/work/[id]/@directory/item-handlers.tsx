@@ -13,11 +13,10 @@ import MoveDocButton from '@/components/move-doc-button'
 
 interface IProps {
   id: string
-  isStar: boolean
 }
 
 export default function ItemHandlers(props: IProps) {
-  const { id, isStar = false } = props
+  const { id } = props
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -26,11 +25,7 @@ export default function ItemHandlers(props: IProps) {
         </div>
       </PopoverTrigger>
       <PopoverContent className=" w-28 p-1">
-        <StarDocButton
-          id={id}
-          defaultIsStar={isStar}
-          className="w-full justify-start h-8 px-2"
-        />
+        <StarDocButton id={id} className="w-full justify-start h-8 px-2" />
         <Separator className="my-1" />
         <DuplicateDocButton id={id} />
         <MoveDocButton id={id} />

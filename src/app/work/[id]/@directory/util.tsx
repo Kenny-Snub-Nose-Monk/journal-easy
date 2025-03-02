@@ -1,6 +1,6 @@
 import emitter from '@/lib/emitter'
 import { EVENT_KEY_NAV_DOC } from '@/constants'
-import { IDoc } from './type'
+import { IDoc } from '@/stores/docs-store'
 
 // 判斷一個節點，是否是另一個節點的下級
 export function isDescendant(id: string, descendantId: string, list: IDoc[]) {
@@ -13,9 +13,9 @@ export function isDescendant(id: string, descendantId: string, list: IDoc[]) {
 }
 
 // 跳轉鏈接 切換文檔
-export function nav(id: string, type: 'nav' | 'create' = 'nav') {
+export function nav(id: string) {
   const url = `/work/${id}`
-  emitter.emit(EVENT_KEY_NAV_DOC, { id, type })
+  emitter.emit(EVENT_KEY_NAV_DOC, { id })
   history.pushState({ docId: id }, '', url)
 }
 

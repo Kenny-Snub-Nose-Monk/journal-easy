@@ -11,20 +11,24 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { UserProfileForm } from './user-profile-form'
+import { useUserStore } from '@/stores/user-store'
+import { User } from 'next-auth'
 
 interface IUser {
   name?: string | null
   image?: string | null
   email?: string | null
 }
-export default function UserSettingButton({ user }: { user: IUser }) {
-  const { name, image, email } = user
+
+export default function UserSettingButton() {
+  const userInfo = useUserStore((s) => s.userInfo)
+  const { name, image, email } = userInfo || {}
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 " variant="ghost">
-          <UserAvatar user={user} />
+          <UserAvatar user={userInfo} />
           &nbsp;&nbsp;帳戶/設置
         </Button>
       </DialogTrigger>
@@ -42,7 +46,7 @@ export default function UserSettingButton({ user }: { user: IUser }) {
   )
 }
 
-function UserAvatar({ user }: { user: IUser }) {
+function UserAvatar({ user }: { user: User | null }) {
   let { name, image, email } = user || {}
   if (!name) name = email
 

@@ -17,9 +17,10 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const user = await getUserInfo()
+  // const user = await getUserInfo()
 
-  if (user == null) return Response.json(genUnAuthData())
+  // if (user == null) return Response.json(genUnAuthData())
+
   const { id } = params
   try {
     const doc = await db.doc.findUnique({

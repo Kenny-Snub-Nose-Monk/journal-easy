@@ -20,10 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { IDoc } from './[id]/@directory/type'
+import { IDoc } from '@/stores/docs-store'
 import { timeAgo } from '@/lib/dt'
-import { getDescendantsIds } from './[id]/@directory/util'
-import { getDoc, updateParentId } from './[id]/(content)/client-action'
+import { getDescendantsIds } from '../[id]/@directory/util'
+import { getDoc, updateParentId } from '../[id]/client-action'
 import { get, patch, del as ajaxDelete } from '@/lib/ajax'
 
 export default function Trash() {

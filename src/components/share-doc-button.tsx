@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Share } from 'lucide-react'
 import copy from 'copy-to-clipboard'
 import { Button } from '@/components/ui/button'
@@ -11,9 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import emitter from '@/lib/emitter'
-import { EVENT_KEY_CHANGE_IS_SHARED } from '@/constants'
 import { patch } from '@/lib/ajax'
+import { useDocsStore } from '@/stores/docs-store'
 
 interface IProps {
   id: string
@@ -23,34 +22,24 @@ interface IProps {
 }
 
 export default function ShareDocButton(props: IProps) {
-  const {
-    id,
-    defaultSharePassword = '',
-    className = '',
-    disabled = false,
-  } = props
+  const { id, className = '', disabled = false } = props
   const [url, setUrl] = useState('')
-  const [sharePassword, setSharePassword] = useState(defaultSharePassword)
+  const docs = useDocsStore((s) => s.docs)
+  const updateDocSharePassword = useDocsStore((s) => s.updateDocSharePassword)
+  const sharePassword = useMemo(
+    () => docs.find((i) => i.id === id)?.sharePassword,
+    [docs, id]
+  )
 
   // Set url
   useEffect(() => {
     setUrl(location.href)
   }, [])
 
-  // Subscribe sharePassword change
-  useEffect(() => {
-    function handler(payload: any) {
-      const { sharePassword = '', id: docId = '' } = payload
-      if (docId === id) setSharePassword(sharePassword)
-    }
-    emitter.on(EVENT_KEY_CHANGE_IS_SHARED, handler)
-    return () => emitter.off(EVENT_KEY_CHANGE_IS_SHARED, handler) // clear event listener in-time
-  }, [id])
-
   // Update server, change password
   async function updatePassword(password: string) {
     setLoading(true)
-    setSharePassword(password)
+    updateDocSharePassword(id, password)
     const url = '/api/doc/' + id
     try {
       const res = await patch(url, { sharePassword: password })
