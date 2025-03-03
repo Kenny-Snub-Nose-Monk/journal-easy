@@ -22,7 +22,6 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [instruction, setInstruction] = useState('')
   const [isSelectionEmpty, setIsSelectionEmpty] = useState(true)
   const [AIResult, setAIResult] = useState('')
-  const [tokenLimit, setTokenLimit] = useState(-1)
   const [delay, setDelay] = useState(0) // 每次請求間隔時間
 
   const { loading, requestAI, abortRequestAI, reRequestAI } = useRequestAI({
@@ -31,8 +30,6 @@ export default function AIIsland(props: { editor: Editor | null }) {
     setInstruction,
     setAIResult,
     inputRef,
-    tokenLimit,
-    setTokenLimit,
     delay,
     setDelay,
   })
@@ -155,7 +152,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
         setInstruction={setInstruction}
         delay={delay}
       />
-      <Info tokenLimit={tokenLimit} setTokenLimit={setTokenLimit} />
+      <Info />
     </div>
   )
 }

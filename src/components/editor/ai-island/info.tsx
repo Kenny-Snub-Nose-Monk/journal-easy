@@ -2,13 +2,13 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { get, IAjaxRes } from '@/lib/ajax'
-interface IProps {
-  tokenLimit: number
-  setTokenLimit: React.Dispatch<React.SetStateAction<number>>
-}
-export default function Info(props: IProps) {
-  const { tokenLimit, setTokenLimit } = props
+import { useEditorStore } from '@/stores/editor-store'
+
+export default function Info() {
+  const AITokenLimit = useEditorStore((s) => s.AITokenLimit)
+  const setAITokenLimit = useEditorStore((s) => s.setAITokenLimit)
   useEffect(() => {
+    if (AITokenLimit != null) return
     // console.log('get token limit...')
     const url = '/api/gpt/token-usage'
     get(url).then((res: IAjaxRes) => {
@@ -18,9 +18,9 @@ export default function Info(props: IProps) {
       }
       const { data } = res
       const { tokensLimit = 0 } = data || {}
-      setTokenLimit(tokensLimit)
+      setAITokenLimit(tokensLimit)
     })
-  }, []) // eslint-disable-line
+  }, [AITokenLimit, setAITokenLimit])
   return (
     <p className="text-sm text-center my-1 text-muted-foreground">
       AI 可能會生成錯誤信息，請自行檢查判斷。你本月&nbsp;
@@ -31,7 +31,7 @@ export default function Info(props: IProps) {
       >
         AI token limit
       </Link>
-      &nbsp;數量 <TokenLimitSpan tokenLimit={tokenLimit} /> ，
+      &nbsp;數量 <TokenLimitSpan tokenLimit={AITokenLimit} /> ，
       <Link href="/ai-token#add-limit-heading" className="underline">
         領取更多
       </Link>
@@ -39,7 +39,8 @@ export default function Info(props: IProps) {
   )
 }
 
-function TokenLimitSpan({ tokenLimit }: { tokenLimit: number }) {
+function TokenLimitSpan({ tokenLimit }: { tokenLimit: number | null }) {
+  if (tokenLimit === null) return <span>---</span>
   let color = 'text-green-500'
   if (tokenLimit < 3000) color = 'text-orange-500'
   if (tokenLimit < 1000) color = 'text-red-500'

@@ -6,6 +6,7 @@ import { ToastAction } from '@/components/ui/toast'
 import { toast } from '@/hooks/use-toast'
 import { post } from '@/lib/ajax'
 import { AI_REQUEST_DELAY } from '@/constants'
+import { useEditorStore } from '@/stores/editor-store'
 
 interface UseRequestAIProps {
   editor: Editor | null
@@ -13,8 +14,6 @@ interface UseRequestAIProps {
   setInstruction: React.Dispatch<React.SetStateAction<string>>
   setAIResult: React.Dispatch<React.SetStateAction<string>>
   inputRef: React.RefObject<HTMLInputElement>
-  tokenLimit: number
-  setTokenLimit: React.Dispatch<React.SetStateAction<number>>
   delay: number
   setDelay: React.Dispatch<React.SetStateAction<number>>
 }
@@ -25,14 +24,14 @@ export const useRequestAI = ({
   setInstruction,
   setAIResult,
   inputRef,
-  tokenLimit,
-  setTokenLimit,
   delay,
   setDelay,
 }: UseRequestAIProps) => {
   const [loading, setLoading] = useState(false)
   const [prevMessages, setPrevMessages] = useState<MessagesType>([])
   const abortControllerRef = useRef<AbortController | null>(null)
+  const AITokenLimit = useEditorStore((s) => s.AITokenLimit)
+  const setAITokenLimit = useEditorStore((s) => s.setAITokenLimit)
 
   const insertContent = useCallback(
     (content: string, usage: any) => {
@@ -44,10 +43,10 @@ export const useRequestAI = ({
         } = usage
         // console.log('usage', prompt_tokens, completion_tokens, total_tokens)
         // 更新客户端
-        setTokenLimit((n: number) => {
-          if (n <= total_tokens) return 0
-          return n - total_tokens
-        })
+        if (AITokenLimit != null) {
+          if (AITokenLimit <= total_tokens) setAITokenLimit(0)
+          else setAITokenLimit(AITokenLimit - total_tokens)
+        }
         // 更新服务端数据
 
         console.log('total_tokens', total_tokens)
@@ -58,7 +57,7 @@ export const useRequestAI = ({
         setAIResult((r) => r + content)
       }
     },
-    [editor, isSelectionEmpty, setAIResult, setTokenLimit]
+    [editor, isSelectionEmpty, setAIResult, setAITokenLimit]
   )
 
   function onSuccess() {
@@ -91,7 +90,7 @@ export const useRequestAI = ({
         return
       }
 
-      if (tokenLimit <= 0) {
+      if (AITokenLimit != null && AITokenLimit <= 0) {
         onError('AI tokens 使用量已超出限制，請先領取或購買')
         return
       }
@@ -130,8 +129,8 @@ export const useRequestAI = ({
       setInstruction,
       setAIResult,
       inputRef,
-      tokenLimit,
-      setTokenLimit,
+      AITokenLimit,
+      setAITokenLimit,
       delay,
       setDelay,
     ]
