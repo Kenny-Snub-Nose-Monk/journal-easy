@@ -167,7 +167,7 @@ function Item(props: ItemProps) {
 
   // 緩存一下更新時間，防止鍵盤上下鍵選擇的時候，由於父組件重新渲染，導致更新時間頻繁重複渲染
   const time = useMemo(() => {
-    return timeAgo(doc.updatedAt || '')
+    return timeAgo(doc.updatedAt || null)
   }, [doc.updatedAt])
 
   return (

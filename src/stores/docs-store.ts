@@ -4,8 +4,8 @@ export interface IDoc {
   id: string
   title: string
   parentId: string | null
-  createdAt?: string
-  updatedAt?: string
+  createdAt?: Date
+  updatedAt?: Date
   isDeleted?: boolean
   isStar?: boolean
   sharePassword: string | null

@@ -1,7 +1,7 @@
 // 時間格式化，返回如 如 "1 年前"、"3 個月前"、"1 天前"、"3 小時前" 等 （ChatGPT 生成的）
-export function timeAgo(timeString: string) {
-  if (!timeString) return ''
-  const previous = new Date(timeString)
+export function timeAgo(timeDate: Date | null) {
+  if (!timeDate) return ''
+  const previous = timeDate
   const current = new Date()
   const timeDifference = current.valueOf() - previous.valueOf()
   const seconds = Math.floor(timeDifference / 1000)

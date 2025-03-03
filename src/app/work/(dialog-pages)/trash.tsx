@@ -156,7 +156,7 @@ function TrashTable() {
                     {doc.title || '<無標題>'}
                   </p>
                 </TableCell>
-                <TableCell>{timeAgo(doc.updatedAt || '')}</TableCell>
+                <TableCell>{timeAgo(doc.updatedAt || null)}</TableCell>
                 <TableCell className="text-right">
                   <div className="inline-flex space-x-1 invisible group-hover:visible">
                     <Button

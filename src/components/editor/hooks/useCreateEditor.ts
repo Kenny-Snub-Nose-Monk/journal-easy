@@ -13,9 +13,12 @@ import {
 } from '@/constants'
 import { useUserStore } from '@/stores/user-store'
 import { useEditorStore } from '@/stores/editor-store'
+import { useDocsStore, IDoc } from '@/stores/docs-store'
 
 export default function useCreateEditor(id: string) {
   const userInfo = useUserStore((s) => s.userInfo)
+
+  const docs = useDocsStore((s) => s.docs)
 
   const setDocId = useEditorStore((s) => s.setDocId)
 
@@ -82,6 +85,15 @@ export default function useCreateEditor(id: string) {
       onCreate: ({ editor }) => {
         provider?.on('open', async () => {
           // console.log('editor provider open...')
+          const doc = docs.find((i) => i.id === id)
+          if (doc == null) return
+
+          const isRecentlyUpdated = isDocRecentlyUpdated(doc)
+          if (isRecentlyUpdated) return
+
+          const hasParsed = hasDocParsedContent(id)
+          if (hasParsed) return // has parsed content
+
           // Get doc content, and set content, when JSON convert to Yjs doc failed. We will remove this code after a long time (almost all docs have been converted).
           const { errno, data } = await get(`/api/doc/${id}`)
           if (errno !== 0) return
@@ -118,4 +130,34 @@ export default function useCreateEditor(id: string) {
     provider,
     isConnectedTimeout,
   }
+}
+
+/**
+ * 判斷該文檔是否是最近更新的文檔（最近更新的，會有 binary 格式，不用從 JSON 轉換）
+ * @param doc doc
+ * @returns boolean
+ */
+function isDocRecentlyUpdated(doc: IDoc) {
+  const createdAt = new Date(doc.createdAt || 0).getTime()
+  const updatedAt = new Date(doc.updatedAt || 0).getTime()
+  const dt = new Date('2025/02/28').getTime() // 協同編輯發布到預覽
+  if (createdAt > dt) return true
+  if (updatedAt > dt) return true
+  return false
+}
+
+/**
+ * 判斷該文檔是否已經解析過內容（不要重複解析）
+ * @param docId doc id
+ * @returns boolean
+ */
+function hasDocParsedContent(docId: string) {
+  const key = 'EDITOR_PARSED_CONTENT_IDS'
+  const parsedIdsStr = localStorage.getItem(key)
+  const parsedIds = parsedIdsStr ? JSON.parse(parsedIdsStr) : []
+  if (parsedIds.includes(docId)) return true
+
+  parsedIds.push(docId) // record
+  localStorage.setItem(key, JSON.stringify(parsedIds)) // save
+  return false
 }
