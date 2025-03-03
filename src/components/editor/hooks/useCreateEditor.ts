@@ -38,6 +38,10 @@ export default function useCreateEditor(id: string) {
 
   // connect and disconnect
   useEffect(() => {
+    const status = provider.configuration.websocketProvider.status // disconnected connecting connected
+    // console.log('provider status...', status, provider.isConnected)
+    if (status === 'connected') return
+
     provider.connect()
     // .catch((error) => {
     //   console.log('12312312 ', error) // 监听不到 WebSocket 连接失败的错误
@@ -50,6 +54,9 @@ export default function useCreateEditor(id: string) {
     // })
 
     return () => {
+      const status = provider.configuration.websocketProvider.status // disconnected connecting connected
+      if (status === 'disconnected') return
+      if (status === 'connecting') return
       provider.configuration.websocketProvider.disconnect() // https://github.com/ueberdosis/hocuspocus/issues/594#issuecomment-1740599461
       provider.disconnect()
     }
@@ -58,12 +65,12 @@ export default function useCreateEditor(id: string) {
 
   // is connected timeout
   const [isConnectedTimeout, setIsConnectedTimeout] = useState(false)
+
   useEffect(() => {
     setTimeout(() => {
       if (provider.isConnected) return
       setIsConnectedTimeout(true)
     }, 6 * 1000)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, provider])
 
   const editor = useEditor(
