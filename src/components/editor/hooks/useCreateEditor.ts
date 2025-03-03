@@ -10,6 +10,7 @@ import { get } from '@/lib/ajax'
 import {
   EDITOR_PADDING_BOTTOM,
   COLLABORATE_EDIT_USER_COLORS,
+  DEFAULT_NEW_DOC_TITLE,
 } from '@/constants'
 import { useUserStore } from '@/stores/user-store'
 import { useEditorStore } from '@/stores/editor-store'
@@ -88,8 +89,10 @@ export default function useCreateEditor(id: string) {
           const doc = docs.find((i) => i.id === id)
           if (doc == null) return
 
+          const isAutoCreated = doc.title === DEFAULT_NEW_DOC_TITLE
+
           const isRecentlyUpdated = isDocRecentlyUpdated(doc)
-          if (isRecentlyUpdated) return
+          if (isRecentlyUpdated && !isAutoCreated) return
 
           const hasParsed = hasDocParsedContent(id)
           if (hasParsed) return // has parsed content

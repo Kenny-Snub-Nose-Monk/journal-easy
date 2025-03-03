@@ -1,7 +1,7 @@
 import { db } from '@/db/db'
 import { redirect } from 'next/navigation'
 import { getUserInfo } from '@/lib/session'
-import { DEFAULT_NEW_DOC_CONTENT } from '@/constants'
+import { DEFAULT_NEW_DOC_TITLE, DEFAULT_NEW_DOC_CONTENT } from '@/constants'
 
 export default async function Work() {
   // Get user info
@@ -34,7 +34,7 @@ export default async function Work() {
   const newDoc = await db.doc.create({
     data: {
       userId: user.id,
-      title: '滑水 AI 是什么',
+      title: DEFAULT_NEW_DOC_TITLE,
       content: DEFAULT_NEW_DOC_CONTENT,
     },
   })
