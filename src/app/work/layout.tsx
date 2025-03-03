@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getUserInfo } from '@/lib/session'
 import { isMobileDevice } from '@/lib/isMobileDevice'
+// import { isUserInvited } from '@/app/invitation-code/action'
 
 export default async function Layout({
   children,
@@ -29,11 +30,13 @@ export default async function Layout({
     redirect('/user-info')
   }
 
-  // @ts-ignore
-  if (!user.isInvited) {
-    redirect('/invitation-code')
-    return null
-  }
+  // 先略過邀請碼的設定
+  // const isInvited = await isUserInvited(user.id)
+
+  // if (!isInvited) {
+  //   redirect('/invitation-code')
+  //   return null
+  // }
 
   return <>{children}</>
 }

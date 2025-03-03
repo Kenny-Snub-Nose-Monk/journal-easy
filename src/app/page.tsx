@@ -6,7 +6,8 @@ import StartButton from '@/components/start-button'
 import { Button } from '@/components/ui/button'
 import SignInButton from '@/components/sigin-in-button'
 import { getUserInfo } from '@/lib/session'
-import QRCode from '@/components/QRCode'
+// import QRCode from '@/components/QRCode'
+// import { isUserInvited } from '@/app/invitation-code/action'
 
 export default async function Home() {
   return (
@@ -42,18 +43,20 @@ async function MainButton() {
       </SignInButton>
     )
   }
-  // @ts-ignore
-  // if (!user.isInvited) {
-  //   return (
-  //     <Link href="/invitation-code">
-  //       <Button className="text-base" size="lg">
-  //         <Zap className="h-4 w-4 mr-1" />
-  //         驗證邀請碼
-  //       </Button>
-  //     </Link>
-  //   )
+
+  // const isInvited = await isUserInvited(user.id)
+
+  // if (isInvited) {
+  //   return <StartButton />
   // }
-  return <StartButton />
+  // return (
+  //   <a href="/invitation-code">
+  //     <Button className="text-base" size="lg">
+  //       <Zap className="h-4 w-4 mr-1" />
+  //       申请試用，驗證邀請碼
+  //     </Button>
+  //   </a>
+  // )
 }
 function LearnButton() {
   return (

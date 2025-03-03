@@ -33,15 +33,26 @@ export const config = {
     }),
   ],
   basePath: '/auth',
+  session: {
+    strategy: 'jwt',
+  },
+  secret: process.env.AUTH_SECRET,
   callbacks: {
     authorized({ request, auth }) {
       // const { pathname } = request.nextUrl
       // if (pathname.startsWith('/work/')) return !!auth // 因为 NextAuth Adapter 默認不支持 middleware，所以這裡暫時不用
       return true
     },
-    jwt({ token, trigger, session }) {
-      if (trigger === 'update') token.name = session.user.name
+    jwt({ token, trigger, user }) {
+      if (trigger === 'signIn') {
+        token.id = user.id
+      }
       return token
+    },
+    session({ session, token }) {
+      // @ts-ignore
+      session.user.id = token.id
+      return session
     },
   },
 } satisfies NextAuthConfig

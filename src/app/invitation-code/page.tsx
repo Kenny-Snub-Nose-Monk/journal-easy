@@ -3,12 +3,14 @@ import { getUserInfo } from '@/lib/session'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { checkInvitationCode } from './action'
+// import GenerateCode from './generate-code'
 import Link from 'next/link'
+import { db } from '@/db/db'
+// import { isUserInvited } from './action'
 
 export default async function InvitationPage() {
-  console.log('InvitationPage')
-
   const user = await getUserInfo()
+
   if (user == null)
     return (
       <Wrapper>
@@ -17,14 +19,42 @@ export default async function InvitationPage() {
         </Link>
       </Wrapper>
     )
+
+  // 管理员，邮箱先写死
+  // const isAdmin = ['wangfupeng1988@163.com'].includes(user.email || '')
+  // let codes: string[] = []
+  // if (isAdmin) {
+  //   const res = await db.invitationCode.findMany()
+  //   codes = res.map((item) => item.code)
+  // }
+
   // @ts-ignore
-  if (user.isInvited) {
-    return (
-      <Wrapper>
-        <p>你已經被邀請了</p>
-      </Wrapper>
-    )
-  }
+  // const isInvited = await isUserInvited(user.id)
+  // if (isInvited) {
+  //   return (
+  //     <Wrapper>
+  //       <div>
+  //         <p>
+  //           你已经被邀请了，
+  //           <Link href="/" className="underline">
+  //             返回首页
+  //           </Link>
+  //         </p>
+  //         {isAdmin && (
+  //           <div className="mt-6 p-4 py-2 bg-gray-100">
+  //             <p>邀请码：</p>
+  //             <ul className="text-basic my-4">
+  //               {codes.map((code) => (
+  //                 <li key={code}>{code}</li>
+  //               ))}
+  //             </ul>
+  //             <GenerateCode />
+  //           </div>
+  //         )}
+  //       </div>
+  //     </Wrapper>
+  //   )
+  // }
   return (
     <Wrapper>
       <div className="flex-col ">
