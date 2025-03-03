@@ -40,9 +40,10 @@ export default function useCreateEditor(id: string) {
   useEffect(() => {
     const status = provider.configuration.websocketProvider.status // disconnected connecting connected
     // console.log('provider status...', status, provider.isConnected)
-    if (status === 'connected') return
+    if (status !== 'connected') {
+      provider.connect()
+    }
 
-    provider.connect()
     // .catch((error) => {
     //   console.log('12312312 ', error) // 监听不到 WebSocket 连接失败的错误
     // })
