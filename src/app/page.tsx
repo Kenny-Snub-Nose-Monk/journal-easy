@@ -44,6 +44,8 @@ async function MainButton() {
     )
   }
 
+  return <StartButton />
+
   // const isInvited = await isUserInvited(user.id)
 
   // if (isInvited) {
