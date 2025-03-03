@@ -26,7 +26,7 @@ export default function useCreateEditor(id: string) {
   const [loading, setLoading] = useState(true)
 
   // Yjs document and provider
-  const ydoc = useMemo(() => new Y.Doc(), [])
+  const ydoc = useMemo(() => new Y.Doc({ guid: id }), [id])
   const provider = useMemo(() => {
     return new HocuspocusProvider({
       url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
