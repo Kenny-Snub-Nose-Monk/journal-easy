@@ -16,6 +16,7 @@ import useLimitCharCount from './hooks/useLimitCharCount'
 import useCollabStateAndUsers from './hooks/useCollabStateAndUsers'
 import useFocusEditorFromTitleInput from './hooks/useFocusEditorFromTitleInput'
 import AIIsland from './ai-island'
+import { useToast } from '@/components/ui/use-toast'
 
 interface IProps {
   id: string
@@ -26,7 +27,10 @@ const TiptapEditor = (props: IProps) => {
 
   const menuContainerRef = useRef(null)
 
-  const { editor, loading, provider, isConnectedTimeout } = useCreateEditor(id)
+  const { editor, loading, provider, isConnectedTimeout, isDisconnected } =
+    useCreateEditor(id)
+
+  const { toast } = useToast()
 
   // limit character count
   useLimitCharCount(editor)
@@ -42,6 +46,16 @@ const TiptapEditor = (props: IProps) => {
   useEffect(() => {
     setRightPanelDiv(document.getElementById(RESIZABLE_RIGHT_PANEL_ID))
   }, [])
+
+  // disconnected alert
+  useEffect(() => {
+    if (isDisconnected) {
+      toast({
+        variant: 'destructive',
+        description: '協同編輯服務連接失敗，請刷新頁面重試～',
+      })
+    }
+  }, [isDisconnected, toast])
 
   if (isConnectedTimeout) {
     return (
@@ -64,6 +78,11 @@ const TiptapEditor = (props: IProps) => {
 
   return (
     <>
+      {isDisconnected && (
+        <div className="mx-10 mb-6 text-red-500">
+          協同編輯服務連接失敗，請刷新頁面重試～
+        </div>
+      )}
       <div ref={menuContainerRef}>
         <EditorContent editor={editor} />
         <ContentMenu editor={editor} />

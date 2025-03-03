@@ -44,16 +44,6 @@ export default function useCreateEditor(id: string) {
       provider.connect()
     }
 
-    // .catch((error) => {
-    //   console.log('12312312 ', error) // 监听不到 WebSocket 连接失败的错误
-    // })
-
-    // // websocket error 可监听到 WebSocket 连接失败的错误，但连接成功时也会报错！！
-    // const ws = provider.configuration.websocketProvider.webSocket
-    // ws?.addEventListener('error', (event) => {
-    //   console.log('websocket error...', event)
-    // })
-
     return () => {
       const status = provider.configuration.websocketProvider.status // disconnected connecting connected
       if (status === 'disconnected') return
@@ -63,6 +53,31 @@ export default function useCreateEditor(id: string) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  // detect disconnect (maybe server closed)
+  const [isDisconnected, setIsDisconnected] = useState(false)
+  useEffect(() => {
+    const onConnect = () => {
+      console.log('editor provider connect...')
+      setIsDisconnected(false)
+    }
+    const onDisconnect = ({ event }: { event: CloseEvent }) => {
+      console.log('editor provider disconnect...', event)
+      if (event.type === 'close') {
+        setTimeout(() => {
+          const status = provider.configuration.websocketProvider.status
+          if (status === 'connected') return // maybe reconnect soon itself
+          setIsDisconnected(true)
+        }, 1200)
+      }
+    }
+    provider.on('connect', onConnect)
+    provider.on('disconnect', onDisconnect)
+    return () => {
+      provider.off('connect', onConnect)
+      provider.off('disconnect', onDisconnect)
+    }
+  }, [provider, id])
 
   // is connected timeout
   const [isConnectedTimeout, setIsConnectedTimeout] = useState(false)
@@ -140,6 +155,7 @@ export default function useCreateEditor(id: string) {
     loading,
     provider,
     isConnectedTimeout,
+    isDisconnected,
   }
 }
 
