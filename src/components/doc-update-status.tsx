@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import {
   Tooltip,
   TooltipContent,
@@ -41,10 +42,7 @@ export default function DocUpdateStatus(props: IProps) {
             <TooltipProvider key={clientId}>
               <Tooltip>
                 <TooltipTrigger>
-                  <Avatar className="h-7 w-7 border -ml-2">
-                    <AvatarImage src={avatar || ''} alt={name || ''} />
-                    <AvatarFallback>{name?.slice(0, 1)}</AvatarFallback>
-                  </Avatar>
+                  <UserAvatar avatar={avatar} name={name} />
                 </TooltipTrigger>
                 <TooltipContent>{name}</TooltipContent>
               </Tooltip>
@@ -63,11 +61,24 @@ export default function DocUpdateStatus(props: IProps) {
             'bg-red-500 dark:bg-red-400': collaborativeState === 'disconnected',
           })}
         ></div>
-        <span className="text-muted-foreground ml-1">{collaborativeState}</span>
+        {/* <span className="text-muted-foreground ml-1">{collaborativeState}</span> */}
       </div>
-      <span className="text-muted-foreground text-sm ml-3 inline-flex items-center">
+      <span className="text-muted-foreground text-sm ml-2 inline-flex items-center">
         共 {characterCount >= 0 ? characterCount : '---'} 字
       </span>
     </>
   )
 }
+
+const UserAvatar = memo(function AvatarWrapper(props: {
+  avatar: string
+  name: string
+}) {
+  const { avatar, name } = props
+  return (
+    <Avatar className="h-7 w-7 border -ml-2">
+      <AvatarImage src={avatar || ''} alt={name || ''} />
+      <AvatarFallback>{name?.slice(0, 1)}</AvatarFallback>
+    </Avatar>
+  )
+})
