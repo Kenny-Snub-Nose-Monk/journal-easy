@@ -10,9 +10,14 @@ export default function useCollabStateAndUsers(
   // update collaborative state
   const setCollaborativeState = useEditorStore((s) => s.setCollaborativeState)
   useEffect(() => {
-    provider?.on('status', (event: { status: WebSocketStatus }) => {
+    const fn = (event: { status: WebSocketStatus }) => {
       setCollaborativeState(event.status)
-    })
+    }
+    provider?.on('status', fn)
+
+    return () => {
+      provider?.off('status', fn) // remove event listener in time
+    }
   }, [provider, setCollaborativeState])
 
   // get collaboration users

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useEditor } from '@tiptap/react'
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import * as Y from 'yjs'
+import { IndexeddbPersistence } from 'y-indexeddb'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { extensions } from '../extensions'
@@ -27,6 +28,11 @@ export default function useCreateEditor(id: string) {
 
   // Yjs document and provider
   const ydoc = useMemo(() => new Y.Doc({ guid: id }), [id])
+
+  useEffect(() => {
+    new IndexeddbPersistence(id, ydoc) // Store the Y document in the browser
+  }, [id, ydoc])
+
   const provider = useMemo(() => {
     return new HocuspocusProvider({
       url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',

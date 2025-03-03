@@ -27,7 +27,7 @@ export default function useCountLimit(editor: Editor | null) {
 
   useEffect(() => {
     if (editor == null) return
-    editor.on('update', () => {
+    const fn = () => {
       const characterCount = editor?.storage.characterCount || {
         characters: () => 0,
         words: () => 0,
@@ -40,6 +40,11 @@ export default function useCountLimit(editor: Editor | null) {
       }
       setCharacterCount(characterCount.characters())
       // characterCount.words() 可統計英文單詞數量，但不適用於中文
-    })
+    }
+    editor.on('update', fn)
+
+    return () => {
+      editor.off('update', fn) // remove event listener in time
+    }
   }, [editor, countLimitToast, setCharacterCount])
 }

@@ -19,7 +19,8 @@
     "markdownit",
     "uparrow",
     "Ydoc",
-    "zustand"
+    "zustand",
+    "indexeddb"
   ],
   "files.associations": {
     "*.css": "tailwindcss"
