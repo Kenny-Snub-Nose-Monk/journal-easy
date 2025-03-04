@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/popover'
 import { patch } from '@/lib/ajax'
 import { useDocsStore } from '@/stores/docs-store'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
@@ -30,6 +31,8 @@ export default function ShareDocButton(props: IProps) {
     () => docs.find((i) => i.id === id)?.sharePassword,
     [docs, id]
   )
+
+  const t = useTranslations('shareDoc')
 
   // Set url
   useEffect(() => {
@@ -63,7 +66,8 @@ export default function ShareDocButton(props: IProps) {
   // Close share
   async function CloseShare() {
     if (!sharePassword) return // not shared yet
-    const confirm = window.confirm('确定取消分享？')
+    const confirmText = t('cancelShareConfirm')
+    const confirm = window.confirm(confirmText)
     if (!confirm) return
     await updatePassword('')
   }
@@ -71,7 +75,8 @@ export default function ShareDocButton(props: IProps) {
   // Copy share link and password
   const [copied, setCopied] = useState(false)
   function handleCopy() {
-    copy(`【划水AI】分享文档\n链接：${url}\n密码：${sharePassword}`)
+    const copyContent = t('copyText', { link: url, password: sharePassword })
+    copy(copyContent)
     setCopied(true)
   }
 
@@ -85,7 +90,7 @@ export default function ShareDocButton(props: IProps) {
           disabled={disabled}
         >
           <Share className="h-4 w-4 mr-1" />
-          {!!sharePassword ? '已分享' : '分享'}
+          {!!sharePassword ? t('shared') : t('share')}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
@@ -96,16 +101,16 @@ export default function ShareDocButton(props: IProps) {
         )}
         {!sharePassword && !loading && (
           <div className="h-40 flex flex-col items-center justify-center">
-            <p className="mb-2">分享给他人协同编辑</p>
+            <p className="mb-2">{t('shareDesc')}</p>
             <Button size="sm" onClick={handleOpenShare}>
-              开启分享
+              {t('startToShare')}
             </Button>
           </div>
         )}
         {sharePassword && !loading && (
           <div>
-            <h3 className="mb-3 text-lg font-bold">分享给他人协同编辑</h3>
-            <p className="mb-2">链接</p>
+            <h3 className="mb-3 text-lg font-bold">{t('shareDesc')}</h3>
+            <p className="mb-2">{t('link')}</p>
             <div className="mb-3">
               <Input
                 type="text"
@@ -114,7 +119,7 @@ export default function ShareDocButton(props: IProps) {
                 className="w-full focus-visible:ring-transparent"
               />
             </div>
-            <p className="mb-2">密码</p>
+            <p className="mb-2">{t('password')}</p>
             <div className="mb-3">
               <Input
                 type="text"
@@ -125,10 +130,10 @@ export default function ShareDocButton(props: IProps) {
             </div>
             <div className="flex items-center justify-between ">
               <Button size="sm" onClick={handleCopy} disabled={copied}>
-                {copied ? '已复制' : '复制'}
+                {copied ? t('copied') : t('copy')}
               </Button>
               <Button variant="secondary" onClick={CloseShare}>
-                取消分享
+                {t('cancelShare')}
               </Button>
             </div>
           </div>

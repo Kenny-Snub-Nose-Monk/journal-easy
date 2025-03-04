@@ -10,6 +10,7 @@ import { getDoc } from '../client-action'
 import useDocs from '../hooks/useDocs'
 import ContentForMyDoc from './content-for-my-doc'
 import ContentForShareDoc from './content-for-share-doc'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
@@ -18,6 +19,7 @@ interface IProps {
 
 export default function ContentWrapper(props: IProps) {
   const { userInfo: userInfoProp, id: idProp } = props
+  const t = useTranslations('docItem')
 
   const userInfo = useUserStore((s) => s.userInfo)
   const setUserInfo = useUserStore((s) => s.setUserInfo)
@@ -80,12 +82,12 @@ export default function ContentWrapper(props: IProps) {
     return (
       <div className="p-8 text-center text-muted-foreground">
         <p>
-          找不到文檔，
+          {t('notFound')},&nbsp;
           <span
             className="underline cursor-pointer"
             onClick={() => createDoc()}
           >
-            創建新文檔
+            {t('create')}
           </span>
         </p>
       </div>

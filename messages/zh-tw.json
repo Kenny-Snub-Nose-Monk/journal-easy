@@ -10,6 +10,12 @@
     "getStarted": "開始使用",
     "trial": "申請試用"
   },
+  "theme": {
+    "title": "切換主題",
+    "light": "明亮",
+    "dark": "黑暗",
+    "system": "系統"
+  },
   "invitationCode": {
     "notLogin": "你尚未登入，請先登入",
     "invited": "你已經被邀請",
@@ -40,13 +46,15 @@
     "searchPlaceholder": "輸入關鍵字...",
     "notFound": "未找到內容"
   },
-  "starList": {
+  "favorList": {
     "title": "收藏夾",
     "inputPlaceholder": "文檔標題...",
     "docTitle": "標題",
     "docUpdateTime": "更新時間",
     "notFound": "未找到內容",
-    "unTitled": "<無標題>"
+    "unTitled": "<無標題>",
+    "favor": "收藏",
+    "favored": "已收藏"
   },
   "CollabList": {
     "title": "協同文檔",
@@ -66,5 +74,51 @@
     "delete": "刪除",
     "inputPlaceholder": "文檔標題...",
     "unTitled": "<無標題>"
+  },
+  "othersDocs": {
+    "title": "他人文档",
+    "deleteConfirm": "确定移除此文档吗？",
+    "unTitled": "<无标题>"
+  },
+  "myDocs": {
+    "title": "我的文档",
+    "create": "新建文档"
+  },
+  "docItem": {
+    "unTitled": "<無標題>",
+    "noDocs": "沒有文檔",
+    "duplicate": "複製",
+    "duplicateFailed": "創建文檔失敗",
+    "move": "移動",
+    "moveFailed": "移動文檔失敗",
+    "moveDesc": "移動到選中文檔的下級",
+    "root": "根目錄",
+    "delete": "刪除",
+    "notFound": "找不到該文檔",
+    "create": "新建文檔",
+    "titleInputPlaceholder": "請輸入標題..."
+  },
+  "shareDoc": {
+    "share": "分享",
+    "shared": "已分享",
+    "shareDesc": "分享給他人協同編輯",
+    "startToShare": "開始分享",
+    "cancelShareConfirm": "確定取消分享？",
+    "cancelShare": "取消分享",
+    "copyText": "【簡單日記】分享文檔\n連結：{link}\n密碼：{password}",
+    "link": "連結",
+    "password": "密碼",
+    "copy": "複製",
+    "copied": "已複製"
+  },
+  "sharedDocPage": {
+    "unTitled": "<無標題>",
+    "checking": "共享權限校驗中...",
+    "notShared": "該文檔未開啟分享，你無權限查看",
+    "inputPassword": "請輸入共享密碼",
+    "passwordWrong": "密碼錯誤，請刷新頁面重試",
+    "isMyDoc": "這是我自己的文檔，不是他人共享的文檔",
+    "shareTip": "此為共享文檔",
+    "toMyDocs": "跳轉到我的文檔"
   }
 }

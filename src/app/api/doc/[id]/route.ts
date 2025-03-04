@@ -34,7 +34,7 @@ export async function GET(
   } catch (ex: any) {
     console.error('Get doc error', ex)
     sendErrorAlert(ex, 'Get doc error')
-    return Response.json(genErrorData('Get doc error'))
+    return Response.json(genErrorData('Get doc error 獲取文檔錯誤'))
   }
 }
 
@@ -55,6 +55,6 @@ export async function PATCH(
     return Response.json(genSuccessData())
   } catch (ex) {
     sendErrorAlert(ex, 'Update doc error')
-    return Response.json(genErrorData('update doc error'))
+    return Response.json(genErrorData('update doc error 更新失敗'))
   }
 }

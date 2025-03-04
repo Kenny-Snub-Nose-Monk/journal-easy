@@ -11,6 +11,12 @@
     "getStarted": "Get Started",
     "trial": "Apply for Trial"
   },
+  "theme": {
+    "title": "Change theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "invitationCode": {
     "notLogin": "You need to login first",
     "invited": "You have been invited",
@@ -41,18 +47,20 @@
     "searchPlaceholder": "Input keywords...",
     "notFound": "No results found"
   },
-  "starList": {
+  "favorList": {
     "title": "Favorites",
     "inputPlaceholder": "Doc title...",
     "docTitle": "Title",
     "docUpdateTime": "Update Time",
     "notFound": "No results found",
-    "unTitled": "UnTitled"
+    "unTitled": "UnTitled",
+    "favor": "Favorite",
+    "favored": "Favorited"
   },
   "CollabList": {
     "title": "Collaboration",
     "mySharing": "My sharing",
-    "notFound": "No results found, open a doc and share it"
+    "notFound": "No data, open a doc and share it"
   },
   "trash": {
     "title": "Trash",
@@ -67,5 +75,51 @@
     "delete": "Delete",
     "inputPlaceholder": "Doc title...",
     "unTitled": "UnTitled"
+  },
+  "othersDocs": {
+    "title": "Other's Docs",
+    "deleteConfirm": "Do you want to delete this doc?",
+    "unTitled": "UnTitled"
+  },
+  "myDocs": {
+    "title": "My Docs",
+    "create": "Create"
+  },
+  "docItem": {
+    "unTitled": "UnTitled",
+    "noDocs": "You have no docs",
+    "duplicate": "Duplicate",
+    "duplicateFailed": "Failed to create doc",
+    "move": "Move",
+    "moveFailed": "Failed to move doc",
+    "moveDesc": "Move to the subordinate of the selected document",
+    "root": "Root",
+    "delete": "Delete",
+    "notFound": "Cannot find the doc",
+    "create": "Create",
+    "titleInputPlaceholder": "Doc title..."
+  },
+  "shareDoc": {
+    "share": "Share",
+    "shared": "Shared",
+    "shareDesc": "Share for collaboration",
+    "startToShare": "Start to share",
+    "cancelShareConfirm": "Do you want to cancel sharing this doc?",
+    "cancelShare": "Cancel sharing",
+    "copyText": "HuashuiAI shared a doc with you, link is {link} , and password is {password}",
+    "link": "Link",
+    "password": "Password",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "sharedDocPage": {
+    "unTitled": "UnTitled",
+    "checking": "Shared priority is checking",
+    "notShared": "The doc is not shared, you can't edit it",
+    "inputPassword": "Input shared password",
+    "passwordWrong": "Password is wrong, please refresh the page and try again",
+    "isMyDoc": "This is my own doc, not shared by others",
+    "shareTip": "This is a shared doc",
+    "toMyDocs": "Back to my docs"
   }
 }

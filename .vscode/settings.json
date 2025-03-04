@@ -20,7 +20,8 @@
     "uparrow",
     "Ydoc",
     "zustand",
-    "indexeddb"
+    "indexeddb",
+    "Favorited"
   ],
   "files.associations": {
     "*.css": "tailwindcss"

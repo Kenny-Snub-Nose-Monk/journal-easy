@@ -22,7 +22,9 @@ export async function POST(request: Request) {
     },
   })
   if (docCount > MAX_DOC_COUNT) {
-    return Response.json(genErrorData(`最多只能創建 ${MAX_DOC_COUNT} 個文檔`))
+    return Response.json(
+      genErrorData(`You only can create up to ${MAX_DOC_COUNT} docs`)
+    )
   }
 
   const body = await request.json()
@@ -43,7 +45,7 @@ export async function POST(request: Request) {
       return Response.json(genErrorData('Origin doc not found'))
     }
 
-    title = (originDoc.title || '<No Title>') + ' Copy'
+    title = (originDoc.title || 'unTitled') + ' copy'
     content = originDoc.content
     parentId = originDoc.parentId
   }

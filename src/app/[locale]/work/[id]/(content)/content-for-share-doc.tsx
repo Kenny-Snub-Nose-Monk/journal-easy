@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import BackToTop from '@/components/back-to-top'
 import TiptapEditor from '@/components/editor'
 import { useDocsStore } from '@/stores/docs-store'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   doc: IDoc
@@ -23,6 +24,8 @@ export default function ContentForShareDoc(props: IProps) {
   const addOtherDoc = useDocsStore((s) => s.addOtherDoc)
   const isMyDoc = userInfo?.id === doc.userId
 
+  const t = useTranslations('sharedDocPage')
+
   const [renderEditor, setRenderEditor] = useState(false)
 
   useEffect(() => {
@@ -33,11 +36,11 @@ export default function ContentForShareDoc(props: IProps) {
   }, [doc])
 
   useEffect(() => {
-    document.title = doc.title || '<無標題>'
-  }, [doc])
+    document.title = doc.title || t('unTitled')
+  }, [doc, t])
 
   const [authority, setAuthority] = useState(false)
-  const [UnauthorizedText, setUnauthorizedText] = useState('共享權限校驗中...')
+  const [UnauthorizedText, setUnauthorizedText] = useState(t('checking'))
 
   useEffect(() => {
     setAuthority(false)
@@ -47,7 +50,7 @@ export default function ContentForShareDoc(props: IProps) {
     if (doc.id !== curDocId) return
 
     if (!doc.sharePassword) {
-      setUnauthorizedText('該文檔未開啟分享，你無權限查看')
+      setUnauthorizedText(t('notShared'))
       return
     }
 
@@ -58,16 +61,16 @@ export default function ContentForShareDoc(props: IProps) {
     }
 
     // If there is no password in localStorage or not correct, get it
-    const p = prompt('請輸入共享密碼：')
+    const p = prompt(t('inputPassword'))
     if (!p?.trim() || p !== doc.sharePassword) {
-      setUnauthorizedText('密碼錯誤，請刷新頁面重試')
+      setUnauthorizedText(t('passwordWrong'))
       return
     }
     if (p === doc.sharePassword) {
       localStorage.setItem(STORAGE_KEY, p)
       setAuthority(true)
     }
-  }, [doc, curDocId])
+  }, [doc, curDocId, t])
 
   // Add doc to otherDocs
   useEffect(() => {
@@ -80,7 +83,7 @@ export default function ContentForShareDoc(props: IProps) {
   if (isMyDoc) {
     return (
       <div className="p-8 text-center text-muted-foreground">
-        <p>Error: this doc is mine, not a share doc.</p>
+        <p>{t('isMyDoc')}</p>
       </div>
     )
   }
@@ -106,9 +109,9 @@ export default function ContentForShareDoc(props: IProps) {
       <div className="mx-10 -mt-4 mb-4">
         <div className="inline-flex items-center text-sm">
           <Share size={16} className="mr-1 text-muted-foreground" />
-          <span className="text-muted-foreground mr-2">此為共享文檔</span>
+          <span className="text-muted-foreground mr-2">{t('shareTip')}</span>
           <Link href="/work/" className="underline">
-            跳轉到我的文檔
+            {t('toMyDocs')}
           </Link>
         </div>
       </div>

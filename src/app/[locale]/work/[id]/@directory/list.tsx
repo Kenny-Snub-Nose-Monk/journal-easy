@@ -11,6 +11,7 @@ import { EVENT_KEY_NAV_DOC } from '@/constants'
 import { useDocsStore } from '@/stores/docs-store'
 import useDocs from '../hooks/useDocs'
 import OtherList from './other-list'
+import { useTranslations } from 'next-intl'
 
 interface ListProps {
   defaultParamId: string
@@ -83,11 +84,13 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
 }
 
 function ListTitle() {
+  const t = useTranslations('myDocs')
+
   return (
     <div className="flex items-center">
       <h3 className="px-2 mt-3 mb-3 text-sm font-bold flex items-center">
         <LayoutList className="h-4 w-4 mr-1" />
-        <span>我的文檔</span>
+        <span>{t('title')}</span>
       </h3>
       <Separator className="flex-1 mt-2 mr-1" />
     </div>
@@ -95,7 +98,9 @@ function ListTitle() {
 }
 
 function CreateButton() {
+  const t = useTranslations('myDocs')
   const { createDoc } = useDocs()
+
   return (
     <Button
       className="justify-start px-0.5 font-bold text-sm ml-1"
@@ -104,7 +109,7 @@ function CreateButton() {
       onClick={() => createDoc()}
     >
       <Plus className="h-4 w-4 mr-1" />
-      創建文檔
+      {t('create')}
     </Button>
   )
 }

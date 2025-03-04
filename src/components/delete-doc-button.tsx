@@ -2,6 +2,7 @@ import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import useDocs from '@/app/[locale]/work/[id]/hooks/useDocs'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
@@ -11,6 +12,7 @@ export default function DocDeleteButton(props: IProps) {
   const { id, className = '' } = props
   // 刪除文檔
   const { deleteDoc } = useDocs()
+  const t = useTranslations('docItem')
 
   return (
     <Button
@@ -19,7 +21,7 @@ export default function DocDeleteButton(props: IProps) {
       onClick={() => deleteDoc(id)}
     >
       <Trash2 className="h-4 w-4 mr-1" />
-      刪除
+      {t('delete')}
     </Button>
   )
 }

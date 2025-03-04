@@ -42,17 +42,17 @@ export default async function Work() {
   const newDoc = await db.doc.create({
     data: {
       userId: user.id,
-      title: locale === 'zh-cn' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN, // useCreateEditor 中會用到這個變量，做判斷
-      content: locale === 'zh-cn' ? DEFAULT_NEW_DOC_CONTENT : DEFAULT_NEW_DOC_CONTENT_EN,
+      title:
+        locale === 'zh-cn' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN, // useCreateEditor 中會用到這個變量，做判斷
+      content:
+        locale === 'zh-cn'
+          ? DEFAULT_NEW_DOC_CONTENT
+          : DEFAULT_NEW_DOC_CONTENT_EN,
     },
   })
   // 跳轉
   redirect(`/work/${newDoc.id}`)
 
   // 不渲染頁面
-  return null
-}
-
-  // 不渲染页面
   return null
 }

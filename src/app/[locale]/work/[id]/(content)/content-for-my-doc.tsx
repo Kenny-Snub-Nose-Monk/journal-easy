@@ -13,12 +13,14 @@ import {
 } from '@/constants'
 import BackToTop from '@/components/back-to-top'
 import { useDocsStore } from '@/stores/docs-store'
+import { useTranslations } from 'next-intl'
 
 export default function ContentForMyDoc() {
   const docs = useDocsStore((s) => s.docs)
   const id = useDocsStore((s) => s.curDocId)
   const curDoc = useMemo(() => docs.find((d) => d.id === id), [docs, id])
   const { title = '' } = curDoc || {}
+  const t = useTranslations('docItem')
   const updateDocTitle = useDocsStore((s) => s.updateDocTitle)
 
   // record last doc id
@@ -69,15 +71,16 @@ function TitleInput(props: {
   updateDocTitle: (id: string, title: string) => void
 }) {
   const { id, title, updateDocTitle } = props
+  const t = useTranslations('docItem')
 
   useEffect(() => {
-    document.title = title || '<無標題>'
-  }, [title])
+    document.title = title || t('unTitled')
+  }, [title, t])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value
     updateDocTitle(id, newTitle)
-    updateTitle(id, newTitle || '<無標題>') // 更新數據庫
+    updateTitle(id, newTitle || t('unTitled')) // 更新數據庫
   }
 
   function handleKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -90,7 +93,7 @@ function TitleInput(props: {
   return (
     <Input
       id={DOC_TITLE_INPUT_ID}
-      placeholder="請輸入標題..."
+      placeholder={t('titleInputPlaceholder')}
       value={title}
       maxLength={100}
       onChange={handleChange}

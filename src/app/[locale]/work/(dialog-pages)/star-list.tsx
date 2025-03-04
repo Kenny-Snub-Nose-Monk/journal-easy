@@ -29,7 +29,7 @@ import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 
 export default function StarList() {
-  const t = useTranslations('starList')
+  const t = useTranslations('favorList')
 
   return (
     <Dialog>
@@ -52,7 +52,7 @@ export default function StarList() {
 function StarListTable() {
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState<IDoc[]>([])
-  const t = useTranslations('starList')
+  const t = useTranslations('favorList')
 
   // 搜索
   // eslint-disable-next-line
@@ -160,7 +160,7 @@ function Item(props: ItemProps) {
   const { doc, docIndex, currentIndex, handleClick } = props
   const isCurrent = currentIndex === docIndex
   const tableRowRef = useRef<HTMLTableRowElement>(null)
-  const t = useTranslations('starList')
+  const t = useTranslations('favorList')
 
   useEffect(() => {
     if (!isCurrent) return

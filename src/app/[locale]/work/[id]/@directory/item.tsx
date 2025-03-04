@@ -3,12 +3,12 @@
 import { File, FileOutput, ChevronDown, ChevronRight, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
-import emitter from '@/lib/emitter'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { isDescendant, nav } from './util'
 import { IDoc } from '@/stores/docs-store'
 import useDocs from '../hooks/useDocs'
 import ItemHandlers from './item-handlers'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
@@ -40,6 +40,8 @@ export default function Item(props: IProps) {
   const [showChildren, setShowChildren] = useState(
     hasChildren ? isDescendant(id, curDocId, docs) : false
   )
+
+  const t = useTranslations('docItem')
 
   function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation
@@ -102,7 +104,7 @@ export default function Item(props: IProps) {
               )}
             </div>
           )}
-          <span className="truncate flex-auto">{title || 'No Title'}</span>
+          <span className="truncate flex-auto">{title || t('unTitled')}</span>
         </div>
 
         {/* 操作按鈕 */}

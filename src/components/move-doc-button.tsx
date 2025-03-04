@@ -17,6 +17,7 @@ import {
 import { get, patch } from '@/lib/ajax'
 import { IDoc } from '@/stores/docs-store'
 import { isDescendant } from '@/app/[locale]/work/[id]/@directory/util'
+import { useTranslations } from 'next-intl'
 
 export default function MoveDocButton(props: {
   id: string
@@ -25,6 +26,7 @@ export default function MoveDocButton(props: {
   const { id, className = '' } = props
   const [parentId, setParentId] = useState<null | string>(null)
   const { toast } = useToast()
+  const t = useTranslations('docItem')
 
   async function handleClick() {
     if (parentId === '') return // 可以是 null ，但不能是空字符串
@@ -33,7 +35,7 @@ export default function MoveDocButton(props: {
     if (errno !== 0) {
       toast({
         variant: 'destructive',
-        description: msg || '更新失败',
+        description: msg || t('moveFailed'),
       })
     }
     location.href = location.href // router.refresh() 只刷新服務端組件，不會更改客戶端組件狀態，這裏先用簡單粗暴的刷新來代替
@@ -47,17 +49,17 @@ export default function MoveDocButton(props: {
           className={cn('w-full justify-start p-2 h-8', className)}
         >
           <MoveUpRight className="w-4 h-4 mr-1" />
-          移動
+          {t('move')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>移動</DialogTitle>
-          <DialogDescription>移動到選中文檔的下級</DialogDescription>
+          <DialogTitle>{t('move')}</DialogTitle>
+          <DialogDescription>{t('moveDesc')}</DialogDescription>
         </DialogHeader>
         <SelectParentDoc curId={id} onSelectParentId={setParentId} />
         <DialogFooter>
-          <Button onClick={handleClick}>移動</Button>
+          <Button onClick={handleClick}>{t('move')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -73,6 +75,8 @@ function SelectParentDoc(props: {
   const [selectedId, setSelectedId] = useState<null | string>(null)
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState([])
+
+  const t = useTranslations('docItem')
 
   // 加载文档列表
   useEffect(() => {
@@ -106,7 +110,7 @@ function SelectParentDoc(props: {
   if (!loading && list.length === 0) {
     return (
       <div className="h-80">
-        <p className="mt-10 text-center text-muted-foreground">暫無數據</p>
+        <p className="mt-10 text-center text-muted-foreground">{t('noDocs')}</p>
       </div>
     )
   }
@@ -122,7 +126,7 @@ function SelectParentDoc(props: {
       >
         {list.length > 0 && <ChevronDown className="w-4 h-4 mr-1" />}
         {list.length === 0 && <FileText className="w-4 h-4 mr-1" />}
-        <p>根目錄</p>
+        <p>{t('root')}</p>
       </div>
       {list.length > 0 && (
         <div className="ml-3">
@@ -157,6 +161,7 @@ function Item(props: {
   const hasChildren = children.length > 0
 
   const isDescendantDoc = isDescendant(curId, doc.id, list)
+  const t = useTranslations('docItem')
 
   function handleClick() {
     if (doc.id === curId) return // 不能選中自己
@@ -177,7 +182,7 @@ function Item(props: {
       >
         {hasChildren && <ChevronDown className="w-4 h-4 mr-1" />}
         {!hasChildren && <FileText className="w-4 h-4 mr-1" />}
-        <p className="flex-auto truncate">{doc.title || '<無標題>'}</p>
+        <p className="flex-auto truncate">{doc.title || t('unTitled')}</p>
       </div>
       {hasChildren && (
         <div className="ml-3">

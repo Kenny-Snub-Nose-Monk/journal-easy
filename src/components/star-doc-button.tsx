@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { updateIsStar } from '@/app/[locale]/work/[id]/client-action'
 import { useDocsStore } from '@/stores/docs-store'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
@@ -23,13 +24,15 @@ export default function StarDocButton(props: IProps) {
     [docs, id]
   )
 
+  const t = useTranslations('favorList')
+
   async function handleUpdateIsStar() {
     const newIsStar = !isStar
     const res = await updateIsStar(id, newIsStar)
     if (res.errno !== 0) {
       toast({
         variant: 'destructive',
-        title: '錯誤',
+        title: 'Error',
         description: res.msg,
       })
       return
@@ -46,7 +49,7 @@ export default function StarDocButton(props: IProps) {
       disabled={disabled}
     >
       <Star className="h-4 w-4 mr-1" />
-      {isStar ? '已收藏' : '收藏'}
+      {isStar ? t('favored') : t('favor')}
     </Button>
   )
 }
