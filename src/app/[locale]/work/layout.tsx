@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getUserInfo } from '@/lib/session'
 import { isMobileDevice } from '@/lib/isMobileDevice'
 // import { isUserInvited } from '@/app/invitation-code/action'
+import { getTranslations } from 'next-intl/server'
 
 export default async function Layout({
   children,
@@ -10,15 +11,16 @@ export default async function Layout({
   children: React.ReactNode
 }>) {
   const isMobile = await isMobileDevice()
+  const t = await getTranslations('common')
 
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col items-center justify-center">
         <p>
           <Link href="/" className="font-bold underline">
-            滑水 AI
+            {t('brandName')}
           </Link>
-          ，暫不支持移動端瀏覽器～
+          , {t('notSupportMobile')}
         </p>
       </div>
     )

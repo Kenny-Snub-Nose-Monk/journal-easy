@@ -26,19 +26,22 @@ import scrollIntoView from 'scroll-into-view-if-needed'
 import debounce from 'lodash.debounce'
 import useBindKeyPress from '../hooks/useBindKeyPress'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 export default function StarList() {
+  const t = useTranslations('starList')
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <Star className="h-4 w-4 mr-1" />
-          收藏夾
+          {t('title')}
         </Button>
       </DialogTrigger>
       <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>收藏夾</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
         <StarListTable />
       </DialogContent>
@@ -49,6 +52,7 @@ export default function StarList() {
 function StarListTable() {
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState<IDoc[]>([])
+  const t = useTranslations('starList')
 
   // 搜索
   // eslint-disable-next-line
@@ -97,7 +101,7 @@ function StarListTable() {
           value={keyword}
           onChange={handleChange}
           maxLength={20}
-          placeholder="搜索標題..."
+          placeholder={t('inputPlaceholder')}
           className="focus-visible:ring-transparent"
         />
       </div>
@@ -111,15 +115,17 @@ function StarListTable() {
         )}
         {!loading && list.length === 0 && (
           <div className="h-96">
-            <p className="mt-10 text-center text-muted-foreground">暫無數據</p>
+            <p className="mt-10 text-center text-muted-foreground">
+              {t('notFound')}
+            </p>
           </div>
         )}
         {!loading && list.length > 0 && (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-60">標題</TableHead>
-                <TableHead>更新時間</TableHead>
+                <TableHead className="w-auto">{t('docTitle')}</TableHead>
+                <TableHead>{t('docUpdateTime')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -154,6 +160,7 @@ function Item(props: ItemProps) {
   const { doc, docIndex, currentIndex, handleClick } = props
   const isCurrent = currentIndex === docIndex
   const tableRowRef = useRef<HTMLTableRowElement>(null)
+  const t = useTranslations('starList')
 
   useEffect(() => {
     if (!isCurrent) return
@@ -178,9 +185,7 @@ function Item(props: ItemProps) {
       onClick={() => handleClick(doc)}
     >
       <TableCell>
-        <p className="w-60 overflow-hidden truncate">
-          {doc.title || '<無標題>'}
-        </p>
+        <p className="overflow-hidden truncate">{doc.title || t('unTitled')}</p>
       </TableCell>
       <TableCell>{time}</TableCell>
     </TableRow>

@@ -13,19 +13,21 @@ import {
 } from '@/components/ui/dialog'
 import { IDoc } from '@/stores/docs-store'
 import { get } from '@/lib/ajax'
+import { useTranslations } from 'next-intl'
 
 export default function ShareList() {
+  const t = useTranslations('CollabList')
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <Users className="h-4 w-4 mr-1" />
-          協同文件
+          {t('title')}
         </Button>
       </DialogTrigger>
       <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>我的分享</DialogTitle>
+          <DialogTitle>{t('mySharing')}</DialogTitle>
         </DialogHeader>
         <ShareListContent />
       </DialogContent>
@@ -36,6 +38,7 @@ export default function ShareList() {
 function ShareListContent() {
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState<IDoc[]>([])
+  const t = useTranslations('CollabList')
 
   // Load data
   useEffect(() => {
@@ -71,6 +74,13 @@ function ShareListContent() {
                 </div>
               )
             })}
+            {!loading && list.length === 0 && (
+              <div className="h-96">
+                <p className="mt-10 text-center text-muted-foreground">
+                  {t('notFound')}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

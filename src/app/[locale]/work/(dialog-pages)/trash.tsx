@@ -25,22 +25,23 @@ import { timeAgo } from '@/lib/dt'
 import { getDescendantsIds } from '../[id]/@directory/util'
 import { getDoc, updateParentId } from '../[id]/client-action'
 import { get, patch, del as ajaxDelete } from '@/lib/ajax'
+import { useTranslations } from 'next-intl'
 
 export default function Trash() {
+  const t = useTranslations('trash')
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
-          <Trash2 className="h-4 w-4" />
-          &nbsp;&nbsp;回收站
+          <Trash2 className="h-4 w-4 mr-1" />
+          {t('title')}
         </Button>
       </DialogTrigger>
       <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>回收站</DialogTitle>
-          <DialogDescription>
-            注意，回收站的文檔將保留 30 天，然後徹底刪除
-          </DialogDescription>
+          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogDescription>{t('desc')}</DialogDescription>
         </DialogHeader>
         <TrashTable />
       </DialogContent>
@@ -49,6 +50,7 @@ export default function Trash() {
 }
 function TrashTable() {
   const { toast } = useToast()
+  const t = useTranslations('trash')
   const [list, setList] = useState<IDoc[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -97,13 +99,14 @@ function TrashTable() {
     } else {
       toast({
         variant: 'destructive',
-        description: msg || '執行失敗',
+        description: msg || t('failed'),
       })
     }
   }
   // 徹底刪除
   function del(id: string) {
-    if (!confirm('是否徹底刪除該文檔？刪除後不可恢復')) return
+    const confirmText = t('confirm')
+    if (!confirm(confirmText)) return
     const descendantsIds = getDescendantsIds(id, list)
     const ids = [...descendantsIds, id]
     // 異步刪除
@@ -122,7 +125,9 @@ function TrashTable() {
   if (!loading && list.length === 0) {
     return (
       <div className="h-96">
-        <p className="mt-10 text-center text-muted-foreground">暫無數據</p>
+        <p className="mt-10 text-center text-muted-foreground">
+          {t('notFound')}
+        </p>
       </div>
     )
   }
@@ -134,16 +139,16 @@ function TrashTable() {
           value={keyword}
           onChange={handleChange}
           maxLength={20}
-          placeholder="搜索標題..."
+          placeholder={t('inputPlaceholder')}
           className="focus-visible:ring-transparent"
         />
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-auto">標題</TableHead>
-            <TableHead className="w-24">刪除時間</TableHead>
-            <TableHead className="text-right w-24">操作</TableHead>
+            <TableHead className="w-auto">{t('docTitle')}</TableHead>
+            <TableHead className="w-24">{t('docDelTime')}</TableHead>
+            <TableHead className="text-right w-24">{t('operation')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -153,7 +158,7 @@ function TrashTable() {
               <TableRow key={doc.id} className="group">
                 <TableCell>
                   <p className="overflow-hidden truncate">
-                    {doc.title || '<無標題>'}
+                    {doc.title || t('unTitled')}
                   </p>
                 </TableCell>
                 <TableCell>{timeAgo(doc.updatedAt || null)}</TableCell>
@@ -165,7 +170,7 @@ function TrashTable() {
                       className="px-2 h-7"
                       onClick={() => restore(doc.id, doc.parentId)}
                     >
-                      恢復
+                      {t('restore')}
                     </Button>
                     <Button
                       variant="destructive"
@@ -173,7 +178,7 @@ function TrashTable() {
                       className="px-2 h-7"
                       onClick={() => del(doc.id)}
                     >
-                      刪除
+                      {t('delete')}
                     </Button>
                   </div>
                 </TableCell>

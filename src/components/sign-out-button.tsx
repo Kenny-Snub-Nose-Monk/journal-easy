@@ -1,5 +1,7 @@
 import { signOut } from 'auth'
+import { post } from '@/lib/ajax'
 import { Button } from '@/components/ui/button'
+import { useTranslations } from 'next-intl'
 
 export default function SignOutButton({
   children,
@@ -19,17 +21,30 @@ export default function SignOutButton({
     | 'outline'
     | null
 }) {
+  const t = useTranslations('userInfo')
+
+  async function onClick() {
+    const text = t('logoutConfirm')
+    const c = confirm(text)
+    if (!c) return
+
+    try {
+      await post('/api/user/sign-out', {})
+    } catch (e) {}
+    console.log('sign out')
+    location.href = '/'
+  }
+
   return (
-    <form
-      action={async () => {
-        'use server'
-        await signOut()
-      }}
-      className="w-full"
-    >
-      <Button className={className} size={size} variant={variant}>
+    <div className="w-full">
+      <Button
+        className={className}
+        size={size}
+        variant={variant}
+        onClick={onClick}
+      >
         {children}
       </Button>
-    </form>
+    </div>
   )
 }

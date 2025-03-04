@@ -22,19 +22,21 @@ import { get } from '@/lib/ajax'
 import { IDoc } from '@/stores/docs-store'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import useBindKeyPress from '../hooks/useBindKeyPress'
+import { useTranslations } from 'next-intl'
 
 export default function Search() {
+  const t = useTranslations('search')
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <SearchIcon className="h-4 w-4 mr-1" />
-          搜尋
+          {t('title')}
         </Button>
       </DialogTrigger>
       <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>搜尋</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
         <SearchPanel />
       </DialogContent>
@@ -43,6 +45,8 @@ export default function Search() {
 }
 
 function SearchPanel() {
+  const t = useTranslations('search')
+
   // input elem
   const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
@@ -104,7 +108,7 @@ function SearchPanel() {
           ref={inputRef}
           value={keyword}
           onChange={handleChange}
-          placeholder="輸入關鍵字..."
+          placeholder={t('searchPlaceholder')}
           className="border-none py-0 px-1 h-8 focus-visible:ring-transparent"
         />
       </div>
@@ -118,7 +122,9 @@ function SearchPanel() {
           <p className="text-muted-foreground text-center mt-8">loading...</p>
         )}
         {notFound && (
-          <p className="text-muted-foreground text-center mt-8">未找到內容</p>
+          <p className="text-muted-foreground text-center mt-8">
+            {t('notFound')}
+          </p>
         )}
         {!loading && list.length > 0 && (
           <div className="mt-4">

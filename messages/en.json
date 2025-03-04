@@ -1,9 +1,71 @@
 {
   "common": {
-    "brandName": "joural easy"
+    "brandName": "Joural Easy",
+    "notSupportMobile": "Mobile devices are not supported yet"
   },
   "home": {
     "slogan": "Intelligent Writing",
-    "subTitle": "Based on the latest AI technology, AI writing, Collaborative writing"
+    "subTitle": "Based on the latest AI technology, AI writing, Collaborative writing",
+    "login": "Login",
+    "register": "Register",
+    "getStarted": "Get Started",
+    "trial": "Apply for Trial"
+  },
+  "invitationCode": {
+    "notLogin": "You need to login first",
+    "invited": "You have been invited",
+    "goBackHome": "Go back to home page",
+    "title": "The project is still in the trial stage, please enter the invitation code to continue",
+    "subTitle": "If you don't have an invitation code, you can apply one by <joinLink>WeChat group</joinLink> or <mail>Email</mail> for free",
+    "inputPlaceholder": "Invitation code",
+    "submit": "Submit",
+    "checkedSuccess": "Checked in successfully",
+    "checkedFailed": "Failed to check in",
+    "invalidCode": "Invalid code"
+  },
+  "userInfo": {
+    "goBackHome": "Go back to home page",
+    "haveLogin": "You have logged in",
+    "login": "Login",
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to log out?"
+  },
+  "userAndSetting": {
+    "title": "User / Setting",
+    "changeUerInfo": "Change User Info",
+    "submit": "Submit",
+    "success": "Success"
+  },
+  "search": {
+    "title": "Search",
+    "searchPlaceholder": "Input keywords...",
+    "notFound": "No results found"
+  },
+  "starList": {
+    "title": "Favorites",
+    "inputPlaceholder": "Doc title...",
+    "docTitle": "Title",
+    "docUpdateTime": "Update Time",
+    "notFound": "No results found",
+    "unTitled": "UnTitled"
+  },
+  "CollabList": {
+    "title": "Collaboration",
+    "mySharing": "My sharing",
+    "notFound": "No results found, open a doc and share it"
+  },
+  "trash": {
+    "title": "Trash",
+    "desc": "Docs will be permanently deleted after 30 days",
+    "confirm": "Do you want to delete this doc permanently?",
+    "failed": "Failed to delete",
+    "notFound": "No results found",
+    "docTitle": "Title",
+    "docDelTime": "Delete Time",
+    "operation": "Operation",
+    "restore": "Restore",
+    "delete": "Delete",
+    "inputPlaceholder": "Doc title...",
+    "unTitled": "UnTitled"
   }
 }

@@ -29,6 +29,9 @@ export const DEFAULT_NEW_DOC_CONTENT = `{"type":"doc","content":[{"type":"paragr
 
 export const SHARE_DOC_LIST_KEY = 'SHARE_DOC_LIST_KEY'
 
+export const DEFAULT_NEW_DOC_TITLE_EN = 'Journal Easy'
+export const DEFAULT_NEW_DOC_CONTENT_EN = `{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":"left"},"content":[{"type":"text","text":"Huashui AI","marks":[{"type":"bold","attrs":{}}]},{"type":"text","text":"，Intelligent Writing."}]},{"type":"paragraph","attrs":{"textAlign":"left"},"content":[{"type":"text","text":"Based on the latest AI technology, AI writing, Collaborative writing."}]},{"type":"paragraph","attrs":{"textAlign":"left"}}]}`
+
 export const DEFAULT_NEW_DOC_TITLE = "What's Journal Easy?"
 export const COLLABORATE_EDIT_USER_COLORS = [
   '#958DF1',

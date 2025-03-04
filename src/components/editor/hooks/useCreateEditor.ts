@@ -12,13 +12,16 @@ import {
   EDITOR_PADDING_BOTTOM,
   COLLABORATE_EDIT_USER_COLORS,
   DEFAULT_NEW_DOC_TITLE,
+  DEFAULT_NEW_DOC_TITLE_EN,
 } from '@/constants'
 import { useUserStore } from '@/stores/user-store'
 import { useEditorStore } from '@/stores/editor-store'
 import { useDocsStore, IDoc } from '@/stores/docs-store'
+import { useLocale } from 'next-intl'
 
 export default function useCreateEditor(id: string) {
   const userInfo = useUserStore((s) => s.userInfo)
+  const locale = useLocale()
 
   const docs = useDocsStore((s) => s.docs)
 
@@ -118,7 +121,11 @@ export default function useCreateEditor(id: string) {
           const doc = docs.find((i) => i.id === id)
           if (doc == null) return
 
-          const isAutoCreated = doc.title === DEFAULT_NEW_DOC_TITLE
+          const AutoCreatedTitle =
+            locale === 'zh-tw'
+              ? DEFAULT_NEW_DOC_TITLE
+              : DEFAULT_NEW_DOC_TITLE_EN
+          const isAutoCreated = doc.title === AutoCreatedTitle // 自定创建的文档，只有 JSON 格式，需要转化一次格式
 
           const isRecentlyUpdated = isDocRecentlyUpdated(doc)
           if (isRecentlyUpdated && !isAutoCreated) return
@@ -153,7 +160,7 @@ export default function useCreateEditor(id: string) {
         },
       },
     },
-    [id, ydoc, provider, userInfo]
+    [id, ydoc, provider, userInfo, locale]
   )
 
   return {

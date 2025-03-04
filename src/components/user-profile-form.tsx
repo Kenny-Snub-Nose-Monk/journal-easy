@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useTranslations } from 'next-intl'
 
 // Define your form schema.
 const formSchema = z.object({
@@ -32,6 +33,7 @@ interface IProps {
 
 export function UserProfileForm(props: IProps) {
   const [successStatus, setSuccessStatus] = useState(false)
+  const t = useTranslations('userAndSetting')
 
   // Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -110,7 +112,7 @@ export function UserProfileForm(props: IProps) {
             )}
           />
           <Button type="submit" disabled={successStatus}>
-            {successStatus ? '提交成功' : '提交'}
+            {successStatus ? t('success') : t('submit')}
           </Button>
         </form>
       </Form>

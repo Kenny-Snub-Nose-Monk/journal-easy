@@ -1,18 +1,19 @@
-import Link from 'next/link'
-import { auth } from 'auth'
+import { Link } from '@/i18n/routing'
 import HomeNav from '@/components/home-nav'
 import SignOutButton from '@/components/sign-out-button'
 import { getUserInfo } from '@/lib/session'
+import { getTranslations } from 'next-intl/server'
 
 export default async function UserTestPage() {
   const user = await getUserInfo()
+  const t = await getTranslations('userInfo')
 
   if (user == null)
     return (
       <Wrapper>
         {/* <SignInButton /> */}
         <Link href="/" className="underline text-xl">
-          請到首頁登入
+          {t('goBackHome')}, {t('login')}
         </Link>
       </Wrapper>
     )
@@ -21,8 +22,13 @@ export default async function UserTestPage() {
     <Wrapper>
       {/* <p>session: {JSON.stringify(session)}</p> */}
       <div className="flex flex-col items-center">
-        <p>你已經登入</p>
-        <SignOutButton>退出</SignOutButton>
+        <p className="mb-6">
+          {t('haveLogin')},
+          <Link href="/" className="underline ml-1">
+            {t('goBackHome')}
+          </Link>
+        </p>
+        <SignOutButton>{t('logout')}</SignOutButton>
       </div>
     </Wrapper>
   )

@@ -16,6 +16,7 @@ import {
   WORK_CONTENT_SCROLL_CONTAINER,
 } from '@/constants'
 import ShareList from '../(dialog-pages)/share-list'
+import { getTranslations } from 'next-intl/server'
 
 export default async function Layout({
   params,
@@ -26,6 +27,8 @@ export default async function Layout({
   children: React.ReactNode
   directory: React.ReactNode
 }>) {
+  const userInfoTrans = await getTranslations('userInfo')
+
   return (
     <ResizablePanelGroup direction="horizontal" className="h-screen">
       <ResizablePanel defaultSize={18} className="min-w-44 max-w-[500px]">
@@ -45,8 +48,8 @@ export default async function Layout({
               className="w-full justify-start px-2 "
               variant="ghost"
             >
-              <LogOut className="h-4 w-4" />
-              &nbsp;&nbsp;退出登入
+              <LogOut className="h-4 w-4 mr-1" />
+              {userInfoTrans('logout')}
             </SignOutButton>
           </div>
         </div>

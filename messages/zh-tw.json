@@ -4,6 +4,67 @@
   },
   "home": {
     "slogan": "簡單日記 記錄生活",
-    "subTitle": "簡單日記，記錄生活，記錄心情，記錄生活點滴"
+    "subTitle": "簡單日記，記錄生活，記錄心情，記錄生活點滴",
+    "login": "登入",
+    "register": "註冊",
+    "getStarted": "開始使用",
+    "trial": "申請試用"
+  },
+  "invitationCode": {
+    "notLogin": "你尚未登入，請先登入",
+    "invited": "你已經被邀請",
+    "goBackHome": "返回首頁",
+    "title": "項目還在試用階段，有邀請碼才能進入",
+    "subTitle": "如果你沒有邀請碼，可以通過 <joinLink>微信群</joinLink> 或者 <mail>郵件</mail> 申請一個免費的邀請碼",
+    "inputPlaceholder": "請輸入邀請碼",
+    "submit": "提交",
+    "checkedSuccess": "驗證成功",
+    "checkedFailed": "驗證失敗",
+    "invalidCode": "Invalid code"
+  },
+  "userInfo": {
+    "goBackHome": "回到首頁",
+    "haveLogin": "你已經登入",
+    "login": "登入",
+    "logout": "退出",
+    "logoutConfirm": "是否退出登入？"
+  },
+  "userAndSetting": {
+    "title": "用戶/設置",
+    "changeUerInfo": "修改用戶信息",
+    "submit": "提交",
+    "success": "成功"
+  },
+  "search": {
+    "title": "搜索",
+    "searchPlaceholder": "輸入關鍵字...",
+    "notFound": "未找到內容"
+  },
+  "starList": {
+    "title": "收藏夾",
+    "inputPlaceholder": "文檔標題...",
+    "docTitle": "標題",
+    "docUpdateTime": "更新時間",
+    "notFound": "未找到內容",
+    "unTitled": "<無標題>"
+  },
+  "CollabList": {
+    "title": "協同文檔",
+    "mySharing": "我的分享",
+    "notFound": "未找到內容，打開一個文檔並分享"
+  },
+  "trash": {
+    "title": "回收站",
+    "desc": "注意，回收站的文檔將保留 30 天，然後徹底刪除",
+    "confirm": "是否徹底刪除該文檔？刪除後不可恢復",
+    "failed": "執行失敗",
+    "notFound": "暫無數據",
+    "docTitle": "標題",
+    "docDelTime": "刪除時間",
+    "operation": "操作",
+    "restore": "恢復",
+    "delete": "刪除",
+    "inputPlaceholder": "文檔標題...",
+    "unTitled": "<無標題>"
   }
 }

@@ -1,5 +1,6 @@
-import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/routing'
 import { Zap, User, Code } from 'lucide-react'
 import HomeNav from '@/components/home-nav'
 import Slogan from '@/components/home-slogan'
@@ -7,12 +8,14 @@ import StartButton from '@/components/start-button'
 import { Button } from '@/components/ui/button'
 import SignInButton from '@/components/sigin-in-button'
 import { getUserInfo } from '@/lib/session'
+
 // import QRCode from '@/components/QRCode'
 // import { isUserInvited } from '@/app/invitation-code/action'
 
 export default function Home() {
   const homeTrans = useTranslations('home')
   const commonTrans = useTranslations('common')
+  const locale = useLocale()
 
   return (
     <main className="min-h-screen flex flex-col justify-center text-center">
@@ -24,7 +27,7 @@ export default function Home() {
       <Slogan text={homeTrans('subTitle')} />
       <section className="mt-10 flex justify-center space-x-4">
         <MainButton />
-        <LearnButton />
+        {locale === 'zh-cn' && <LearnButton />}
       </section>
     </main>
   )
@@ -32,11 +35,13 @@ export default function Home() {
 
 async function MainButton() {
   const user = await getUserInfo()
+  const homeTrans = await getTranslations('home')
+
   if (user == null) {
     return (
       <SignInButton className="text-base" size="lg">
         <User className="h-4 w-4" />
-        &nbsp;登錄 / 註冊
+        &nbsp;{homeTrans('login')} / {homeTrans('register')}
       </SignInButton>
     )
   }

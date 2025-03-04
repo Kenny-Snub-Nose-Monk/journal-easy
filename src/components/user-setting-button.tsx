@@ -13,6 +13,7 @@ import {
 import { UserProfileForm } from './user-profile-form'
 import { useUserStore } from '@/stores/user-store'
 import { User } from 'next-auth'
+import { useTranslations } from 'next-intl'
 
 interface IUser {
   name?: string | null
@@ -24,17 +25,19 @@ export default function UserSettingButton() {
   const userInfo = useUserStore((s) => s.userInfo)
   const { name, image, email } = userInfo || {}
 
+  const t = useTranslations('userAndSetting')
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 " variant="ghost">
           <UserAvatar user={userInfo} />
-          &nbsp;&nbsp;帳戶/設置
+          &nbsp;&nbsp;{t('title')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>修改用户訊息</DialogTitle>
+          <DialogTitle>{t('changeUerInfo')}</DialogTitle>
           <UserProfileForm
             name={name || ''}
             avatar={image || ''}
