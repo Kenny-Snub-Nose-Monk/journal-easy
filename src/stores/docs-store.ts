@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { SHARE_DOC_LIST_KEY } from '@/constants'
 
 export interface IDoc {
   id: string
@@ -12,11 +13,17 @@ export interface IDoc {
   userId?: string
 }
 
+interface IOtherDoc {
+  id: string
+  title: string
+}
+
 interface IDocsState {
   loading: boolean
   docs: IDoc[]
   curDocId: string
   creating: boolean // is creating a new doc
+  otherDocs: IOtherDoc[]
   setLoading: (loading: boolean) => void
   setDocs: (list: IDoc[]) => void
   addDoc: (doc: IDoc) => void
@@ -26,6 +33,9 @@ interface IDocsState {
   updateDocSharePassword: (id: string, sharePassword: string | null) => void
   setCurDocId: (id: string) => void
   setCreating: (creating: boolean) => void
+  setOtherDocs: (docs: IOtherDoc[]) => void
+  addOtherDoc: (doc: IOtherDoc) => void
+  removeOtherDoc: (id: string) => void
 }
 
 export const useDocsStore = create<IDocsState>((set) => ({
@@ -33,6 +43,7 @@ export const useDocsStore = create<IDocsState>((set) => ({
   docs: [],
   curDocId: '',
   creating: false,
+  otherDocs: [],
   setLoading: (loading) => set({ loading }),
   setDocs: (docs) => set({ docs }),
   addDoc: (doc) => set((state) => ({ docs: [...state.docs, doc] })),
@@ -52,4 +63,21 @@ export const useDocsStore = create<IDocsState>((set) => ({
     })),
   setCurDocId: (curDocId) => set({ curDocId }),
   setCreating: (creating) => set({ creating }),
+  setOtherDocs: (docs) => set({ otherDocs: docs }),
+  addOtherDoc: (doc) =>
+    set((state) => {
+      let newDocs = state.otherDocs
+      const alreadyHas = state.otherDocs.find((i) => i.id === doc.id)
+      if (!alreadyHas) {
+        newDocs = [...state.otherDocs, doc]
+      }
+      localStorage.setItem(SHARE_DOC_LIST_KEY, JSON.stringify(newDocs)) // store in localStorage
+      return { otherDocs: newDocs }
+    }),
+  removeOtherDoc: (id) =>
+    set((state) => {
+      const newDocs = state.otherDocs.filter((i) => i.id !== id)
+      localStorage.setItem(SHARE_DOC_LIST_KEY, JSON.stringify(newDocs)) // store in localStorage
+      return { otherDocs: newDocs }
+    }),
 }))

@@ -14,8 +14,6 @@ import SearchComp from '../(dialog-pages)/search'
 import {
   RESIZABLE_RIGHT_PANEL_ID,
   WORK_CONTENT_SCROLL_CONTAINER,
-  RESIZABLE_LEFT_PANEL_ID,
-  RESIZABLE_HANDLE_ID,
 } from '@/constants'
 import ShareList from '../(dialog-pages)/share-list'
 
@@ -30,11 +28,7 @@ export default async function Layout({
 }>) {
   return (
     <ResizablePanelGroup direction="horizontal" className="h-screen">
-      <ResizablePanel
-        id={RESIZABLE_LEFT_PANEL_ID}
-        defaultSize={18}
-        className="min-w-44 max-w-[500px]"
-      >
+      <ResizablePanel defaultSize={18} className="min-w-44 max-w-[500px]">
         <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
           <div>
             <UserSettingButton />
@@ -57,7 +51,7 @@ export default async function Layout({
           </div>
         </div>
       </ResizablePanel>
-      <ResizableHandle withHandle id={RESIZABLE_HANDLE_ID} />
+      <ResizableHandle withHandle />
       <ResizablePanel defaultSize={82}>
         <div
           id={RESIZABLE_RIGHT_PANEL_ID}

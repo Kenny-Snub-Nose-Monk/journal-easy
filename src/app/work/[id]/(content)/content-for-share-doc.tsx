@@ -5,14 +5,11 @@ import { Share } from 'lucide-react'
 import Link from 'next/link'
 import { IDoc } from '@/stores/docs-store'
 import { useUserStore } from '@/stores/user-store'
-import {
-  CONTENT_WIDTH,
-  RESIZABLE_LEFT_PANEL_ID,
-  RESIZABLE_HANDLE_ID,
-} from '@/constants'
+import { CONTENT_WIDTH } from '@/constants'
 import { Input } from '@/components/ui/input'
 import BackToTop from '@/components/back-to-top'
 import TiptapEditor from '@/components/editor'
+import { useDocsStore } from '@/stores/docs-store'
 
 interface IProps {
   doc: IDoc
@@ -22,19 +19,33 @@ export default function ContentForShareDoc(props: IProps) {
   const { doc } = props
   const userInfo = useUserStore((s) => s.userInfo)
   const contentContainerRef = useRef(null)
+  const curDocId = useDocsStore((s) => s.curDocId)
+  const addOtherDoc = useDocsStore((s) => s.addOtherDoc)
+  const isMyDoc = userInfo?.id === doc.userId
+
+  const [renderEditor, setRenderEditor] = useState(false)
+
+  useEffect(() => {
+    setRenderEditor(false)
+    setTimeout(() => {
+      setRenderEditor(true) // when doc changed, force re-render editor
+    }, 100)
+  }, [doc])
 
   useEffect(() => {
     document.title = doc.title || '<無標題>'
   }, [doc])
 
-  useEffect(() => {
-    document.getElementById(RESIZABLE_LEFT_PANEL_ID)!.style.display = 'none'
-    document.getElementById(RESIZABLE_HANDLE_ID)!.style.display = 'none'
-  }, [])
-
   const [authority, setAuthority] = useState(false)
   const [UnauthorizedText, setUnauthorizedText] = useState('共享權限校驗中...')
+
   useEffect(() => {
+    setAuthority(false)
+  }, [curDocId])
+
+  useEffect(() => {
+    if (doc.id !== curDocId) return
+
     if (!doc.sharePassword) {
       setUnauthorizedText('該文檔未開啟分享，你無權限查看')
       return
@@ -56,9 +67,16 @@ export default function ContentForShareDoc(props: IProps) {
       localStorage.setItem(STORAGE_KEY, p)
       setAuthority(true)
     }
-  }, [doc.id, authority, doc.sharePassword])
+  }, [doc, curDocId])
 
-  const isMyDoc = userInfo?.id === doc.userId
+  // Add doc to otherDocs
+  useEffect(() => {
+    // console.log('store other doc...', doc.id, isMyDoc, authority)
+    if (isMyDoc) return
+    if (!authority) return
+    addOtherDoc({ id: doc.id, title: doc.title })
+  }, [doc, addOtherDoc, authority, isMyDoc])
+
   if (isMyDoc) {
     return (
       <div className="p-8 text-center text-muted-foreground">
@@ -94,7 +112,7 @@ export default function ContentForShareDoc(props: IProps) {
           </Link>
         </div>
       </div>
-      {authority && <TiptapEditor id={doc.id} />}
+      {authority && renderEditor && <TiptapEditor id={doc.id} />}
       {/* {authority && <p className="mx-10">editor {doc.id}</p>} */}
       {!authority && (
         <p className="mx-10 mt-44 text-center">{UnauthorizedText}</p>
