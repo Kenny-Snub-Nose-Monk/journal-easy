@@ -1,7 +1,8 @@
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { Zap, User, Code } from 'lucide-react'
 import HomeNav from '@/components/home-nav'
-import Slogan from '@/components/Slogan'
+import Slogan from '@/components/home-slogan'
 import StartButton from '@/components/start-button'
 import { Button } from '@/components/ui/button'
 import SignInButton from '@/components/sigin-in-button'
@@ -9,26 +10,22 @@ import { getUserInfo } from '@/lib/session'
 // import QRCode from '@/components/QRCode'
 // import { isUserInvited } from '@/app/invitation-code/action'
 
-export default async function Home() {
+export default function Home() {
+  const homeTrans = useTranslations('home')
+  const commonTrans = useTranslations('common')
+
   return (
     <main className="min-h-screen flex flex-col justify-center text-center">
       <HomeNav />
-      <div className="flex flex-col justify-center text-start md:text-center mx-6">
-        <section className="md:flex md:justify-center">
-          <h2 className="text-4xl lg:text-5xl font-extrabold">滑水 AI ，</h2>
-          <h2 className="text-4xl lg:text-5xl mt-2 md:mt-0">
-            智能寫作，高效工作
-          </h2>
-        </section>
-        <Slogan />
-        <section className="mt-10 flex justify-center space-x-4">
-          <MainButton />
-          <LearnButton />
-        </section>
-      </div>
-      {/* <div className="w-32 md:w-48 fixed bottom-2 right-2">
-        <QRCode />
-      </div> */}
+      <h2 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
+        <span className="font-extrabold">{commonTrans('brandName')} AI</span>，
+        {homeTrans('slogan')}
+      </h2>
+      <Slogan text={homeTrans('subTitle')} />
+      <section className="mt-10 flex justify-center space-x-4">
+        <MainButton />
+        <LearnButton />
+      </section>
     </main>
   )
 }

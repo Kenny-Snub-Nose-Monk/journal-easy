@@ -1,7 +1,6 @@
 import Logo from './Logo'
-import { Button } from './ui/button'
-import { Github } from 'lucide-react'
 import ChangeTheme from './change-theme'
+import ChangeLocale from './change-locale'
 
 export default function HomeNav() {
   return (
@@ -11,10 +10,8 @@ export default function HomeNav() {
       </div>
       <div className="flex-1 text-end p-2">
         <div className="inline-flex items-center">
-          <Button variant="ghost" size="icon">
-            <Github className="h-4 w-4" />
-          </Button>
           <ChangeTheme />
+          <ChangeLocale />
         </div>
       </div>
     </div>

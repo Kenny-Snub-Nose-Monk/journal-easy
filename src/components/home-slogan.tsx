@@ -3,14 +3,12 @@
 import Typed from 'typed.js'
 import { useEffect, useRef } from 'react'
 
-export default function Slogan() {
+export default function Slogan({ text }: { text: string }) {
   const el = useRef(null)
 
   useEffect(() => {
     const typed = new Typed(el.current, {
-      strings: [
-        '基於 GPT 模型，AI 寫作，AI 智慧提示，AI 文件處理，多人協作編輯',
-      ],
+      strings: [text],
       startDelay: 300,
       typeSpeed: 100,
       backSpeed: 100,
@@ -21,7 +19,7 @@ export default function Slogan() {
     return () => {
       typed.destroy()
     }
-  }, [])
+  }, [text])
 
   return (
     <p className="leading-7 [&:not(:first-child)]:mt-6 text-lg">

@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import useDocs from '@/app/work/[id]/hooks/useDocs'
+import useDocs from '@/app/[locale]/work/[id]/hooks/useDocs'
 
 interface IProps {
   id: string

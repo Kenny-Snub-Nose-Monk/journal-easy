@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog'
 import { get, patch } from '@/lib/ajax'
 import { IDoc } from '@/stores/docs-store'
-import { isDescendant } from '@/app/work/[id]/@directory/util'
+import { isDescendant } from '@/app/[locale]/work/[id]/@directory/util'
 
 export default function MoveDocButton(props: {
   id: string

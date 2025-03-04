@@ -3,7 +3,7 @@ import { Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
-import { updateIsStar } from '@/app/work/[id]/client-action'
+import { updateIsStar } from '@/app/[locale]/work/[id]/client-action'
 import { useDocsStore } from '@/stores/docs-store'
 
 interface IProps {
