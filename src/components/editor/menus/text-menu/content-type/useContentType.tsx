@@ -9,14 +9,18 @@ import {
   ListOrdered,
   ListTodo,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
 export const useContentType = (editor: Editor | null) => {
+  const t = useTranslations('editor')
+
   const options = useMemo(() => {
     if (editor == null) return []
     return [
       {
         id: 'heading1',
         Icon: () => <Heading1 className="mr-2 h-4 w-4" />,
-        label: '一級標題',
+        label: t('heading1'),
         disabled: () => !editor.can().setHeading({ level: 1 }),
         isActive: () => editor.isActive('heading', { level: 1 }),
         onClick: () =>
@@ -31,7 +35,7 @@ export const useContentType = (editor: Editor | null) => {
       {
         id: 'heading2',
         Icon: () => <Heading2 className="mr-2 h-4 w-4" />,
-        label: '二級標題',
+        llabel: t('heading2'),
         disabled: () => !editor.can().setHeading({ level: 2 }),
         isActive: () => editor.isActive('heading', { level: 2 }),
         onClick: () =>
@@ -46,7 +50,7 @@ export const useContentType = (editor: Editor | null) => {
       {
         id: 'heading3',
         Icon: () => <Heading3 className="mr-2 h-4 w-4" />,
-        label: '三級標題',
+        label: t('heading3'),
         disabled: () => !editor.can().setHeading({ level: 3 }),
         isActive: () => editor.isActive('heading', { level: 3 }),
         onClick: () =>
@@ -61,7 +65,7 @@ export const useContentType = (editor: Editor | null) => {
       {
         id: 'paragraph',
         Icon: () => <Pilcrow className="mr-2 h-4 w-4" />,
-        label: '段落',
+        label: t('paragraph'),
         disabled: () => !editor.can().setParagraph(),
         isActive: () =>
           editor.isActive('paragraph') &&
@@ -80,7 +84,7 @@ export const useContentType = (editor: Editor | null) => {
       {
         id: 'list',
         Icon: () => <List className="mr-2 h-4 w-4" />,
-        label: '無序列表',
+        label: t('bulletList'),
         disabled: () => !editor.can().toggleBulletList(),
         isActive: () => editor.isActive('bulletList'),
         onClick: () => editor.chain().focus().toggleBulletList().run(),
@@ -88,7 +92,7 @@ export const useContentType = (editor: Editor | null) => {
       {
         id: 'listOrdered',
         Icon: () => <ListOrdered className="mr-2 h-4 w-4" />,
-        label: '有序列表',
+        label: t('orderedList'),
         disabled: () => !editor.can().toggleOrderedList(),
         isActive: () => editor.isActive('orderedList'),
         onClick: () => editor.chain().focus().toggleOrderedList().run(),
@@ -96,7 +100,7 @@ export const useContentType = (editor: Editor | null) => {
       {
         id: 'listTodo',
         Icon: () => <ListTodo className="mr-2 h-4 w-4" />,
-        label: '任務列表',
+        label: t('taskList'),
         disabled: () => !editor.can().toggleTaskList(),
         isActive: () => editor.isActive('taskList'),
         onClick: () => editor.chain().focus().toggleTaskList().run(),

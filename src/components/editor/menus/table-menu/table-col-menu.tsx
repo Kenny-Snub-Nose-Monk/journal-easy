@@ -5,8 +5,12 @@ import { MenuProps, ShouldShowProps } from '../types'
 import Wrapper from '../bubble-menu-wrapper'
 import { Button } from '@/components/ui/button'
 import { isColumnGripSelected } from './utils'
+import { useTranslations } from 'next-intl'
+
 export const TableColMenu = (props: MenuProps) => {
   const { editor, appendTo } = props
+  const t = useTranslations('editor')
+
   const shouldShow = useCallback(
     ({ view, state, from }: ShouldShowProps) => {
       if (editor == null) return false
@@ -49,15 +53,15 @@ export const TableColMenu = (props: MenuProps) => {
       <Wrapper className="flex-col items-start">
         <Button onClick={onAddColumnBefore} size="sm" variant="ghost">
           <ArrowLeftToLine className="w-4 h-4 mr-1" />
-          前面插入一列
+          {t('insertColBefore')}
         </Button>
         <Button onClick={onAddColumnAfter} size="sm" variant="ghost">
           <ArrowRightToLine className="w-4 h-4 mr-1" />
-          後面插入一列
+          {t('insertColAfter')}
         </Button>
         <Button onClick={onDeleteColumn} size="sm" variant="ghost">
           <Trash2 className="w-4 h-4 mr-1" />
-          刪除列
+          {t('removeCol')}
         </Button>
       </Wrapper>
     </BubbleMenu>

@@ -17,6 +17,7 @@ import useCollabStateAndUsers from './hooks/useCollabStateAndUsers'
 import useFocusEditorFromTitleInput from './hooks/useFocusEditorFromTitleInput'
 import AIIsland from './ai-island'
 import { useToast } from '@/components/ui/use-toast'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
@@ -24,6 +25,7 @@ interface IProps {
 
 const TiptapEditor = (props: IProps) => {
   const { id } = props
+  const t = useTranslations('editor')
 
   const menuContainerRef = useRef(null)
 
@@ -52,17 +54,15 @@ const TiptapEditor = (props: IProps) => {
     if (isDisconnected) {
       toast({
         variant: 'destructive',
-        description: '協同編輯服務連接失敗，請刷新頁面重試～',
+        description: t('collabConnFailed'),
       })
     }
-  }, [isDisconnected, toast])
+  }, [isDisconnected, toast, t])
 
   if (isConnectedTimeout) {
     return (
       <div className="mx-10">
-        <p className="text-sm text-muted-foreground">
-          協同編輯服務連接失敗，請刷新頁面重試~
-        </p>
+        <p className="text-sm text-muted-foreground">{t('collabConnFailed')}</p>
       </div>
     )
   }
@@ -79,9 +79,7 @@ const TiptapEditor = (props: IProps) => {
   return (
     <>
       {isDisconnected && (
-        <div className="mx-10 mb-6 text-red-500">
-          協同編輯服務連接失敗，請刷新頁面重試～
-        </div>
+        <div className="mx-10 mb-6 text-red-500">{t('collabConnFailed')}</div>
       )}
       <div ref={menuContainerRef}>
         <EditorContent editor={editor} />

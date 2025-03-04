@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
+import { useTranslations } from 'next-intl'
 
 interface DragButtonProps {
   editor: Editor | null
@@ -27,6 +28,8 @@ export default function DragButton(props: DragButtonProps) {
   const { editor, currentNode, currentNodePos } = props
   const { toast } = useToast()
   const [menuOpen, setMenuOpen] = useState(false)
+  const t = useTranslations('editor')
+
   useEffect(() => {
     if (menuOpen) {
       editor && editor.commands.setMeta('lockDragHandle', true) // 鎖定拖動按鈕
@@ -64,8 +67,8 @@ export default function DragButton(props: DragButtonProps) {
     editor.chain().setNodeSelection(currentNodePos).run()
     document.execCommand('copy')
     editor.commands.focus(currentNodePos)
-    toast({ title: '成功', description: '已拷贝到剪贴板' })
-  }, [editor, currentNodePos, toast])
+    toast({ title: t('success'), description: t('copied') })
+  }, [editor, currentNodePos, toast, t])
   // 删除节点
   const deleteNode = useCallback(() => {
     if (editor == null) return
@@ -92,7 +95,7 @@ export default function DragButton(props: DragButtonProps) {
           onClick={resetTextFormatting}
         >
           <RemoveFormatting className="h-4 w-4 mr-1" />
-          清空格式
+          {t('clearFormat')}
         </Button>
         <Button
           size="sm"
@@ -101,7 +104,7 @@ export default function DragButton(props: DragButtonProps) {
           onClick={copyNodeToClipboard}
         >
           <Clipboard className="h-4 w-4 mr-1" />
-          複製到剪貼簿
+          {t('copy')}
         </Button>
         <Button
           size="sm"
@@ -110,7 +113,7 @@ export default function DragButton(props: DragButtonProps) {
           onClick={duplicateNode}
         >
           <Copy className="h-4 w-4 mr-1" />
-          複製
+          {t('duplicate')}
         </Button>
         <Separator className="mb-2" />
         <Button
@@ -120,7 +123,7 @@ export default function DragButton(props: DragButtonProps) {
           onClick={deleteNode}
         >
           <Trash2 className="h-4 w-4 mr-1" />
-          刪除
+          {t('delete')}
         </Button>
       </PopoverContent>
     </Popover>

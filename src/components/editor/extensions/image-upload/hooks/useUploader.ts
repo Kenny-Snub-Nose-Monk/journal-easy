@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { uploadImageFn } from '@/components/editor/utils/api'
 import { useToast } from '@/hooks/use-toast'
 import { getImageSize } from '@/components/editor/utils/img'
+import { useTranslations } from 'next-intl'
 
 const useUploader = ({
   onUpload,
@@ -10,6 +11,7 @@ const useUploader = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
+  const t = useTranslations('editor')
 
   const uploadFile = useCallback(
     async (file: File) => {
@@ -22,7 +24,7 @@ const useUploader = ({
         onUpload(url, ratio) // 上傳成功後，調用 onUpload 方法
       } catch (errPayload: any) {
         console.error(errPayload)
-        const error = errPayload?.response?.data?.error || '上傳失敗'
+        const error = errPayload?.response?.data?.error || t('uploadFailed')
         toast({
           variant: 'destructive',
           description: error,
@@ -30,7 +32,7 @@ const useUploader = ({
       }
       setLoading(false)
     },
-    [onUpload, toast]
+    [onUpload, toast, t]
   )
 
   return { loading, uploadFile }

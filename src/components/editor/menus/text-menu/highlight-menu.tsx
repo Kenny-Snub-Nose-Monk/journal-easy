@@ -6,12 +6,14 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Brush, ChevronDown } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface IProps {
   editor: Editor | null
 }
 
 export default function HighlightMenu(props: IProps) {
+  const t = useTranslations('colors')
   const { editor } = props
   if (editor == null) return null
 
@@ -32,15 +34,16 @@ export default function HighlightMenu(props: IProps) {
 }
 
 function ColorPanel(props: IProps) {
+  const t = useTranslations('colors')
   const { editor } = props
   if (editor == null) return null
 
   const colors = [
-    { name: '黃色', color: '#ffc078' },
-    { name: '綠色', color: '#8ce99a' },
-    { name: '藍色', color: '#74c0fc' },
-    { name: '紫色', color: '#b197fc' },
-    { name: '紅色', color: 'red' },
+    { name: t('orange'), color: '#ffc078' },
+    { name: t('green'), color: '#8ce99a' },
+    { name: t('blue'), color: '#74c0fc' },
+    { name: t('purple'), color: '#b197fc' },
+    { name: t('red'), color: 'red' },
   ]
 
   const ItemClassName = 'block px-3 py-1 m-1'
@@ -68,7 +71,7 @@ function ColorPanel(props: IProps) {
         onClick={() => editor.chain().focus().unsetHighlight().run()}
         tabIndex={-1}
       >
-        清空
+        {t('clear')}
       </Button>
     </>
   )

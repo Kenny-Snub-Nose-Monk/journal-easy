@@ -21,7 +21,8 @@
     "Ydoc",
     "zustand",
     "indexeddb",
-    "Favorited"
+    "Favorited",
+    "webp"
   ],
   "files.associations": {
     "*.css": "tailwindcss"

@@ -4,6 +4,7 @@ import { Image as ImageIcon, Upload } from 'lucide-react'
 import useUploader from './hooks/useUploader'
 import useDropZone from './hooks/useDropZone'
 import { getWidthPercent } from '@/components/editor/utils/img'
+import { useTranslations } from 'next-intl'
 
 interface ImageUploadViewProps {
   onUpload: (url: string, ratio: number) => void
@@ -49,6 +50,8 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
     setWidthPercent(widthPercent)
   }, [imgRef])
 
+  const t = useTranslations('editor')
+
   if (loading) {
     return (
       <div className="rounded-lg h-[15rem] relative overflow-hidden">
@@ -62,7 +65,7 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
             onLoad={onImageLoad}
           />
         </div>
-        <p className="absolute top-1/3 w-full text-center">上傳中...</p>
+        <p className="absolute top-1/3 w-full text-center">{t('uploading')}</p>
       </div>
     )
   }
@@ -82,14 +85,14 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
       <ImageIcon className="w-12 h-12 mb-4 text-black dark:text-white opacity-20" />
       <div className="flex flex-col items-center justify-center gap-2">
         <div className="text-sm font-medium text-center text-neutral-400 dark:text-neutral-500">
-          {draggedInside ? '圖片文件放在這裡' : '拖拉圖片到此處上傳'}
+          {draggedInside ? t('putImageHere') : t('dragImageHere')}
         </div>
         <div
           className="mt-4 inline-flex items-center bg-secondary-foreground text-secondary px-2 cursor-pointer rounded"
           onClick={handleUploadClick}
         >
           <Upload className="w-4 h-4 mr-1" />
-          上傳圖片
+          {t('uploadImage')}
         </div>
       </div>
       <input

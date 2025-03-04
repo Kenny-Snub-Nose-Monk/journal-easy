@@ -40,7 +40,6 @@ export default function TextMenu(props: IProps) {
         duration: 100,
         moveTransition: 'transform 0.2s ease-out',
       }}
-      updateDelay={100}
       shouldShow={() => shouldShow(editor)}
     >
       <Wrapper>

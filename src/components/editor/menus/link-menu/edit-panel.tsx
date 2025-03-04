@@ -39,7 +39,7 @@ export const LinkEditPanel = (props: LinkEditPanelProps) => {
           onClick={() => onSetLink(url, openInNewTab)}
           disabled={!isValidUrl}
         >
-          確定
+          OK
         </Button>
       </div>
       <div className="mt-3">

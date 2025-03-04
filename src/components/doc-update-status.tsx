@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { useEditorStore, ICollabUser } from '@/stores/editor-store'
+import { useLocale } from 'next-intl'
 
 interface IProps {
   id: string
@@ -22,6 +23,9 @@ export default function DocUpdateStatus(props: IProps) {
   const characterCount = useEditorStore((s) => s.characterCount)
 
   const editorDocId = useEditorStore((s) => s.docId)
+
+  const wordCount = useEditorStore((s) => s.wordCount)
+  const locale = useLocale()
 
   // collaborative state
   const collaborativeState = useEditorStore((s) => s.collaborativeState)
@@ -64,7 +68,10 @@ export default function DocUpdateStatus(props: IProps) {
         {/* <span className="text-muted-foreground ml-1">{collaborativeState}</span> */}
       </div>
       <span className="text-muted-foreground text-sm ml-2 inline-flex items-center">
-        共 {characterCount >= 0 ? characterCount : '---'} 字
+        {locale === 'zh-cn' &&
+          `共 ${characterCount >= 0 ? characterCount : '---'} 字`}
+        {locale !== 'zh-cn' &&
+          `Total ${wordCount >= 0 ? wordCount : '---'} words, ${characterCount >= 0 ? characterCount : '---'} characters`}
       </span>
     </>
   )

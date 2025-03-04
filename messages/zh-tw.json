@@ -120,5 +120,42 @@
     "isMyDoc": "這是我自己的文檔，不是他人共享的文檔",
     "shareTip": "此為共享文檔",
     "toMyDocs": "跳轉到我的文檔"
+  },
+  "editor": {
+    "collabConnFailed": "協同編輯服務連接失敗，請刷新頁面重試",
+    "maxLengthTip": "文檔最多可輸入 {limit} 字",
+    "placeholder": "輸入 / 設置格式，輸入空格使用 AI",
+    "uploadImage": "上傳圖片",
+    "uploading": "上傳中...",
+    "uploadFailed": "上傳失敗",
+    "dragImageHere": "拖拽圖片到此處上傳",
+    "putImageHere": "圖片文件放在這裡",
+    "paragraph": "段落",
+    "heading1": "標題1",
+    "heading2": "標題2",
+    "heading3": "標題3",
+    "orderedList": "有序列表",
+    "bulletList": "無序列表",
+    "taskList": "任務列表",
+    "insertColBefore": "前面插入一列",
+    "insertColAfter": "後面插入一列",
+    "removeCol": "刪除列",
+    "insertRowBefore": "上面插入一行",
+    "insertRowAfter": "下面插入一行",
+    "removeRow": "刪除行",
+    "clearFormat": "清除格式",
+    "copy": "拷貝到剪貼板",
+    "copied": "已拷貝到剪貼板",
+    "duplicate": "複製",
+    "delete": "刪除",
+    "success": "成功"
+  },
+  "colors": {
+    "orange": "橙色",
+    "green": "綠色",
+    "blue": "藍色",
+    "purple": "紫色",
+    "red": "紅色",
+    "clear": "清除"
   }
 }

@@ -5,7 +5,7 @@ import * as Y from 'yjs'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-import { extensions } from '../extensions'
+import { getExtensions } from '../extensions'
 import { getRandomElement } from '@/lib/utils'
 import { get } from '@/lib/ajax'
 import {
@@ -17,11 +17,12 @@ import {
 import { useUserStore } from '@/stores/user-store'
 import { useEditorStore } from '@/stores/editor-store'
 import { useDocsStore, IDoc } from '@/stores/docs-store'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function useCreateEditor(id: string) {
   const userInfo = useUserStore((s) => s.userInfo)
   const locale = useLocale()
+  const t = useTranslations('editor')
 
   const docs = useDocsStore((s) => s.docs)
 
@@ -97,6 +98,10 @@ export default function useCreateEditor(id: string) {
       setIsConnectedTimeout(true)
     }, 6 * 1000)
   }, [id, provider])
+
+  const extensions = getExtensions({
+    placeholder: t('placeholder'),
+  })
 
   const editor = useEditor(
     {
