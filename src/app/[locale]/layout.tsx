@@ -1,6 +1,5 @@
-import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
+import '../globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { isMobileDevice } from '@/lib/isMobileDevice'
 import { Toaster } from '@/components/ui/toaster'
