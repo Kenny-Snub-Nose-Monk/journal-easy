@@ -1,4 +1,4 @@
-# huashuiai-web
+# Journal Easy AI
 
 Journal Easy AI 專案 PC 用戶端，使用 Next.js 開發。
 
