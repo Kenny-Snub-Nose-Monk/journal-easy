@@ -25,7 +25,7 @@ import { timeAgo } from '@/lib/dt'
 import { getDescendantsIds } from '../[id]/@directory/util'
 import { getDoc, updateParentId } from '../[id]/client-action'
 import { get, patch, del as ajaxDelete } from '@/lib/ajax'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 
 export default function Trash() {
   const t = useTranslations('trash')
@@ -53,6 +53,7 @@ function TrashTable() {
   const t = useTranslations('trash')
   const [list, setList] = useState<IDoc[]>([])
   const [loading, setLoading] = useState(true)
+  const locale = useLocale()
 
   // 加載數據
   const load = useCallback(async () => {
@@ -161,7 +162,9 @@ function TrashTable() {
                     {doc.title || t('unTitled')}
                   </p>
                 </TableCell>
-                <TableCell>{timeAgo(doc.updatedAt || null)}</TableCell>
+                <TableCell>
+                  {timeAgo(doc.updatedAt?.toString() || '', locale === 'zh-tw')}
+                </TableCell>
                 <TableCell className="text-right">
                   <div className="inline-flex space-x-1 invisible group-hover:visible">
                     <Button

@@ -26,7 +26,7 @@ import scrollIntoView from 'scroll-into-view-if-needed'
 import debounce from 'lodash.debounce'
 import useBindKeyPress from '../hooks/useBindKeyPress'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 
 export default function StarList() {
   const t = useTranslations('favorList')
@@ -161,6 +161,7 @@ function Item(props: ItemProps) {
   const isCurrent = currentIndex === docIndex
   const tableRowRef = useRef<HTMLTableRowElement>(null)
   const t = useTranslations('favorList')
+  const locale = useLocale()
 
   useEffect(() => {
     if (!isCurrent) return
@@ -174,8 +175,8 @@ function Item(props: ItemProps) {
 
   // 緩存一下更新時間，防止鍵盤上下鍵選擇的時候，由於父組件重新渲染，導致更新時間頻繁重複渲染
   const time = useMemo(() => {
-    return timeAgo(doc.updatedAt || null)
-  }, [doc.updatedAt])
+    return timeAgo(doc.updatedAt?.toString() || '', locale === 'zh-tw')
+  }, [doc.updatedAt, locale])
 
   return (
     <TableRow

@@ -1,10 +1,9 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { Link, redirect } from '@/i18n/routing'
 import { getUserInfo } from '@/lib/session'
 import { isMobileDevice } from '@/lib/isMobileDevice'
 // import { isUserInvited } from '@/app/invitation-code/action'
 import { getTranslations } from 'next-intl/server'
-
+import { useLocale } from 'next-intl'
 export default async function Layout({
   children,
 }: Readonly<{
@@ -12,7 +11,7 @@ export default async function Layout({
 }>) {
   const isMobile = await isMobileDevice()
   const t = await getTranslations('common')
-
+  const locale = useLocale()
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col items-center justify-center">
@@ -29,7 +28,7 @@ export default async function Layout({
   const user = await getUserInfo()
 
   if (user == null) {
-    redirect('/user-info')
+    redirect({ href: '/user-info', locale })
   }
 
   // 先略過邀請碼的設定

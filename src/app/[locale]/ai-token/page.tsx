@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import HomeNav from '@/components/home-nav'
 import { getUserInfo } from '@/lib/session'
 import { db } from '@/db/db'

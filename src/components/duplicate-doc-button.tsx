@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/routing'
 import { useCallback } from 'react'
 import { Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'

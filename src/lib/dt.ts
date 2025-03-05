@@ -1,29 +1,32 @@
 // 時間格式化，返回如 如 "1 年前"、"3 個月前"、"1 天前"、"3 小時前" 等 （ChatGPT 生成的）
-export function timeAgo(timeDate: Date | null) {
-  if (!timeDate) return ''
-  const previous = timeDate
+export function timeAgo(timeString: string, isZhTW = true) {
+  if (!timeString) return ''
+
+  const previous = new Date(timeString)
   const current = new Date()
   const timeDifference = current.valueOf() - previous.valueOf()
+
   const seconds = Math.floor(timeDifference / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
   const months = Math.floor(days / 30)
   const years = Math.floor(months / 12)
+
   if (years > 0) {
-    return years + ' 年前'
+    return years + (isZhTW ? ' 年前' : ' years ago')
   } else if (months > 0) {
-    return months + ' 個月前'
+    return months + (isZhTW ? ' 個月前' : ' months ago')
   } else if (days > 0) {
-    return days + ' 天前'
+    return days + (isZhTW ? ' 天前' : ' days ago')
   } else if (hours > 0) {
-    return hours + ' 小時前'
+    return hours + (isZhTW ? ' 小時前' : ' hours ago')
   } else if (minutes > 0) {
-    return minutes + ' 分鐘前'
+    return minutes + (isZhTW ? ' 分鐘前' : ' minutes ago')
   } else if (seconds > 0) {
-    return seconds + ' 秒前'
+    return seconds + (isZhTW ? ' 秒前' : ' seconds ago')
   } else {
-    return '剛剛'
+    return isZhTW ? '剛剛' : 'just now'
   }
 }
 

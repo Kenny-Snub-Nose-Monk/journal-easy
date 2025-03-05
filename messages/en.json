@@ -3,6 +3,10 @@
     "brandName": "Joural Easy",
     "notSupportMobile": "Mobile devices are not supported yet"
   },
+  "metadata": {
+    "title": "Huashui AI",
+    "description": "Based on the latest AI technology, AI writing, Collaborative writing"
+  },
   "home": {
     "slogan": "Intelligent Writing",
     "subTitle": "Based on the latest AI technology, AI writing, Collaborative writing",

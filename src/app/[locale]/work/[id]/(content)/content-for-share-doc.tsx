@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Share } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { IDoc } from '@/stores/docs-store'
 import { useUserStore } from '@/stores/user-store'
 import { CONTENT_WIDTH } from '@/constants'
