@@ -4,9 +4,12 @@ import { Editor } from '@tiptap/core'
 import DragHandle from '@tiptap-pro/extension-drag-handle-react'
 import AddButton from './add-button'
 import DragButton from './drag-button'
+import TriggerAIButton from './trigger-ai-button'
+
 interface ContentMenuProps {
   editor: Editor | null
 }
+
 export default function ContentMenu({ editor }: ContentMenuProps) {
   const [currentNode, setCurrentNode] = useState<Node | null>(null)
   const [currentNodePos, setCurrentNodePos] = useState<number>(-1)
@@ -16,28 +19,36 @@ export default function ContentMenu({ editor }: ContentMenuProps) {
       if (data.node) {
         setCurrentNode(data.node)
       }
+
       setCurrentNodePos(data.pos)
     },
     [setCurrentNodePos, setCurrentNode]
   )
+
   if (editor == null) return
+
   return (
     <DragHandle
       pluginKey="ContentItemMenu"
       editor={editor}
       onNodeChange={handleNodeChange}
       tippyOptions={{
-        offset: [-2, 16],
-        zIndex: 99,
+        offset: [-4, 10],
+        zIndex: 40,
       }}
     >
-      <div className="flex items-center gap-0.5 text-muted-foreground">
+      <div className="flex items-center text-muted-foreground">
         <AddButton
           editor={editor}
           currentNode={currentNode}
           currentNodePos={currentNodePos}
         />
         <DragButton
+          editor={editor}
+          currentNode={currentNode}
+          currentNodePos={currentNodePos}
+        />
+        <TriggerAIButton
           editor={editor}
           currentNode={currentNode}
           currentNodePos={currentNodePos}

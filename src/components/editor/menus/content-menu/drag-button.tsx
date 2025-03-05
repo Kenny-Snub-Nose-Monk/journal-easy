@@ -1,6 +1,4 @@
 import { useCallback, useState, useEffect } from 'react'
-import { Editor } from '@tiptap/core'
-import { Node } from '@tiptap/pm/model'
 import { NodeSelection } from '@tiptap/pm/state'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,27 +14,24 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/components/ui/use-toast'
+import { IButtonProps } from './types'
 import { useTranslations } from 'next-intl'
 
-interface DragButtonProps {
-  editor: Editor | null
-  currentNode: Node | null
-  currentNodePos: number
-}
-export default function DragButton(props: DragButtonProps) {
+export default function DragButton(props: IButtonProps) {
   const { editor, currentNode, currentNodePos } = props
   const { toast } = useToast()
-  const [menuOpen, setMenuOpen] = useState(false)
   const t = useTranslations('editor')
 
+  const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
     if (menuOpen) {
-      editor && editor.commands.setMeta('lockDragHandle', true) // 鎖定拖動按鈕
+      editor && editor.commands.setMeta('lockDragHandle', true) // 锁定拖动按钮
     } else {
       editor && editor.commands.setMeta('lockDragHandle', false)
     }
   }, [editor, menuOpen])
+
   // 清空格式
   const resetTextFormatting = useCallback(() => {
     if (editor == null) return
@@ -47,10 +42,12 @@ export default function DragButton(props: DragButtonProps) {
     }
     chain.focus(currentNodePos).run()
   }, [editor, currentNodePos, currentNode?.type.name])
-  // 複製
+
+  // 复制
   const duplicateNode = useCallback(() => {
     if (editor == null) return
     editor.commands.setNodeSelection(currentNodePos)
+
     const { $anchor } = editor.state.selection
     const selectedNode =
       $anchor.node(1) || (editor.state.selection as NodeSelection).node
@@ -61,7 +58,8 @@ export default function DragButton(props: DragButtonProps) {
       .focus(nextPos)
       .run()
   }, [editor, currentNodePos, currentNode?.nodeSize])
-  // 複製到剪貼簿
+
+  // 拷贝到剪贴板
   const copyNodeToClipboard = useCallback(() => {
     if (editor == null) return
     editor.chain().setNodeSelection(currentNodePos).run()
@@ -69,6 +67,7 @@ export default function DragButton(props: DragButtonProps) {
     editor.commands.focus(currentNodePos)
     toast({ title: t('success'), description: t('copied') })
   }, [editor, currentNodePos, toast, t])
+
   // 删除节点
   const deleteNode = useCallback(() => {
     if (editor == null) return
@@ -79,11 +78,13 @@ export default function DragButton(props: DragButtonProps) {
       .focus(currentNodePos)
       .run()
   }, [editor, currentNodePos])
+
   if (editor == null) return
+
   return (
     <Popover open={menuOpen} onOpenChange={setMenuOpen}>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost" tabIndex={-1} className="px-2">
+        <Button size="sm" variant="ghost" tabIndex={-1} className="px-1">
           <GripVertical className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
