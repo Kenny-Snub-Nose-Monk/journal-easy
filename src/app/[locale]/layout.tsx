@@ -9,8 +9,11 @@ import { getMessages, getTranslations } from 'next-intl/server'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export async function generateMetadata(params: { locale: string }) {
-  const { locale } = params
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string }
+}) {
   const t = await getTranslations({ locale, namespace: 'metadata' })
 
   return {

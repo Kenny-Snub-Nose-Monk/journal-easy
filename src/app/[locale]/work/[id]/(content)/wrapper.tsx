@@ -14,7 +14,7 @@ import { useTranslations } from 'next-intl'
 
 interface IProps {
   id: string
-  userInfo: User
+  userInfo: User | null
 }
 
 export default function ContentWrapper(props: IProps) {
@@ -24,7 +24,9 @@ export default function ContentWrapper(props: IProps) {
   const userInfo = useUserStore((s) => s.userInfo)
   const setUserInfo = useUserStore((s) => s.setUserInfo)
   useEffect(() => {
-    setUserInfo(userInfoProp)
+    if (userInfoProp) {
+      setUserInfo(userInfoProp)
+    }
   }, [userInfoProp, setUserInfo])
 
   const loading = useDocsStore((s) => s.loading)
