@@ -41,7 +41,7 @@ export default function useCreateEditor(id: string) {
     return new HocuspocusProvider({
       url:
         process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
-        'wss://journal-easy.com/collaborate',
+        'wss://ws.journal-easy.com/collaborate/',
       name: id,
       document: ydoc,
       connect: false, // connect later
