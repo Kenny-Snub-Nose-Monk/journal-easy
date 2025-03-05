@@ -38,7 +38,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
     return () => {
       emitter.off(EVENT_KEY_NAV_DOC, handler) // 及時清理自定義事件
     }
-  }, [])
+  }, [setCurDocId])
 
   useEffect(() => {
     setDocs(defaultList)

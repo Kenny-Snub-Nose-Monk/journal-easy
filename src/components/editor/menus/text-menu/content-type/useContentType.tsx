@@ -106,6 +106,6 @@ export const useContentType = (editor: Editor | null) => {
         onClick: () => editor.chain().focus().toggleTaskList().run(),
       },
     ]
-  }, [editor])
+  }, [editor, t])
   return options
 }

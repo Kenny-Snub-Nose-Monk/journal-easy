@@ -60,7 +60,7 @@ export const useRequestAI = ({
         setAIResult((r) => r + content)
       }
     },
-    [editor, isSelectionEmpty, setAIResult, setAITokenLimit]
+    [AITokenLimit, setAIResult, setAITokenLimit]
   )
 
   function onSuccess() {
@@ -128,15 +128,15 @@ export const useRequestAI = ({
     },
     [
       loading,
+      delay,
+      AITokenLimit,
       editor,
-      isSelectionEmpty,
-      setInstruction,
+      insertContent,
+      onError,
+      onSuccess,
       setAIResult,
       inputRef,
-      AITokenLimit,
-      setAITokenLimit,
-      delay,
-      setDelay,
+      setPrevMessages,
     ]
   )
 
@@ -147,7 +147,7 @@ export const useRequestAI = ({
       editor?.setEditable(true)
       setLoading(false)
     }
-  }, [])
+  }, [editor])
 
   function reRequestAI() {
     // console.log('reRequestAI...', prevMessages)
