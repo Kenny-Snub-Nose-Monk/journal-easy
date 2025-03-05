@@ -1,12 +1,15 @@
 'use client'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { useEffect } from 'react'
 import { get, IAjaxRes } from '@/lib/ajax'
 import { useEditorStore } from '@/stores/editor-store'
+import { useTranslations } from 'next-intl'
 
 export default function Info() {
   const AITokenLimit = useEditorStore((s) => s.AITokenLimit)
   const setAITokenLimit = useEditorStore((s) => s.setAITokenLimit)
+  const t = useTranslations('AIInput')
+
   useEffect(() => {
     if (AITokenLimit != null) return
     // console.log('get token limit...')
@@ -23,17 +26,17 @@ export default function Info() {
   }, [AITokenLimit, setAITokenLimit])
   return (
     <p className="text-sm text-center my-1 text-muted-foreground">
-      AI 可能會生成錯誤信息，請自行檢查判斷。你本月&nbsp;
-      <Link
-        href="/ai-token"
-        className="underline"
-        title="什麼是 token limit ？"
-      >
-        AI token limit
-      </Link>
-      &nbsp;數量 <TokenLimitSpan tokenLimit={AITokenLimit} /> ，
+      {t('mistakeTip')}.&nbsp;
+      {t.rich('limitTip', {
+        limit: (chunks: any) => (
+          <Link href="/ai-token" className="underline" title={t('whatIsLimit')}>
+            {chunks}
+          </Link>
+        ),
+      })}
+      <TokenLimitSpan tokenLimit={AITokenLimit} /> .&nbsp;
       <Link href="/ai-token#add-limit-heading" className="underline">
-        領取更多
+        {t('clickToGetMore')}
       </Link>
     </p>
   )

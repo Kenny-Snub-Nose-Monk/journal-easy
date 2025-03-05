@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button'
 import { MoveUpRight } from 'lucide-react'
 import {
   MessagesType,
-  genSystemMessage,
-  genSelectedContentMessages,
-} from '../messages'
+  useGenSystemMessage,
+  useGenSelectedContentMessages,
+} from '../hooks/useGenMessages'
+import { useTranslations } from 'next-intl'
+
 interface IProps {
   editor: Editor | null
   onRequestAI: (message: MessagesType) => void
@@ -13,13 +15,19 @@ interface IProps {
 }
 export default function MakeLongerMenu(props: IProps) {
   const { editor, onRequestAI, setInstruction } = props
+
+  const t = useTranslations('AIInput')
+
+  const systemMessage = useGenSystemMessage()
+  const selectedContentMessages = useGenSelectedContentMessages(editor)
+
   function genMessages(instruction: string): MessagesType {
     if (editor == null) return []
     // messages
     let messages: MessagesType = []
-    messages.push(genSystemMessage()) // system message
+    messages.push(systemMessage) // system message
     // selected content message
-    messages = messages.concat(genSelectedContentMessages(editor))
+    messages = messages.concat(selectedContentMessages)
     // current message
     messages.push({ role: 'user', content: instruction })
     return messages
@@ -28,7 +36,7 @@ export default function MakeLongerMenu(props: IProps) {
     if (editor == null) return
     const { empty } = editor.state.selection
     if (empty) return
-    const instruction = '擴展一下這段內容'
+    const instruction = t('expandDesc')
     const messages = genMessages(instruction)
     setInstruction(instruction)
     onRequestAI(messages)
@@ -40,7 +48,7 @@ export default function MakeLongerMenu(props: IProps) {
       variant="ghost"
       className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
     >
-      擴展
+      {t('expand')}
       <MoveUpRight className="h-4 w-4" />
     </Button>
   )

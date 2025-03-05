@@ -1,8 +1,10 @@
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { MoveUpRight } from 'lucide-react'
-import { MessagesType, genSystemMessage } from '../messages'
+import { MessagesType, useGenSystemMessage } from '../hooks/useGenMessages'
 import { AI_CONTEXT_MAX_LENGTH } from '@/constants'
+import { useTranslations } from 'next-intl'
+
 interface IProps {
   editor: Editor | null
   onRequestAI: (message: MessagesType) => void
@@ -10,16 +12,21 @@ interface IProps {
 }
 export default function ContinueMenu(props: IProps) {
   const { editor, onRequestAI, setInstruction } = props
+
+  const t = useTranslations('AIInput')
+
+  const systemMessage = useGenSystemMessage()
+
   function genMessages(instruction: string): MessagesType {
     if (editor == null) return []
     // messages
     const messages: MessagesType = []
-    messages.push(genSystemMessage()) // system message
+    messages.push(systemMessage) // system message
     // context message
     const selection = editor.state.selection
     let prevText = editor.view.state.doc.textBetween(0, selection.head) // 選區之前的文本內容
     if (prevText.trim() !== '') {
-      messages.push({ role: 'user', content: '文章已有哪些內容？' })
+      messages.push({ role: 'user', content: t('existingContent') })
       if (prevText.length > AI_CONTEXT_MAX_LENGTH) {
         // 上下文內容不能太多，否則會影響速度
         prevText = prevText.slice(-AI_CONTEXT_MAX_LENGTH)
@@ -32,7 +39,7 @@ export default function ContinueMenu(props: IProps) {
   }
   function handleClick() {
     if (editor == null) return
-    const instruction = '根據文章標題和內容，繼續寫作，200 字以內'
+    const instruction = t('continueDesc')
     const messages = genMessages(instruction)
     setInstruction(instruction)
     onRequestAI(messages)
@@ -44,7 +51,7 @@ export default function ContinueMenu(props: IProps) {
       variant="ghost"
       className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
     >
-      續寫
+      {t('continue')}
       <MoveUpRight className="h-4 w-4" />
     </Button>
   )

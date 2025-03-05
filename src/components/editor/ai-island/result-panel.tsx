@@ -4,6 +4,7 @@ import { X, Sparkle, BetweenHorizonalStart, Replace } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import markdownit from 'markdown-it'
+import { useTranslations } from 'next-intl'
 
 const md = markdownit()
 
@@ -29,6 +30,7 @@ export default function ResultPanel(props: IProps) {
   const menuRef = useRef<HTMLDivElement>(null)
   const resultHtml = md.render(result)
   const innerHtml = { __html: resultHtml }
+  const t = useTranslations('AIInput')
 
   // 插入編輯器，考慮換行
   function insertResultToEditor() {
@@ -84,7 +86,7 @@ export default function ResultPanel(props: IProps) {
           {!result && (
             <div className="text-center">
               <span className="text-sm text-muted-foreground">
-                AI 生成中......
+                {t('AIgenerating')}
               </span>
             </div>
           )}
@@ -105,7 +107,7 @@ export default function ResultPanel(props: IProps) {
             tabIndex={-1}
           >
             <Replace className="h-4 w-4 mr-1" />
-            替換
+            {t('replace')}
           </Button>
           <Button
             onClick={onInsert}
@@ -115,7 +117,7 @@ export default function ResultPanel(props: IProps) {
             tabIndex={-1}
           >
             <BetweenHorizonalStart className="h-4 w-4 mr-1" />
-            插入
+            {t('insert')}
           </Button>
           <Button
             onClick={reRequestAI}
@@ -125,7 +127,7 @@ export default function ResultPanel(props: IProps) {
             tabIndex={-1}
           >
             <Sparkle className="h-4 w-4 mr-1" />
-            重新生成
+            {t('regenerate')}
           </Button>
           <Button
             onClick={onClose}
@@ -135,7 +137,7 @@ export default function ResultPanel(props: IProps) {
             tabIndex={-1}
           >
             <X className="h-4 w-4 mr-1" />
-            關閉
+            {t('close')}
           </Button>
         </div>
       </div>

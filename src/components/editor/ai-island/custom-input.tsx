@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   MessagesType,
-  genSystemMessage,
-  genSelectedContentMessages,
-} from './messages'
+  useGenSystemMessage,
+  useGenSelectedContentMessages,
+} from './hooks/useGenMessages'
+import { useTranslations } from 'next-intl'
+
 interface IProps {
   isFocus: boolean
   loading: boolean
@@ -27,6 +29,8 @@ interface IProps {
 }
 const CustomInput = forwardRef(
   (props: IProps, inputRef: ForwardedRef<HTMLInputElement>) => {
+    const t = useTranslations('AIInput')
+
     const {
       editor,
       onRequestAI,
@@ -39,15 +43,20 @@ const CustomInput = forwardRef(
       delay,
     } = props
 
+    const systemMessage = useGenSystemMessage()
+    const selectedContentMessages = useGenSelectedContentMessages(editor)
+
     function genMessages(instruction: string): MessagesType {
       let messages: MessagesType = []
       if (!instruction.trim()) return messages
       if (editor == null) return messages
+
       // system message
-      messages.push(genSystemMessage())
+      messages.push(systemMessage)
+
       // selected content message
       if (!isSelectionEmpty) {
-        messages = messages.concat(genSelectedContentMessages(editor))
+        messages = messages.concat(selectedContentMessages)
       }
       // current message
       messages.push({ role: 'user', content: instruction })
@@ -83,10 +92,11 @@ const CustomInput = forwardRef(
     }
     // placeholder
     const placeholder = useMemo(() => {
-      if (!isFocus) return '使用 AI 寫作'
-      if (isSelectionEmpty) return '輸入 AI 指令，如：根據標題寫大綱'
-      else return '針對選中內容，輸入 AI 指令，如：擴展一下這段內容'
-    }, [isFocus, isSelectionEmpty])
+      if (!isFocus) return t('inputPlaceholder1')
+      if (isSelectionEmpty) return t('inputPlaceholder2')
+      else return t('inputPlaceholder3')
+    }, [isFocus, isSelectionEmpty, t])
+
     return (
       <div
         className={cn(

@@ -47,7 +47,7 @@ export default async function AITokenPage() {
       <HomeNav />
       <div className="w-[800px] mx-auto my-20">
         <div className=" prose dark:prose-invert">
-          <h2>什麼是 token</h2>
+          <h2>What is token</h2>
           <p>
             AI 大模型一般使用 token 來計算輸入和輸出的內容長度，API 會根據 token
             來計費。token 不是字符、英文和漢字，簡單了解的話：
@@ -78,7 +78,7 @@ export default async function AITokenPage() {
             </a>
             &nbsp; 工具來測試
           </p>
-          <h2>什麼是 token limit</h2>
+          <h2>What is token limit</h2>
           <p>
             Token limit 是【划水 AI】項目對於 AI 使用量的限制，當 token limit
             小於等於 0 時，AI
@@ -89,7 +89,7 @@ export default async function AITokenPage() {
             每個用戶註冊以後，都會分配 token limit
             ，此後每月會自動充值，還可以自己手動領取。
           </p>
-          <h2 id="add-limit-heading">領取 token limit</h2>
+          <h2 id="add-limit-heading">Get token limit</h2>
           <p>token limit 領取規則</p>
           <ul>
             <li>
@@ -103,8 +103,8 @@ export default async function AITokenPage() {
           </ul>
           <hr />
           <p>
-            你當前 token limit 數量：{tokensLimit} ；最後領取（或重置）時間：
-            <UpdateTime dt={updateLimitAt} /> ；
+            Your have token limit {tokensLimit} , last update at &nbsp;
+            <UpdateTime dt={updateLimitAt} />
           </p>
           <p>
             <AddLimit />

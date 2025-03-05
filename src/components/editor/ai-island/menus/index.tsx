@@ -1,12 +1,12 @@
 import { Editor } from '@tiptap/react'
-import { MessagesType } from '../messages'
+import { MessagesType } from '../hooks/useGenMessages'
 import ContinueMenu from './continue-menu'
 import BrainStormMenu from './brain-storm-menu'
 import OutlineMenu from './outline-menu'
 import SummaryMenu from './summary-menu'
 import MakeLongerMenu from './make-longer-menu'
 import MakeShorterMenu from './make-shorter-menu'
-import FixSyntaxMenu from './fix-syntax-menu'
+// import FixSyntaxMenu from './fix-syntax-menu'
 import ChangeToneMenu from './change-tone-menu'
 import TranslateMenu from './translate-menu'
 import ExplainMenu from './explain-menu'
@@ -71,11 +71,11 @@ export function MenusWhenSelectionIsNotEmpty(props: IProps) {
         onRequestAI={onRequestAI}
         setInstruction={setInstruction}
       />
-      <FixSyntaxMenu
+      {/* <FixSyntaxMenu
         editor={editor}
         onRequestAI={onRequestAI}
         setInstruction={setInstruction}
-      />
+      /> */}
     </div>
   )
 }

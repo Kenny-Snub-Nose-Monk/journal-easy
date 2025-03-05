@@ -11,12 +11,12 @@ export default function AddLimit() {
       return
     }
 
-    alert('領取成功')
+    alert('Success')
     location.reload() // 刷新頁面
   }
   return (
     <Button size="sm" onClick={handleClick}>
-      領取 token
+      Get token limit
     </Button>
   )
 }

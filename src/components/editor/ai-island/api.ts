@@ -1,6 +1,6 @@
 import OpenAI from 'openai'
 import { AI_RES_MAX_TOKENS } from '@/constants'
-import { MessagesType } from './messages'
+import { MessagesType } from './hooks/useGenMessages'
 
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend

@@ -3,28 +3,37 @@ import { Button } from '@/components/ui/button'
 import { MoveUpRight, Ellipsis } from 'lucide-react'
 import {
   MessagesType,
-  genSystemMessage,
-  genSelectedContentMessages,
-} from '../messages'
+  useGenSystemMessage,
+  useGenSelectedContentMessages,
+} from '../hooks/useGenMessages'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
+import { useTranslations } from 'next-intl'
+
 interface IProps {
   editor: Editor | null
   onRequestAI: (message: MessagesType) => void
   setInstruction: (instruction: string) => void
 }
+
 export default function ChangeToneMenu(props: IProps) {
   const { editor, onRequestAI, setInstruction } = props
+
+  const systemMessage = useGenSystemMessage()
+  const selectedContentMessages = useGenSelectedContentMessages(editor)
+
+  const t = useTranslations('AIInput')
+
   function genMessages(instruction: string): MessagesType {
     if (editor == null) return []
     // messages
     let messages: MessagesType = []
-    messages.push(genSystemMessage()) // system message
+    messages.push(systemMessage) // system message
     // selected content message
-    messages = messages.concat(genSelectedContentMessages(editor))
+    messages = messages.concat(selectedContentMessages)
     // current message
     messages.push({ role: 'user', content: instruction })
     return messages
@@ -33,7 +42,7 @@ export default function ChangeToneMenu(props: IProps) {
     if (editor == null) return
     const { empty } = editor.state.selection
     if (empty) return
-    const instruction = `使用${tone}的語氣重寫這段話`
+    const instruction = t('toneDesc', { tone })
     const messages = genMessages(instruction)
     setInstruction(instruction)
     onRequestAI(messages)
@@ -46,49 +55,49 @@ export default function ChangeToneMenu(props: IProps) {
           variant="ghost"
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          切換語氣
+          {t('tone')}
           <Ellipsis className="h-4 w-4 ml-1" />
         </Button>
       </HoverCardTrigger>
       <HoverCardContent side="top" className="p-1 w-auto">
         <Button
           variant="ghost"
-          onClick={() => handleClick('專業')}
+          onClick={() => handleClick(t('professional'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          專業
+          {t('professional')}
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
-          onClick={() => handleClick('隨和的')}
+          onClick={() => handleClick(t('casual'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          隨和的
+          t('casual')
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
-          onClick={() => handleClick('强调')}
+          onClick={() => handleClick(t('neutral'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          強調
+          t('neutral')
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
-          onClick={() => handleClick('自信的')}
+          onClick={() => handleClick(t('formal'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          自信的
+          t('formal')
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
-          onClick={() => handleClick('友好的')}
+          onClick={() => handleClick(t('friendly'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          友好的
+          t('friendly')
           <MoveUpRight className="h-4 w-4" />
         </Button>
       </HoverCardContent>
