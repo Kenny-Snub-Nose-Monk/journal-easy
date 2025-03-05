@@ -39,7 +39,9 @@ export default function useCreateEditor(id: string) {
 
   const provider = useMemo(() => {
     return new HocuspocusProvider({
-      url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
+      url:
+        process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL ||
+        'wss://journal-easy.com/collaborate',
       name: id,
       document: ydoc,
       connect: false, // connect later
