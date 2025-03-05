@@ -1,6 +1,7 @@
-import { signOut } from 'auth'
-import { post } from '@/lib/ajax'
+'use client'
+
 import { Button } from '@/components/ui/button'
+import { post } from '@/lib/ajax'
 import { useTranslations } from 'next-intl'
 
 export default function SignOutButton({
@@ -34,7 +35,6 @@ export default function SignOutButton({
     console.log('sign out')
     location.href = '/'
   }
-
   return (
     <div className="w-full">
       <Button

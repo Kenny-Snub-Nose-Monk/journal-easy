@@ -1,5 +1,13 @@
-import { signIn } from 'auth'
+'use client'
+
+// import { Link } from '@/i18n/routing'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+
+function getHref() {
+  if (typeof location === 'undefined') return ''
+  return location.href
+}
 
 export default function SignInButton({
   children,
@@ -10,16 +18,12 @@ export default function SignInButton({
   className?: string
   size?: 'sm' | 'lg'
 }) {
+  const href = getHref()
+  const url = `/auth/signin?callbackUrl=${encodeURIComponent(href)}`
+
   return (
-    <form
-      action={async () => {
-        'use server'
-        await signIn()
-      }}
-    >
-      <Button className={className} size={size}>
-        {children}
-      </Button>
-    </form>
+    <Button className={className} size={size} asChild>
+      <Link href={url}>{children}</Link>
+    </Button>
   )
 }

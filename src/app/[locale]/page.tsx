@@ -27,7 +27,7 @@ export default function Home() {
       <Slogan text={homeTrans('subTitle')} />
       <section className="mt-10 flex justify-center space-x-4">
         <MainButton />
-        {locale === 'zh-cn' && <LearnButton />}
+        {/* {locale === 'zh-tw' && <LearnButton />} */}
       </section>
     </main>
   )

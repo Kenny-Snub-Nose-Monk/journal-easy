@@ -34,7 +34,7 @@ export default function TopBar() {
       </div>
       <div className="flex-1 text-end">
         {/* 後續再拆分組件 */}
-        <div className="inline-flex items-center">
+        <div className="inline-flex items-center gap-2">
           <ShareDocButton id={id} disabled={doc?.userId !== userInfo?.id} />
           <StarDocButton id={id} disabled={doc?.userId !== userInfo?.id} />
           <TopBarHandlers id={id} disabled={doc?.userId !== userInfo?.id} />

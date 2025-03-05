@@ -3,15 +3,16 @@ import { getUserInfo } from '@/lib/session'
 import { isMobileDevice } from '@/lib/isMobileDevice'
 // import { isUserInvited } from '@/app/invitation-code/action'
 import { getTranslations } from 'next-intl/server'
-import { useLocale } from 'next-intl'
 export default async function Layout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode
+  params: { locale: string }
 }>) {
   const isMobile = await isMobileDevice()
   const t = await getTranslations('common')
-  const locale = useLocale()
+
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col items-center justify-center">
@@ -28,7 +29,7 @@ export default async function Layout({
   const user = await getUserInfo()
 
   if (user == null) {
-    redirect({ href: '/user-info', locale })
+    redirect('/user-info')
   }
 
   // 先略過邀請碼的設定
