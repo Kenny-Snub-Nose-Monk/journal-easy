@@ -80,8 +80,8 @@ export default async function AITokenPage() {
           </p>
           <h2>What is token limit</h2>
           <p>
-            Token limit 是【划水 AI】項目對於 AI 使用量的限制，當 token limit
-            小於等於 0 時，AI
+            Token limit 是【Journal Easy AI】項目對於 AI 使用量的限制，當 token
+            limit 小於等於 0 時，AI
             功能將不可用。如果不加限制，用戶無節制的使用，可能會浪費我們的 AI
             接口費用。
           </p>

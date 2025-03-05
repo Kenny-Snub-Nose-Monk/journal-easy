@@ -43,9 +43,9 @@ export default async function Work() {
     data: {
       userId: user.id,
       title:
-        locale === 'zh-cn' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN, // useCreateEditor 中會用到這個變量，做判斷
+        locale === 'zh-tw' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN, // useCreateEditor 中會用到這個變量，做判斷
       content:
-        locale === 'zh-cn'
+        locale === 'zh-tw'
           ? DEFAULT_NEW_DOC_CONTENT
           : DEFAULT_NEW_DOC_CONTENT_EN,
     },

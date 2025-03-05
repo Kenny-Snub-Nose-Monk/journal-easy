@@ -68,9 +68,9 @@ export default function DocUpdateStatus(props: IProps) {
         {/* <span className="text-muted-foreground ml-1">{collaborativeState}</span> */}
       </div>
       <span className="text-muted-foreground text-sm ml-2 inline-flex items-center">
-        {locale === 'zh-cn' &&
+        {locale === 'zh-tw' &&
           `共 ${characterCount >= 0 ? characterCount : '---'} 字`}
-        {locale !== 'zh-cn' &&
+        {locale !== 'zh-tw' &&
           `Total ${wordCount >= 0 ? wordCount : '---'} words, ${characterCount >= 0 ? characterCount : '---'} characters`}
       </span>
     </>

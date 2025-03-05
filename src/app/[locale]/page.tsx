@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import SignInButton from '@/components/sigin-in-button'
 import { getUserInfo } from '@/lib/session'
 
-// import QRCode from '@/components/QRCode'
 // import { isUserInvited } from '@/app/invitation-code/action'
 
 export default function Home() {
