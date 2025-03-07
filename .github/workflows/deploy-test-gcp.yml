@@ -33,6 +33,8 @@ env:
   # Image Processor
   IMAGE_PROCESSOR_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_PROCESSOR_URL }}
 
+  NEXT_PUBLIC_OPENAI_API_KEY: ${{ secrets.NEXT_PUBLIC_OPENAI_API_KEY }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -120,6 +122,7 @@ jobs:
             --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.PROJECT_ID }}" \
             --set-env-vars="NEXT_PUBLIC_COLLABORATE_EDIT_URL=${{ env.COLLABORATIVE_EDIT_URL }}" \
             --set-env-vars="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=${{ env.IMAGE_PROCESSOR_URL }}" \
+            --set-env-vars="NEXT_PUBLIC_OPENAI_API_KEY=${{ env.NEXT_PUBLIC_OPENAI_API_KEY }}" \
             --update-secrets="DATABASE_URL=DATABASE_URL:latest" \
 
           echo "Service URL: $(gcloud run services describe huashui-ai --region ${{ env.REGION }} --format 'value(status.url)')"
