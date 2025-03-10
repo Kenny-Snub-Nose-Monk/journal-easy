@@ -6,7 +6,9 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend
   organization: 'org-V8AiRkfnZD9gTSW7RU7Znmua',
   project: 'proj_dWN3zm1cfCtAmhDMwNDwgA5Z',
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
+  apiKey:
+    process.env.NEXT_PUBLIC_OPENAI_API_KEY ||
+    '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',
 })
 
 export async function send(
