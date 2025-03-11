@@ -76,6 +76,11 @@ jobs:
           # Create service account key file
           echo "$GCP_SA_KEY" > /tmp/gcp-sa-key.json
 
+          # 設置環境變數
+          - name: Set environment variables
+          run: |
+          echo "NEXT_PUBLIC_OPENAI_API_KEY=${{ env.NEXT_PUBLIC_OPENAI_API_KEY }}" >> $GITHUB_ENV
+
           # Build Docker image
           docker build \
           --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
