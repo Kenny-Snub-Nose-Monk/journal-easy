@@ -82,6 +82,9 @@ jobs:
           docker build \
           --build-arg TIPTAP_PRO_TOKEN=${{ env.TIPTAP_PRO_TOKEN }} \
           --build-arg GOOGLE_CLOUD_BUCKET_NAME=${{ env.GOOGLE_CLOUD_BUCKET_NAME }} \
+          --build-arg OPENAI_API_KEY=${{ env.OPENAI_API_KEY }} \
+          --build-arg OPENAI_ORGANIZATION_ID=${{ env.OPENAI_ORGANIZATION_ID }} \
+          --build-arg OPENAI_PROJECT_ID=${{ env.OPENAI_PROJECT_ID }} \
           --progress=plain \
           -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
           .

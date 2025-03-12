@@ -3,6 +3,14 @@ FROM node:18-bullseye-slim AS base
 # 在構建時需要的參數
 ARG TIPTAP_PRO_TOKEN
 ARG GOOGLE_CLOUD_BUCKET_NAME
+ARG OPENAI_API_KEY
+ARG OPENAI_ORGANIZATION_ID
+ARG OPENAI_PROJECT_ID
+
+# Set environment variables that are needed during build
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+ENV OPENAI_ORGANIZATION_ID=${OPENAI_ORGANIZATION_ID}
+ENV OPENAI_PROJECT_ID=${OPENAI_PROJECT_ID}
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -35,6 +43,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
 COPY . .
+
+# Ensure environment variables are available during build
+ENV OPENAI_API_KEY=${OPENAI_API_KEY}
+ENV OPENAI_ORGANIZATION_ID=${OPENAI_ORGANIZATION_ID}
+ENV OPENAI_PROJECT_ID=${OPENAI_PROJECT_ID}
 
 # Build the application
 RUN npx prisma generate
