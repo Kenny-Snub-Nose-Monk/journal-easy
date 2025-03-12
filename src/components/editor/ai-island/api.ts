@@ -1,13 +1,4 @@
-import OpenAI from 'openai'
-import { AI_RES_MAX_TOKENS } from '@/constants'
 import { MessagesType } from './hooks/useGenMessages'
-
-const openai = new OpenAI({
-  dangerouslyAllowBrowser: true, // Only if you're okay with exposing your API key in the frontend
-  organization: 'org-V8AiRkfnZD9gTSW7RU7Znmua',
-  project: 'proj_dWN3zm1cfCtAmhDMwNDwgA5Z',
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
-})
 
 export async function send(
   messages: MessagesType,
@@ -22,37 +13,69 @@ export async function send(
   }
 
   try {
-    const stream = await openai.chat.completions.create(
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [...messages],
-        stream: true,
-        stream_options: { include_usage: true },
-        max_tokens: AI_RES_MAX_TOKENS,
+    // 使用我們的後端 API 而不是直接調用 OpenAI
+    const response = await fetch('/api/gpt/chat/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      {
-        signal,
-      }
-    )
+      body: JSON.stringify({ messages }),
+      signal,
+    })
 
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content
-      const usage = chunk.usage
-
-      if (content == null) {
-        callback(true)
-      }
-      onData(content ?? '', usage)
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to fetch from API')
     }
-    callback(true)
+
+    const reader = response.body?.getReader()
+
+    if (!reader) {
+      throw new Error('Response body is not readable')
+    }
+
+    const decoder = new TextDecoder()
+    let buffer = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+
+      if (done) {
+        callback(true)
+        break
+      }
+
+      const chunk = decoder.decode(value)
+      buffer += chunk
+
+      try {
+        // 嘗試將緩衝區內容解析為多個JSON對象
+        while (buffer.includes('}')) {
+          const endPos = buffer.indexOf('}') + 1
+          const jsonChunk = buffer.substring(0, endPos)
+          buffer = buffer.substring(endPos)
+
+          try {
+            const data = JSON.parse(jsonChunk)
+            onData(data.content || '', data.usage)
+          } catch (jsonError) {
+            // 可能是不完整的JSON，繼續緩衝
+            buffer = jsonChunk + buffer
+            break
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing chunks:', e)
+      }
+    }
   } catch (err) {
     if (err instanceof Error && err.name === 'AbortError') {
       console.log('Request was aborted')
       onError('Request was aborted')
     } else {
-      console.error('OpenAI API error:', err)
+      console.error('API error:', err)
       const errorMessage = mapOpenAIErrorToMessage(err)
-      await sendErrorAlertToAPI(err, 'OpenAI API Error in send function')
+      await sendErrorAlertToAPI(err, 'API Error in send function')
       onError(errorMessage)
     }
     callback(false)

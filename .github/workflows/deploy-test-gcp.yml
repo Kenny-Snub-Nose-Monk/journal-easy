@@ -33,7 +33,9 @@ env:
   # Image Processor
   IMAGE_PROCESSOR_URL: ${{ secrets.NEXT_PUBLIC_IMAGE_PROCESSOR_URL }}
 
-  NEXT_PUBLIC_OPENAI_API_KEY: ${{ secrets.NEXT_PUBLIC_OPENAI_API_KEY }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  OPENAI_ORGANIZATION_ID: ${{ secrets.OPENAI_ORGANIZATION_ID }}
+  OPENAI_PROJECT_ID: ${{ secrets.OPENAI_PROJECT_ID }}
 
 jobs:
   deploy:
@@ -75,11 +77,6 @@ jobs:
 
           # Create service account key file
           echo "$GCP_SA_KEY" > /tmp/gcp-sa-key.json
-
-          # 設置環境變數
-          - name: Set environment variables
-          run: |
-          echo "NEXT_PUBLIC_OPENAI_API_KEY=${{ env.NEXT_PUBLIC_OPENAI_API_KEY }}" >> $GITHUB_ENV
 
           # Build Docker image
           docker build \
@@ -127,7 +124,9 @@ jobs:
             --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=${{ env.PROJECT_ID }}" \
             --set-env-vars="NEXT_PUBLIC_COLLABORATE_EDIT_URL=${{ env.COLLABORATIVE_EDIT_URL }}" \
             --set-env-vars="NEXT_PUBLIC_IMAGE_PROCESSOR_URL=${{ env.IMAGE_PROCESSOR_URL }}" \
-            --set-env-vars="NEXT_PUBLIC_OPENAI_API_KEY=${{ env.NEXT_PUBLIC_OPENAI_API_KEY }}" \
+            --set-env-vars="OPENAI_API_KEY=${{ env.OPENAI_API_KEY }}" \
+            --set-env-vars="OPENAI_ORGANIZATION_ID=${{ env.OPENAI_ORGANIZATION_ID }}" \
+            --set-env-vars="OPENAI_PROJECT_ID=${{ env.OPENAI_PROJECT_ID }}" \
             --update-secrets="DATABASE_URL=DATABASE_URL:latest" \
 
           echo "Service URL: $(gcloud run services describe huashui-ai --region ${{ env.REGION }} --format 'value(status.url)')"

@@ -12,8 +12,10 @@ import { useTranslations } from 'next-intl'
 interface UseRequestAIProps {
   editor: Editor | null
   isSelectionEmpty: boolean
-  setInstruction: React.Dispatch<React.SetStateAction<string>>
+  loading: boolean
   setAIResult: React.Dispatch<React.SetStateAction<string>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setInstruction: React.Dispatch<React.SetStateAction<string>>
   inputRef: React.RefObject<HTMLInputElement>
   delay: number
   setDelay: React.Dispatch<React.SetStateAction<number>>
@@ -22,13 +24,14 @@ interface UseRequestAIProps {
 export const useRequestAI = ({
   editor,
   isSelectionEmpty,
+  loading,
   setInstruction,
   setAIResult,
+  setLoading,
   inputRef,
   delay,
   setDelay,
 }: UseRequestAIProps) => {
-  const [loading, setLoading] = useState(false)
   const [prevMessages, setPrevMessages] = useState<MessagesType>([])
   const abortControllerRef = useRef<AbortController | null>(null)
   const AITokenLimit = useEditorStore((s) => s.AITokenLimit)
@@ -52,7 +55,6 @@ export const useRequestAI = ({
         }
         // 更新服务端数据
 
-        console.log('total_tokens', total_tokens)
         post('/api/gpt/token-usage', { total_tokens })
       }
 
@@ -65,8 +67,8 @@ export const useRequestAI = ({
 
   function onSuccess() {
     setLoading(false)
-    editor?.setEditable(true)
     setDelay(AI_REQUEST_DELAY)
+    editor?.setEditable(true)
   }
 
   function onError(msg: string) {
@@ -112,7 +114,7 @@ export const useRequestAI = ({
       editor?.setEditable(false)
       setAIResult('')
       setPrevMessages(messages)
-      inputRef.current?.blur()
+      // inputRef.current?.blur()
 
       try {
         await send(

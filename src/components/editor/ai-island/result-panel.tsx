@@ -28,16 +28,33 @@ export default function ResultPanel(props: IProps) {
     reRequestAI,
   } = props
   const menuRef = useRef<HTMLDivElement>(null)
+
   const resultHtml = md.render(result)
   const innerHtml = { __html: resultHtml }
   const t = useTranslations('AIInput')
 
+  useEffect(() => {
+    if (editor == null) return
+
+    const handleUpdate = () => {
+      console.log('編輯器內容已更新:', editor.getHTML())
+    }
+
+    editor.on('update', handleUpdate)
+
+    return () => {
+      editor.off('update', handleUpdate)
+    }
+  }, [editor])
+
   // 插入編輯器，考慮換行
   function insertResultToEditor() {
     if (editor == null) return
-    if (result) {
+
+    if (resultHtml) {
       editor.commands.insertContent(resultHtml)
     }
+
     editor.commands.scrollIntoView()
   }
 
@@ -58,6 +75,12 @@ export default function ResultPanel(props: IProps) {
     setResult('')
     setInstruction('')
   }
+
+  useEffect(() => {
+    if (editor == null) return
+    console.log(editor.state.selection)
+  }, [editor?.state.selection])
+
   // 插入
   function onInsert() {
     if (editor == null) return

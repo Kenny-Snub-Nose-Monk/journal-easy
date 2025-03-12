@@ -16,6 +16,7 @@ import Info from './info'
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props
+  const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isFocus, setIsFocus] = useState(false)
 
@@ -24,11 +25,13 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [AIResult, setAIResult] = useState('')
   const [delay, setDelay] = useState(0) // 每次請求間隔時間
 
-  const { loading, requestAI, abortRequestAI, reRequestAI } = useRequestAI({
+  const { requestAI, abortRequestAI, reRequestAI } = useRequestAI({
     editor,
     isSelectionEmpty,
     setInstruction,
     setAIResult,
+    loading,
+    setLoading,
     inputRef,
     delay,
     setDelay,
@@ -57,7 +60,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
       inputRef.current.removeEventListener('focus', handleFocus)
       inputRef.current.removeEventListener('blur', handleBlur) // eslint-disable-line
     }
-  }, [inputRef, editor])
+  }, [inputRef, editor, AIResult])
 
   // 監聽空格輸入，focus AI island
   useEffect(() => {
