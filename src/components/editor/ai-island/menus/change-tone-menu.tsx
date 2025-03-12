@@ -73,7 +73,7 @@ export default function ChangeToneMenu(props: IProps) {
           onClick={() => handleClick(t('casual'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          t('casual')
+          {t('casual')}
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
@@ -81,7 +81,7 @@ export default function ChangeToneMenu(props: IProps) {
           onClick={() => handleClick(t('neutral'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          t('neutral')
+          {t('neutral')}
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
@@ -89,7 +89,7 @@ export default function ChangeToneMenu(props: IProps) {
           onClick={() => handleClick(t('formal'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          t('formal')
+          {t('formal')}
           <MoveUpRight className="h-4 w-4" />
         </Button>
         <Button
@@ -97,7 +97,7 @@ export default function ChangeToneMenu(props: IProps) {
           onClick={() => handleClick(t('friendly'))}
           className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
         >
-          t('friendly')
+          {t('friendly')}
           <MoveUpRight className="h-4 w-4" />
         </Button>
       </HoverCardContent>
