@@ -132,7 +132,7 @@ export default function useCreateEditor(id: string) {
             locale === 'zh-tw'
               ? DEFAULT_NEW_DOC_TITLE
               : DEFAULT_NEW_DOC_TITLE_EN
-          const isAutoCreated = doc.title === AutoCreatedTitle // 自定创建的文档，只有 JSON 格式，需要转化一次格式
+          const isAutoCreated = doc.title === AutoCreatedTitle // 自定創建的文檔，只有 JSON 格式，需要轉化一次格式
 
           const isRecentlyUpdated = isDocRecentlyUpdated(doc)
           if (isRecentlyUpdated && !isAutoCreated) return

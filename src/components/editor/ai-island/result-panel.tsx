@@ -33,19 +33,19 @@ export default function ResultPanel(props: IProps) {
   const innerHtml = { __html: resultHtml }
   const t = useTranslations('AIInput')
 
-  useEffect(() => {
-    if (editor == null) return
+  // useEffect(() => {
+  //   if (editor == null) return
 
-    const handleUpdate = () => {
-      console.log('編輯器內容已更新:', editor.getHTML())
-    }
+  //   const handleUpdate = () => {
+  //     console.log('編輯器內容已更新:', editor.getHTML())
+  //   }
 
-    editor.on('update', handleUpdate)
+  //   editor.on('update', handleUpdate)
 
-    return () => {
-      editor.off('update', handleUpdate)
-    }
-  }, [editor])
+  //   return () => {
+  //     editor.off('update', handleUpdate)
+  //   }
+  // }, [editor])
 
   // 插入編輯器，考慮換行
   function insertResultToEditor() {

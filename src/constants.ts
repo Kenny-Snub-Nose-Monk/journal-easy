@@ -2,12 +2,12 @@ export const CONTENT_WIDTH = 800 // 内容寬度
 export const EDITOR_PADDING_BOTTOM = 200
 export const DOC_TITLE_INPUT_ID = 'DOC_TITLE_INPUT_ID'
 export const RIGHT_PANEL_DOM_ID = 'RIGHT_PANEL_DOM_ID'
-export const AI_RES_MAX_TOKENS = 1000 // AI 返回结果最大長度
+export const AI_RES_MAX_TOKENS = 600 // AI 返回结果最大長度
 export const AI_CONTEXT_MAX_LENGTH = 600 // 上下文最大長度，請求 AI 接口時
 export const AI_DEFAULT_TOKEN_LIMIT = 10000 // AI default token limit
-export const AI_REQUEST_DELAY = 2 // AI 請求間隔時間
+export const AI_REQUEST_DELAY = 5 // AI 請求間隔時間
 export const MAX_DOC_COUNT = 100 // 最大文檔數量
-export const EDITOR_CHARACTER_LIMIT = 1000 // 編輯器字數限制
+export const EDITOR_CHARACTER_LIMIT = 5000 // 編輯器字數限制
 
 export const RESIZABLE_RIGHT_PANEL_ID = 'RESIZABLE_RIGHT_PANEL_ID'
 export const WORK_CONTENT_SCROLL_CONTAINER = 'work-content-scroll-container'
