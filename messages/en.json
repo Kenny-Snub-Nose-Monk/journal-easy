@@ -13,7 +13,13 @@
     "login": "Login",
     "register": "Register",
     "getStarted": "Get Started",
-    "trial": "Apply for Trial"
+    "trial": "Apply for Trial",
+    "ai-auto-generate-title": "AI Auto Generate",
+    "ai-auto-generate": "brainstorming, outline, summary, translate, etc",
+    "ai-replace-content-title": "AI Replace Content",
+    "ai-replace-content": "content extension, simplification, tone change",
+    "collaborate-title": "Collaborate",
+    "collaborate": "Collaborate with others"
   },
   "theme": {
     "title": "Change theme",

@@ -12,7 +12,13 @@
     "login": "登入",
     "register": "註冊",
     "getStarted": "開始使用",
-    "trial": "申請試用"
+    "trial": "申請試用",
+    "ai-auto-generate-title": "AI 自動生成",
+    "ai-auto-generate": "腦暴，大綱，總結，翻譯，等等",
+    "ai-replace-content-title": "AI 替換內容",
+    "ai-replace-content": "內容擴展，內容簡化，語氣改變",
+    "collaborate-title": "共同編輯",
+    "collaborate": "與他人共同編輯"
   },
   "theme": {
     "title": "切換主題",
