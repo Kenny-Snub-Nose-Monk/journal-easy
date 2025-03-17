@@ -85,6 +85,7 @@ jobs:
           --build-arg OPENAI_API_KEY=${{ env.OPENAI_API_KEY }} \
           --build-arg OPENAI_ORGANIZATION_ID=${{ env.OPENAI_ORGANIZATION_ID }} \
           --build-arg OPENAI_PROJECT_ID=${{ env.OPENAI_PROJECT_ID }} \
+          --build-arg NEXT_PUBLIC_IMAGE_PROCESSOR_URL=${{ env.IMAGE_PROCESSOR_URL }} \
           --progress=plain \
           -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY }}/huashui-ai:${{ github.sha }} \
           .
