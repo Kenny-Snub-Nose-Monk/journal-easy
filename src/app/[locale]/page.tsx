@@ -1,11 +1,9 @@
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
-import { Link } from '@/i18n/routing'
-import { Zap, User, Code } from 'lucide-react'
+import { User } from 'lucide-react'
 import HomeNav from '@/components/home-nav'
 import Slogan from '@/components/home-slogan'
 import StartButton from '@/components/start-button'
-import { Button } from '@/components/ui/button'
 import SignInButton from '@/components/sigin-in-button'
 import { getUserInfo } from '@/lib/session'
 
