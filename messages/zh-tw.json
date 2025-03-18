@@ -13,12 +13,12 @@
     "register": "註冊",
     "getStarted": "開始使用",
     "trial": "申請試用",
-    "ai-auto-generate-title": "AI 自動生成",
-    "ai-auto-generate": "腦暴，大綱，總結，翻譯，等等",
-    "ai-replace-content-title": "AI 替換內容",
-    "ai-replace-content": "內容擴展，內容簡化，語氣改變",
-    "collaborate-title": "共同編輯",
-    "collaborate": "與他人共同編輯"
+    "ai-auto-generate-title": "AI 內容生成",
+    "ai-auto-generate": "輕鬆使用AI進行頭腦風暴、大綱、摘要和翻譯",
+    "ai-replace-content-title": "智能內容轉換",
+    "ai-replace-content": "智慧擴展、簡化，調整語氣",
+    "collaborate-title": "協同編輯",
+    "collaborate": "與他人實時協同編輯，提升工作效率"
   },
   "theme": {
     "title": "切換主題",

@@ -14,12 +14,12 @@
     "register": "Register",
     "getStarted": "Get Started",
     "trial": "Apply for Trial",
-    "ai-auto-generate-title": "AI Auto Generate",
-    "ai-auto-generate": "brainstorming, outline, summary, translate, etc",
-    "ai-replace-content-title": "AI Replace Content",
-    "ai-replace-content": "content extension, simplification, tone change",
-    "collaborate-title": "Collaborate",
-    "collaborate": "Collaborate with others"
+    "ai-auto-generate-title": "AI-Powered Content Generation",
+    "ai-auto-generate": "Effortlessly create brainstorms, outlines, summaries, and translations with advanced AI",
+    "ai-replace-content-title": "Smart Content Transformation",
+    "ai-replace-content": "Enhance your writing with intelligent expansion, simplification, and tone adjustments",
+    "collaborate-title": "Seamless Collaboration",
+    "collaborate": "Work together in real-time with team members for enhanced productivity"
   },
   "theme": {
     "title": "Change theme",
