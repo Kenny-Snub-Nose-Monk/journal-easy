@@ -31,6 +31,7 @@ model Doc {
     parentId String?
     children Doc[]   @relation("ChildrenDocs")
     sharePassword String?
+    shareRelations ShareRelation[]
 }
 
 model TokenUsage {
@@ -84,6 +85,7 @@ model User {
     tokenUsage    TokenUsage[]
     lastDocId String?
     isInvited Boolean?  @default(false)
+    shareRelations ShareRelation[]
 }
 
 model VerificationToken {
@@ -98,4 +100,27 @@ model InvitationCode {
   id        Int     @id @default(autoincrement())
   code      String   @unique
   email     String
+}
+
+model ShareRelation {
+  id        String   @id @default(cuid())
+  docId     String
+  authorId  String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  doc       Doc      @relation(fields: [docId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+  access    AccessType @default(READ)
+  noticeType NoticeType @default(NEW)
+}
+
+enum AccessType {
+  READ
+  WRITE
+}
+
+enum  NoticeType {
+  NEW
+  UPDATE
 }

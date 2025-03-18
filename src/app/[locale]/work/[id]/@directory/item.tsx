@@ -75,7 +75,7 @@ export default function Item(props: IProps) {
       <div
         ref={titleContainerRef}
         className={cn(
-          'text-sm flex justify-between items-center w-full hover:text-secondary-foreground group',
+          'text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3',
           isCurrent && 'text-secondary-foreground font-bold'
         )}
       >

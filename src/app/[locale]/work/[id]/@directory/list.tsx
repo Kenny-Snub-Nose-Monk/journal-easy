@@ -1,16 +1,14 @@
 'use client'
-import { useEffect } from 'react'
-import { Plus, LayoutList, List as ListIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Plus, ChevronDown, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
 import Item from './item'
 import emitter from '@/lib/emitter'
 import { IDoc } from '@/stores/docs-store'
 import { EVENT_KEY_NAV_DOC } from '@/constants'
 import { useDocsStore } from '@/stores/docs-store'
 import useDocs from '../hooks/useDocs'
-import OtherList from './other-list'
 import { useTranslations } from 'next-intl'
 
 interface ListProps {
@@ -18,14 +16,13 @@ interface ListProps {
   defaultList: IDoc[]
 }
 export default function List({ defaultParamId, defaultList }: ListProps) {
+  const t = useTranslations('myDocs')
   const loading = useDocsStore((s) => s.loading)
   const docs = useDocsStore((s) => s.docs)
   const curDocId = useDocsStore((s) => s.curDocId)
   const setLoading = useDocsStore((s) => s.setLoading)
   const setDocs = useDocsStore((s) => s.setDocs)
   const setCurDocId = useDocsStore((s) => s.setCurDocId)
-
-  const otherDocs = useDocsStore((s) => s.otherDocs)
 
   // 切換文檔，重新設置 paramId
   useEffect(() => {
@@ -46,6 +43,18 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
     setLoading(false)
   }, [defaultParamId, defaultList, setDocs, setCurDocId, setLoading])
 
+  // show or hide list
+  const [showChildren, setShowChildren] = useState(false)
+  function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation()
+    setShowChildren(!showChildren)
+  }
+  useEffect(() => {
+    if (docs.some((i) => i.id === curDocId)) {
+      setShowChildren(true)
+    }
+  }, [curDocId, docs])
+
   if (loading)
     return (
       <div className="space-y-2 px-2 pt-2">
@@ -58,42 +67,36 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
   return (
     // <div className="h-[1000px]">
     <>
-      {/* render doc list */}
-      <OtherList />
-      {otherDocs.length > 0 && <ListTitle />}
-      {docs
-        .filter((i) => i.parentId == null) // 頂級目錄
-        .map((doc) => {
-          const { id, title, isStar, sharePassword } = doc
-          return (
-            <Item
-              key={id}
-              id={id}
-              title={title}
-              isStar={!!isStar}
-              sharePassword={sharePassword}
-              curDocId={curDocId}
-              docs={docs}
-            />
-          )
-        })}
-      {/* create button */}
-      <CreateButton />
+      <div className="mb-2">
+        <h3
+          className="px-1 mt-3 mb-1 text-sm font-bold flex items-center cursor-pointer"
+          onClick={toggleShowChildren}
+        >
+          <div className="hover:bg-active rounded-full p-0.5">
+            {showChildren && <ChevronDown className="h-4 w-4" />}
+            {!showChildren && <ChevronRight className="h-4 w-4" />}
+          </div>
+          <span>{t('title')}</span>
+        </h3>
+        {showChildren &&
+          docs
+            .filter((i) => i.parentId == null) // 顶级目录
+            .map((doc) => {
+              const { id, title, isStar, sharePassword } = doc
+              return (
+                <Item
+                  key={id}
+                  id={id}
+                  title={title}
+                  isStar={!!isStar}
+                  sharePassword={sharePassword}
+                  curDocId={curDocId}
+                  docs={docs}
+                />
+              )
+            })}
+      </div>
     </>
-  )
-}
-
-function ListTitle() {
-  const t = useTranslations('myDocs')
-
-  return (
-    <div className="flex items-center">
-      <h3 className="px-2 mt-3 mb-3 text-sm font-bold flex items-center">
-        <LayoutList className="h-4 w-4 mr-1" />
-        <span>{t('title')}</span>
-      </h3>
-      <Separator className="flex-1 mt-2 mr-1" />
-    </div>
   )
 }
 

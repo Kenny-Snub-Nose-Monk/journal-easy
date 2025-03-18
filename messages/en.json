@@ -27,18 +27,6 @@
     "dark": "Dark",
     "system": "System"
   },
-  "invitationCode": {
-    "notLogin": "You need to login first",
-    "invited": "You have been invited",
-    "goBackHome": "Go back to home page",
-    "title": "The project is still in the trial stage, please enter the invitation code to continue",
-    "subTitle": "If you don't have an invitation code, you can apply one by <joinLink>WeChat group</joinLink> or <mail>Email</mail> for free",
-    "inputPlaceholder": "Invitation code",
-    "submit": "Submit",
-    "checkedSuccess": "Checked in successfully",
-    "checkedFailed": "Failed to check in",
-    "invalidCode": "Invalid code"
-  },
   "userInfo": {
     "goBackHome": "Go back to home page",
     "haveLogin": "You have logged in",
@@ -125,12 +113,7 @@
   "sharedDocPage": {
     "unTitled": "UnTitled",
     "checking": "Shared priority is checking",
-    "notShared": "The doc is not shared, you can't edit it",
-    "inputPassword": "Input shared password",
-    "passwordWrong": "Password is wrong, please refresh the page and try again",
-    "isMyDoc": "This is my own doc, not shared by others",
-    "shareTip": "This is a shared doc",
-    "toMyDocs": "Back to my docs"
+    "isMyDoc": "This is my own doc, not shared by others"
   },
   "editor": {
     "collabConnFailed": "Collaboration connected failed, please refresh the page and try again",

@@ -1,5 +1,6 @@
-import { getDocList } from './action'
+import { getDocList, getShareRelations } from './action'
 import List from './list'
+import OtherList from './other-list'
 
 export default async function Directory({
   params,
@@ -7,6 +8,12 @@ export default async function Directory({
   params: { id: string }
 }) {
   const list = await getDocList()
+  const shareRelations = await getShareRelations()
 
-  return <List defaultList={list} defaultParamId={params.id} />
+  return (
+    <>
+      <OtherList defaultShareRelations={shareRelations} />
+      <List defaultList={list} defaultParamId={params.id} />
+    </>
+  )
 }

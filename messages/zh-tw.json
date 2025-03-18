@@ -4,7 +4,7 @@
   },
   "metadata": {
     "title": "簡單日記",
-    "description": "AIGC 知識庫，AI 寫作，協同編輯, 簡單日記，記錄生活，記錄心情，記錄生活點滴"
+    "description": "AIGC 知識庫，AI 寫作，共同編輯, 簡單日記，記錄生活，記錄心情，記錄生活點滴"
   },
   "home": {
     "slogan": "簡單日記 記錄生活",
@@ -17,26 +17,14 @@
     "ai-auto-generate": "輕鬆使用AI進行頭腦風暴、大綱、摘要和翻譯",
     "ai-replace-content-title": "智能內容轉換",
     "ai-replace-content": "智慧擴展、簡化，調整語氣",
-    "collaborate-title": "協同編輯",
-    "collaborate": "與他人實時協同編輯，提升工作效率"
+    "collaborate-title": "共同編輯",
+    "collaborate": "與他人實時共同編輯，提升工作效率"
   },
   "theme": {
     "title": "切換主題",
     "light": "明亮",
     "dark": "黑暗",
     "system": "系統"
-  },
-  "invitationCode": {
-    "notLogin": "你尚未登入，請先登入",
-    "invited": "你已經被邀請",
-    "goBackHome": "返回首頁",
-    "title": "項目還在試用階段，有邀請碼才能進入",
-    "subTitle": "如果你沒有邀請碼，可以通過 <joinLink>微信群</joinLink> 或者 <mail>郵件</mail> 申請一個免費的邀請碼",
-    "inputPlaceholder": "請輸入邀請碼",
-    "submit": "提交",
-    "checkedSuccess": "驗證成功",
-    "checkedFailed": "驗證失敗",
-    "invalidCode": "Invalid code"
   },
   "userInfo": {
     "goBackHome": "回到首頁",
@@ -58,7 +46,7 @@
   },
   "favorList": {
     "title": "收藏夾",
-    "inputPlaceholder": "文檔標題...",
+    "inputPlaceholder": "檔案標題...",
     "docTitle": "標題",
     "docUpdateTime": "更新時間",
     "notFound": "未找到內容",
@@ -67,14 +55,14 @@
     "favored": "已收藏"
   },
   "CollabList": {
-    "title": "協同文檔",
+    "title": "共同檔案",
     "mySharing": "我的分享",
-    "notFound": "未找到內容，打開一個文檔並分享"
+    "notFound": "未找到內容，打開一個檔案並分享"
   },
   "trash": {
     "title": "回收站",
-    "desc": "注意，回收站的文檔將保留 30 天，然後徹底刪除",
-    "confirm": "是否徹底刪除該文檔？刪除後不可恢復",
+    "desc": "注意，回收站的檔案將保留 30 天，然後徹底刪除",
+    "confirm": "是否徹底刪除該檔案？刪除後不可恢復",
     "failed": "執行失敗",
     "notFound": "暫無數據",
     "docTitle": "標題",
@@ -82,7 +70,7 @@
     "operation": "操作",
     "restore": "恢復",
     "delete": "刪除",
-    "inputPlaceholder": "文檔標題...",
+    "inputPlaceholder": "檔案標題...",
     "unTitled": "<無標題>"
   },
   "othersDocs": {
@@ -96,26 +84,26 @@
   },
   "docItem": {
     "unTitled": "<無標題>",
-    "noDocs": "沒有文檔",
+    "noDocs": "沒有檔案",
     "duplicate": "複製",
-    "duplicateFailed": "創建文檔失敗",
+    "duplicateFailed": "創建檔案失敗",
     "move": "移動",
-    "moveFailed": "移動文檔失敗",
-    "moveDesc": "移動到選中文檔的下級",
+    "moveFailed": "移動檔案失敗",
+    "moveDesc": "移動到選中檔案的下級",
     "root": "根目錄",
     "delete": "刪除",
-    "notFound": "找不到該文檔",
-    "create": "新建文檔",
+    "notFound": "找不到該檔案",
+    "create": "新建檔案",
     "titleInputPlaceholder": "請輸入標題..."
   },
   "shareDoc": {
     "share": "分享",
     "shared": "已分享",
-    "shareDesc": "分享給他人協同編輯",
+    "shareDesc": "分享給他人共同編輯",
     "startToShare": "開始分享",
     "cancelShareConfirm": "確定取消分享？",
     "cancelShare": "取消分享",
-    "copyText": "【簡單日記】分享文檔\n連結：{link}\n密碼：{password}",
+    "copyText": "【簡單日記】分享檔案\n連結：{link}\n密碼：{password}",
     "link": "連結",
     "password": "密碼",
     "copy": "複製",
@@ -124,16 +112,11 @@
   "sharedDocPage": {
     "unTitled": "<無標題>",
     "checking": "共享權限校驗中...",
-    "notShared": "該文檔未開啟分享，你無權限查看",
-    "inputPassword": "請輸入共享密碼",
-    "passwordWrong": "密碼錯誤，請刷新頁面重試",
-    "isMyDoc": "這是我自己的文檔，不是他人共享的文檔",
-    "shareTip": "此為共享文檔",
-    "toMyDocs": "跳轉到我的文檔"
+    "isMyDoc": "這是我自己的檔案，不是他人共享的檔案"
   },
   "editor": {
-    "collabConnFailed": "協同編輯服務連接失敗，請刷新頁面重試",
-    "maxLengthTip": "文檔最多可輸入 {limit} 字",
+    "collabConnFailed": "共同編輯服務連接失敗，請刷新頁面重試",
+    "maxLengthTip": "檔案最多可輸入 {limit} 字",
     "placeholder": "輸入 / 設置格式，輸入空格使用 AI",
     "uploadImage": "上傳圖片",
     "uploading": "上傳中...",

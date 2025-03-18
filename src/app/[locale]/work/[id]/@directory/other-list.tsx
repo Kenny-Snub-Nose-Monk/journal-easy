@@ -1,62 +1,135 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { ChevronDown, ChevronRight, FileInput, X as XIcon } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import { ChevronDown, ChevronRight, FileInput } from 'lucide-react'
+import {
+  useShareStore,
+  IShareRelation,
+  IShareRelationAuthor,
+  IShareRelationDoc,
+} from '@/stores/share-store'
 import { useDocsStore } from '@/stores/docs-store'
-import { SHARE_DOC_LIST_KEY, LAST_DOC_ID_KEY } from '@/constants'
+import { useTranslations } from 'next-intl'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { nav } from './util'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
 
-export default function OtherList() {
-  const otherDocs = useDocsStore((s) => s.otherDocs)
-  const setOtherDocs = useDocsStore((s) => s.setOtherDocs)
-  const [showList, setShowList] = useState(true)
+interface IProps {
+  defaultShareRelations: IShareRelation[]
+}
+
+export default function OtherList(props: IProps) {
   const t = useTranslations('othersDocs')
 
+  // set default share relations
+  const { defaultShareRelations } = props
+  const setShareRelations = useShareStore((state) => state.setShareRelations)
+  const shareRelations = useShareStore((state) => state.shareRelations)
   useEffect(() => {
-    const otherDocsFroStorage = JSON.parse(
-      localStorage.getItem(SHARE_DOC_LIST_KEY) || '[]'
-    )
-    setOtherDocs(otherDocsFroStorage)
-  }, [setOtherDocs])
+    setShareRelations(defaultShareRelations)
+  }, [defaultShareRelations, setShareRelations])
 
-  function toggleShowList() {
-    setShowList(!showList)
+  // authors
+  const [authors, setAuthors] = useState<IShareRelationAuthor[]>([])
+  useEffect(() => {
+    const authors: IShareRelationAuthor[] = []
+    const authorIds = new Set()
+    shareRelations.forEach((s) => {
+      if (authorIds.has(s.authorId)) return
+      authorIds.add(s.authorId)
+      authors.push(s.author)
+    })
+    setAuthors(authors)
+  }, [shareRelations])
+
+  // show or hide list
+  const [showChildren, setShowChildren] = useState(false)
+  function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation()
+    setShowChildren(!showChildren)
   }
+  const curDocId = useDocsStore((s) => s.curDocId)
+  useEffect(() => {
+    if (shareRelations.some((i) => i.docId === curDocId)) {
+      setShowChildren(true)
+    }
+  }, [curDocId, shareRelations])
 
-  if (otherDocs.length === 0) return null
+  if (shareRelations.length === 0) return null
 
   return (
-    <>
-      <h3 className="px-1 my-2 text-sm font-bold flex items-center">
-        <div
-          className="cursor-pointer hover:bg-active rounded-full"
-          onClick={toggleShowList}
-        >
-          {showList && <ChevronDown className="h-4 w-4 mr-1" />}
-          {!showList && <ChevronRight className="h-4 w-4 mr-1" />}
+    <div className="mb-4">
+      <h3
+        className="px-1 mt-3 mb-1 text-sm font-bold flex items-center cursor-pointer"
+        onClick={toggleShowChildren}
+      >
+        <div className="hover:bg-active rounded-full p-0.5">
+          {showChildren && <ChevronDown className="h-4 w-4" />}
+          {!showChildren && <ChevronRight className="h-4 w-4" />}
         </div>
         <span>{t('title')}</span>
       </h3>
-      {showList &&
-        otherDocs.map((doc) => (
-          <OtherDocItem key={doc.id} id={doc.id} title={doc.title} />
-        ))}
-    </>
+      {showChildren &&
+        authors.map((author) => <AuthorList key={author.id} author={author} />)}
+    </div>
   )
 }
 
-function OtherDocItem(props: { id: string; title: string }) {
-  const { id, title } = props
+function AuthorList({ author }: { author: IShareRelationAuthor }) {
+  // get docs of current author
+  const [authorDocs, setAuthorDocs] = useState<IShareRelationDoc[]>([])
+  const shareRelations = useShareStore((state) => state.shareRelations)
+  useEffect(() => {
+    const docs: IShareRelationDoc[] = []
+    shareRelations.forEach((s) => {
+      if (s.authorId !== author.id) return
+      docs.push(s.doc)
+    })
+    setAuthorDocs(docs)
+  }, [author, shareRelations])
+
+  // show or hide list
+  const [showChildren, setShowChildren] = useState(false)
+  function toggleShowChildren(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation()
+    setShowChildren(!showChildren)
+  }
   const curDocId = useDocsStore((s) => s.curDocId)
-  const removeOtherDoc = useDocsStore((s) => s.removeOtherDoc)
+  useEffect(() => {
+    if (authorDocs.some((i) => i.id === curDocId)) {
+      setShowChildren(true)
+    }
+  }, [curDocId, authorDocs])
+
+  // return <div>{author.name || author.email}</div>
+  return (
+    <div>
+      <div
+        className="text-sm flex-auto overflow-hidden py-1.5 px-1 ml-2 flex items-center cursor-pointer"
+        onClick={toggleShowChildren}
+      >
+        <div className="hover:bg-active rounded-full p-0.5">
+          {showChildren && <ChevronDown className="h-4 w-4" />}
+          {!showChildren && <ChevronRight className="h-4 w-4" />}
+        </div>
+        <span className="truncate flex-auto">
+          {author.name || author.email}
+        </span>
+      </div>
+      {showChildren &&
+        authorDocs.map((d) => <OtherDocItem key={d.id} doc={d} />)}
+    </div>
+  )
+}
+
+function OtherDocItem({ doc }: { doc: IShareRelationDoc }) {
+  const { id, title } = doc
+  const curDocId = useDocsStore((s) => s.curDocId)
   const isCurrent = id === curDocId
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const t = useTranslations('othersDocs')
 
-  // 滾動到當前標題
+  // scroll to current title
   useEffect(() => {
     if (!isCurrent) return
     if (titleContainerRef.current == null) return
@@ -67,30 +140,17 @@ function OtherDocItem(props: { id: string; title: string }) {
     })
   }, [isCurrent])
 
-  // 點擊標題
+  // click title
   function onClickTitle() {
     if (isCurrent) return
     nav(id)
-  }
-
-  // 移除文檔
-  function onRemove(id: string) {
-    const confirmText = t('deleteConfirm')
-    const c = confirm(confirmText)
-    if (!c) return
-    removeOtherDoc(id)
-
-    if (isCurrent) {
-      const lastDocId = localStorage.getItem(LAST_DOC_ID_KEY)
-      lastDocId && nav(lastDocId)
-    }
   }
 
   return (
     <div
       ref={titleContainerRef}
       className={cn(
-        'text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1',
+        'text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3',
         isCurrent && 'text-secondary-foreground font-bold bg-active rounded-sm'
       )}
     >
@@ -100,14 +160,6 @@ function OtherDocItem(props: { id: string; title: string }) {
       >
         <FileInput className="h-4 w-4 mr-1" />
         <span className="truncate flex-auto">{title || t('unTitled')}</span>
-      </div>
-
-      {/* 移除 */}
-      <div
-        onClick={() => onRemove(id)}
-        className="cursor-pointer rounded-full p-1 hover:bg-active invisible group-hover:visible"
-      >
-        <XIcon className="h-4 w-4" />
       </div>
     </div>
   )

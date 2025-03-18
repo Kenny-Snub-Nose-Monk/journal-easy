@@ -34,3 +34,31 @@ export async function getDocList() {
     return []
   }
 }
+
+export async function getShareRelations() {
+  const user = await getUserInfo()
+  if (user == null || user.id === '') return []
+
+  const shareRelations = await db.shareRelation.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      doc: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  })
+
+  return shareRelations
+}
