@@ -55,12 +55,35 @@ export async function DELETE(request: Request) {
 
   // delete from db
   try {
-    await db.shareRelation.deleteMany({
+    await db.shareRelation.delete({
       where: { id },
     })
     return Response.json(genSuccessData())
   } catch (err) {
     console.log('Delete share relation error ', err)
+    return Response.json(
+      genErrorData('Something went wrong, try again please.')
+    )
+  }
+}
+
+export async function PATCH(request: Request) {
+  const user = await getUserInfo()
+  if (user == null) return Response.json(genUnAuthData())
+
+  // get body
+  const body = await request.json()
+  const { id, noticeType } = body
+
+  // update db
+  try {
+    await db.shareRelation.update({
+      where: { id },
+      data: { noticeType },
+    })
+    return Response.json(genSuccessData())
+  } catch (err) {
+    console.log('Update share relation error ', err)
     return Response.json(
       genErrorData('Something went wrong, try again please.')
     )

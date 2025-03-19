@@ -125,4 +125,5 @@ enum AccessType {
 enum  NoticeType {
   NEW
   UPDATE
+  NONE
 }

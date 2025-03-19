@@ -28,6 +28,7 @@ interface IShareRelationState {
   setShareRelations: (list: IShareRelation[]) => void
   addShareRelation: (shareRelation: IShareRelation) => void
   // removeShareRelation: (id: string) => void
+  updateShareRelationNoticeType: (id: string, newNoticeType: string) => void
   myShareRelations: IShareRelation[]
   setMyShareRelations: (list: IShareRelation[]) => void
   addMyShareRelation: (shareRelation: IShareRelation) => void
@@ -42,6 +43,16 @@ export const useShareStore = create<IShareRelationState>((set) => ({
       shareRelations: [...state.shareRelations, shareRelation],
     })),
   // removeShareRelation: (id) => set((state) => ({ shareRelations: state.shareRelations.filter((i) => i.id !== id) })),
+  updateShareRelationNoticeType: (id, newNoticeType) => {
+    set((state) => ({
+      shareRelations: state.shareRelations.map((i) => {
+        if (i.id === id) {
+          return { ...i, noticeType: newNoticeType }
+        }
+        return i
+      }),
+    }))
+  },
   myShareRelations: [],
   setMyShareRelations: (myShareRelations) => set({ myShareRelations }),
   addMyShareRelation: (shareRelation) =>

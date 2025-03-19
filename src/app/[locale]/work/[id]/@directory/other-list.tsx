@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import { nav } from './util'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 interface IProps {
   defaultShareRelations: IShareRelation[]
@@ -39,6 +40,13 @@ export default function OtherList(props: IProps) {
     setShareRelations,
     setMyShareRelations,
   ])
+
+  // calculate notice count
+  const [noticeCount, setNoticeCount] = useState(0)
+  useEffect(() => {
+    const count = shareRelations.filter((i) => i.noticeType !== 'NONE').length
+    setNoticeCount(count)
+  }, [shareRelations])
 
   // authors
   const [authors, setAuthors] = useState<IShareRelationUser[]>([])
@@ -69,7 +77,7 @@ export default function OtherList(props: IProps) {
 
   return (
     <div className="mb-4">
-      <h3
+      <div
         className="px-1 mt-3 mb-1 text-sm font-bold flex items-center cursor-pointer"
         onClick={toggleShowChildren}
       >
@@ -77,26 +85,47 @@ export default function OtherList(props: IProps) {
           {showChildren && <ChevronDown className="h-4 w-4" />}
           {!showChildren && <ChevronRight className="h-4 w-4" />}
         </div>
-        <span>{t('title')}</span>
-      </h3>
+        <div>
+          <span>{t('title')}</span>
+          {noticeCount > 0 && (
+            <Badge variant="outline" className="bg-red-300 ml-1 px-1.5">
+              {noticeCount}
+            </Badge>
+          )}
+        </div>
+      </div>
       {showChildren &&
         authors.map((author) => <AuthorList key={author.id} author={author} />)}
     </div>
   )
 }
 
+type ShareRelationDocAndNoticeType = IShareRelationDoc & { noticeType: string }
+
 function AuthorList({ author }: { author: IShareRelationUser }) {
   // get docs of current author
-  const [authorDocs, setAuthorDocs] = useState<IShareRelationDoc[]>([])
+  const [authorDocs, setAuthorDocs] = useState<ShareRelationDocAndNoticeType[]>(
+    []
+  )
   const shareRelations = useShareStore((state) => state.shareRelations)
   useEffect(() => {
-    const docs: IShareRelationDoc[] = []
+    const docs: ShareRelationDocAndNoticeType[] = []
     shareRelations.forEach((s) => {
       if (s.authorId !== author.id) return
-      docs.push(s.doc)
+      const doc = { ...s.doc, noticeType: s.noticeType }
+      docs.push(doc)
     })
     setAuthorDocs(docs)
   }, [author, shareRelations])
+
+  // calculate notice count
+  const [noticeCount, setNoticeCount] = useState(0)
+  useEffect(() => {
+    const count = shareRelations.filter(
+      (i) => i.authorId === author.id && i.noticeType !== 'NONE'
+    ).length
+    setNoticeCount(count)
+  }, [shareRelations, author])
 
   // show or hide list
   const [showChildren, setShowChildren] = useState(false)
@@ -122,9 +151,14 @@ function AuthorList({ author }: { author: IShareRelationUser }) {
           {showChildren && <ChevronDown className="h-4 w-4" />}
           {!showChildren && <ChevronRight className="h-4 w-4" />}
         </div>
-        <span className="truncate flex-auto">
-          {author.name || author.email}
-        </span>
+        <div className="truncate flex-auto">
+          {noticeCount > 0 && (
+            <Badge variant="outline" className="bg-red-100 mr-1 px-1.5">
+              {noticeCount}
+            </Badge>
+          )}
+          <span>{author.name || author.email}</span>
+        </div>
       </div>
       {showChildren &&
         authorDocs.map((d) => <OtherDocItem key={d.id} doc={d} />)}
@@ -132,8 +166,8 @@ function AuthorList({ author }: { author: IShareRelationUser }) {
   )
 }
 
-function OtherDocItem({ doc }: { doc: IShareRelationDoc }) {
-  const { id, title } = doc
+function OtherDocItem({ doc }: { doc: ShareRelationDocAndNoticeType }) {
+  const { id, title, noticeType } = doc
   const curDocId = useDocsStore((s) => s.curDocId)
   const isCurrent = id === curDocId
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -169,7 +203,14 @@ function OtherDocItem({ doc }: { doc: IShareRelationDoc }) {
         className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 ml-2 flex items-center"
       >
         <FileInput className="h-4 w-4 mr-1" />
-        <span className="truncate flex-auto">{title || t('unTitled')}</span>
+        <div className="truncate flex-auto">
+          {noticeType !== 'NONE' && (
+            <Badge variant="outline" className="bg-red-100 mr-1 px-1.5">
+              {noticeType}
+            </Badge>
+          )}
+          <span>{title || t('unTitled')}</span>
+        </div>
       </div>
     </div>
   )
