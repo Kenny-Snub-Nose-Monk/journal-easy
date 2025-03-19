@@ -62,3 +62,30 @@ export async function getShareRelations() {
 
   return shareRelations
 }
+
+export async function getMyShareRelations() {
+  const user = await getUserInfo()
+  if (user == null || user.id === '') return []
+
+  const myShareRelations = await db.shareRelation.findMany({
+    where: {
+      authorId: user.id,
+    },
+    include: {
+      doc: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  })
+  return myShareRelations
+}

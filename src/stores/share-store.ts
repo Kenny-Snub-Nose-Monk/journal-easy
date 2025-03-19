@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export interface IShareRelationAuthor {
+export interface IShareRelationUser {
   id: string
   name: string | null
   email: string | null
@@ -17,7 +17,8 @@ export interface IShareRelation {
   authorId: string
   userId: string
   doc: IShareRelationDoc
-  author: IShareRelationAuthor
+  author?: IShareRelationUser
+  user?: IShareRelationUser
   access: string
   noticeType: string
 }
@@ -27,6 +28,10 @@ interface IShareRelationState {
   setShareRelations: (list: IShareRelation[]) => void
   addShareRelation: (shareRelation: IShareRelation) => void
   // removeShareRelation: (id: string) => void
+  myShareRelations: IShareRelation[]
+  setMyShareRelations: (list: IShareRelation[]) => void
+  addMyShareRelation: (shareRelation: IShareRelation) => void
+  removeMyShareRelation: (id: string) => void
 }
 
 export const useShareStore = create<IShareRelationState>((set) => ({
@@ -37,4 +42,14 @@ export const useShareStore = create<IShareRelationState>((set) => ({
       shareRelations: [...state.shareRelations, shareRelation],
     })),
   // removeShareRelation: (id) => set((state) => ({ shareRelations: state.shareRelations.filter((i) => i.id !== id) })),
+  myShareRelations: [],
+  setMyShareRelations: (myShareRelations) => set({ myShareRelations }),
+  addMyShareRelation: (shareRelation) =>
+    set((state) => ({
+      myShareRelations: [...state.myShareRelations, shareRelation],
+    })),
+  removeMyShareRelation: (id) =>
+    set((state) => ({
+      myShareRelations: state.myShareRelations.filter((i) => i.id !== id),
+    })),
 }))

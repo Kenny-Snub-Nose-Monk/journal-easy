@@ -23,7 +23,6 @@ interface IDocsState {
   removeDoc: (id: string) => void
   updateDocIsStar: (id: string, isStar: boolean) => void
   updateDocTitle: (id: string, title: string) => void
-  updateDocSharePassword: (id: string, sharePassword: string | null) => void
   setCurDocId: (id: string) => void
   setCreating: (creating: boolean) => void
 }
@@ -46,10 +45,6 @@ export const useDocsStore = create<IDocsState>((set) => ({
   updateDocTitle: (id, title) =>
     set((state) => ({
       docs: state.docs.map((i) => (i.id === id ? { ...i, title } : i)),
-    })),
-  updateDocSharePassword: (id, sharePassword) =>
-    set((state) => ({
-      docs: state.docs.map((i) => (i.id === id ? { ...i, sharePassword } : i)),
     })),
   setCurDocId: (curDocId) => set({ curDocId }),
   setCreating: (creating) => set({ creating }),

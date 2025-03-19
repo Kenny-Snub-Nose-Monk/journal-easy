@@ -5,7 +5,7 @@ import { ChevronDown, ChevronRight, FileInput } from 'lucide-react'
 import {
   useShareStore,
   IShareRelation,
-  IShareRelationAuthor,
+  IShareRelationUser,
   IShareRelationDoc,
 } from '@/stores/share-store'
 import { useDocsStore } from '@/stores/docs-store'
@@ -16,27 +16,37 @@ import { cn } from '@/lib/utils'
 
 interface IProps {
   defaultShareRelations: IShareRelation[]
+  defaultMyShareRelations: IShareRelation[]
 }
 
 export default function OtherList(props: IProps) {
   const t = useTranslations('othersDocs')
 
   // set default share relations
-  const { defaultShareRelations } = props
+  const { defaultShareRelations, defaultMyShareRelations } = props
   const setShareRelations = useShareStore((state) => state.setShareRelations)
   const shareRelations = useShareStore((state) => state.shareRelations)
+  const setMyShareRelations = useShareStore(
+    (state) => state.setMyShareRelations
+  )
+
   useEffect(() => {
     setShareRelations(defaultShareRelations)
-  }, [defaultShareRelations, setShareRelations])
+    setMyShareRelations(defaultMyShareRelations)
+  }, [
+    defaultShareRelations,
+    defaultMyShareRelations,
+    setShareRelations,
+    setMyShareRelations,
+  ])
 
   // authors
-  const [authors, setAuthors] = useState<IShareRelationAuthor[]>([])
+  const [authors, setAuthors] = useState<IShareRelationUser[]>([])
   useEffect(() => {
-    const authors: IShareRelationAuthor[] = []
-    const authorIds = new Set()
+    const authors: IShareRelationUser[] = []
     shareRelations.forEach((s) => {
-      if (authorIds.has(s.authorId)) return
-      authorIds.add(s.authorId)
+      if (s.author == null) return
+      if (authors.some((i) => i.id === s.author?.id)) return
       authors.push(s.author)
     })
     setAuthors(authors)
@@ -75,7 +85,7 @@ export default function OtherList(props: IProps) {
   )
 }
 
-function AuthorList({ author }: { author: IShareRelationAuthor }) {
+function AuthorList({ author }: { author: IShareRelationUser }) {
   // get docs of current author
   const [authorDocs, setAuthorDocs] = useState<IShareRelationDoc[]>([])
   const shareRelations = useShareStore((state) => state.shareRelations)

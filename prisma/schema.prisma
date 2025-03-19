@@ -85,7 +85,8 @@ model User {
     tokenUsage    TokenUsage[]
     lastDocId String?
     isInvited Boolean?  @default(false)
-    shareRelations ShareRelation[]
+    myShares       ShareRelation[] @relation("myShares")
+    shareRelations ShareRelation[] @relation("shareRelations")
 }
 
 model VerificationToken {
@@ -110,7 +111,8 @@ model ShareRelation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   doc       Doc      @relation(fields: [docId], references: [id])
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], name: "myShares")
+  user      User     @relation(fields: [userId], references: [id], name: "shareRelations")
   access    AccessType @default(READ)
   noticeType NoticeType @default(NEW)
 }
