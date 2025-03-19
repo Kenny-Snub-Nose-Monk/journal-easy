@@ -8,7 +8,6 @@ export interface IDoc {
   updatedAt?: Date
   isDeleted?: boolean
   isStar?: boolean
-  sharePassword: string | null
   userId?: string
 }
 

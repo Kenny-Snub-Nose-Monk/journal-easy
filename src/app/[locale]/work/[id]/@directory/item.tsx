@@ -9,12 +9,12 @@ import { IDoc } from '@/stores/docs-store'
 import useDocs from '../hooks/useDocs'
 import ItemHandlers from './item-handlers'
 import { useTranslations } from 'next-intl'
+import { useShareStore } from '@/stores/share-store'
 
 interface IProps {
   id: string
   title: string
   isStar: boolean
-  sharePassword?: string | null
   curDocId: string
   docs: IDoc[]
   level?: number
@@ -22,15 +22,7 @@ interface IProps {
 
 export default function Item(props: IProps) {
   const { createDoc } = useDocs()
-  const {
-    id,
-    title,
-    docs = [],
-    curDocId,
-    isStar,
-    sharePassword,
-    level = 0,
-  } = props
+  const { id, title, docs = [], curDocId, isStar, level = 0 } = props
   const isCurrent = id === curDocId
 
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -47,6 +39,14 @@ export default function Item(props: IProps) {
     e.stopPropagation
     setShowChildren(!showChildren)
   }
+
+  // is shared doc
+  const myShareRelations = useShareStore((s) => s.myShareRelations)
+  const [isShared, setIsShared] = useState(false)
+  useEffect(() => {
+    const relations = myShareRelations.filter((i) => i.docId === id)
+    setIsShared(relations.length > 0)
+  }, [myShareRelations, id])
 
   // 滾動到當前標題
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function Item(props: IProps) {
         >
           {!hasChildren && (
             <div className="w-4 mr-1">
-              {!!sharePassword ? (
+              {isShared ? (
                 <FileOutput className="h-4 w-4" />
               ) : (
                 <File className="h-4 w-4" />
@@ -125,7 +125,7 @@ export default function Item(props: IProps) {
       {hasChildren && showChildren && (
         <div className="ml-3">
           {children.map((doc) => {
-            const { id, title, isStar, sharePassword } = doc
+            const { id, title, isStar } = doc
             return (
               <Item
                 key={id}
@@ -134,7 +134,6 @@ export default function Item(props: IProps) {
                 curDocId={curDocId}
                 docs={docs}
                 isStar={!!isStar}
-                sharePassword={sharePassword}
                 level={level + 1}
               />
             )

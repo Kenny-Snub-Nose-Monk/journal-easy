@@ -82,14 +82,13 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
           docs
             .filter((i) => i.parentId == null) // 顶级目录
             .map((doc) => {
-              const { id, title, isStar, sharePassword } = doc
+              const { id, title, isStar } = doc
               return (
                 <Item
                   key={id}
                   id={id}
                   title={title}
                   isStar={!!isStar}
-                  sharePassword={sharePassword}
                   curDocId={curDocId}
                   docs={docs}
                 />

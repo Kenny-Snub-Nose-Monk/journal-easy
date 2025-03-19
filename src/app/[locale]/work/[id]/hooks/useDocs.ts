@@ -30,7 +30,6 @@ export default function useDocs() {
         id: newId,
         title: '',
         parentId,
-        sharePassword: null,
         userId: userInfo.id,
       })
 

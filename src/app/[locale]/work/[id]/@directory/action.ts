@@ -14,7 +14,6 @@ export async function getDocList() {
         title: true,
         parentId: true,
         isStar: true,
-        sharePassword: true,
         userId: true,
         createdAt: true,
         updatedAt: true,

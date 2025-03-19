@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     const shareRelation = await db.shareRelation.create({
       data: {
         docId,
-        authorId: user.id!,
+        authorId: user.id as string,
         userId: id,
         access,
         noticeType: 'NEW',
