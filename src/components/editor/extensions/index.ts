@@ -49,10 +49,14 @@ export const getExtensions = (opt: IOptions) => {
     SubScript,
     Superscript,
     Highlight.configure({ multicolor: true }),
-    TaskList,
+    TaskList.configure({
+      HTMLAttributes: { class: 'task-list-node', 'data-type': 'taskList' },
+    }),
     TaskItem.configure({
       nested: true,
+      HTMLAttributes: { class: 'task-item-node', 'data-type': 'taskItem' },
     }),
+
     Link.configure({
       openOnClick: false,
     }),

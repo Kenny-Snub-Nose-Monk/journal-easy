@@ -80,7 +80,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
         </h3>
         {showChildren &&
           docs
-            .filter((i) => i.parentId == null) // 顶级目录
+            .filter((i) => i.parentId == null) // 頂層目錄
             .map((doc) => {
               const { id, title, isStar } = doc
               return (
