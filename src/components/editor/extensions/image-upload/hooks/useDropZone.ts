@@ -38,7 +38,7 @@ const useDropZone = ({ uploader }: { uploader: (file: File) => void }) => {
 
       const file = filteredFiles[0]
       if (file) {
-        uploader(file) // 上传图片
+        uploader(file) // 上傳圖片
       }
     },
     [uploader]

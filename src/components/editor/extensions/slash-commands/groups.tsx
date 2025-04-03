@@ -122,7 +122,7 @@ export const GROUPS: Group[] = [
       // TODO: table
       {
         name: 'image',
-        label: 'Image 图片',
+        label: 'Image 圖片',
         Icon: Image,
         description: 'Insert an image',
         aliases: ['img'],
@@ -132,7 +132,7 @@ export const GROUPS: Group[] = [
       },
       {
         name: 'columns',
-        label: 'Columns 多列',
+        label: 'Columns 多行',
         Icon: Columns2,
         description: 'Add two column content',
         aliases: ['cols'],
