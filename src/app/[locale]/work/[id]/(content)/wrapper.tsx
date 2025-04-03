@@ -97,6 +97,6 @@ export default function ContentWrapper(props: IProps) {
   }
 
   if (shareDoc) {
-    return <ContentForShareDoc doc={shareDoc} />
+    return <ContentForShareDoc />
   }
 }
