@@ -1,31 +1,54 @@
 'use client'
 
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import TiptapEditor from '@/components/editor'
-import { updateTitle } from '../client-action'
+import { updateTitle, updateIcon } from '../client-action'
 import emitter from '@/lib/emitter'
 import {
   CONTENT_WIDTH,
   DOC_TITLE_INPUT_ID,
   LAST_DOC_ID_KEY,
   EVENT_KEY_FOCUS_CONTENT,
+  WORK_CONTENT_CONTAINER_ID,
+  DOC_ICON_LIST,
 } from '@/constants'
-import BackToTop from '@/components/back-to-top'
 import { useDocsStore } from '@/stores/docs-store'
 import { useTranslations } from 'next-intl'
+import { getRandomElement } from '@/lib/utils'
+import { flushCurrentDocVersionByBeacon, flushDocVersionById } from '@/lib/doc-version/client'
 
 export default function ContentForMyDoc() {
   const docs = useDocsStore((s) => s.docs)
   const id = useDocsStore((s) => s.curDocId)
   const curDoc = useMemo(() => docs.find((d) => d.id === id), [docs, id])
-  const { title = '' } = curDoc || {}
-  const t = useTranslations('docItem')
+  const { title = '', icon = '' } = curDoc || {}
   const updateDocTitle = useDocsStore((s) => s.updateDocTitle)
+  const updateDocIcon = useDocsStore((s) => s.updateDocIcon)
 
   // record last doc id
   useEffect(() => {
-    localStorage.setItem(LAST_DOC_ID_KEY, id) // 保存最後一次打開的文檔 id
+    localStorage.setItem(LAST_DOC_ID_KEY, id) // 保存最後一次打開的文件 id
+  }, [id])
+
+  useEffect(() => {
+    // 页面刷新或关闭时尽力通过 beacon 发送一个当前版本快照。
+    const saveVersionByBeacon = () => {
+      flushCurrentDocVersionByBeacon()
+    }
+
+    window.addEventListener('pagehide', saveVersionByBeacon)
+    return () => {
+      window.removeEventListener('pagehide', saveVersionByBeacon)
+    }
+  }, [])
+
+  useEffect(() => {
+    // 当前文档切换前补一次异步版本保存，兜住非 nav 触发的文档跳转。
+    return () => {
+      flushDocVersionById(id)
+    }
   }, [id])
 
   const [renderEditor, setRenderEditor] = useState(false)
@@ -35,8 +58,6 @@ export default function ContentForMyDoc() {
       setRenderEditor(true) // when doc changed, force re-render editor
     }, 100)
   }, [id])
-
-  const contentContainerRef = useRef(null)
 
   const fullWidth = CONTENT_WIDTH + 80 // 兩邊留白 40px
 
@@ -50,26 +71,62 @@ export default function ContentForMyDoc() {
 
   return (
     <div
-      className={`mx-auto my-8 mb-20 scroll-mt-5`}
-      style={{ width: `${fullWidth}px` }}
-      ref={contentContainerRef}
+      id={WORK_CONTENT_CONTAINER_ID}
+      className={`mx-auto my-12 mb-20 scroll-mt-5`}
+      style={{ maxWidth: `${fullWidth}px` }}
     >
-      <div className="mx-10 mb-6">
+      <div className="mx-10 mb-6 flex">
+        <IconInput id={id} icon={icon} updateDocIcon={updateDocIcon} />
         <TitleInput id={id} title={title} updateDocTitle={updateDocTitle} />
-        {/* 可能還會再增加其他功能，例如設置 Icon 、背景等 */}
+        {/* 可能還會再增加其他功能，例如設定 Icon 、背景等 */}
       </div>
-      <BackToTop target={contentContainerRef} />
       {renderEditor && <TiptapEditor id={id} />}
       {/* <p className="mx-10">editor {id}</p> */}
     </div>
   )
 }
 
-function TitleInput(props: {
-  id: string
-  title: string
-  updateDocTitle: (id: string, title: string) => void
-}) {
+function IconInput(props: { id: string; icon: string | null; updateDocIcon: (id: string, title: string) => void }) {
+  const { id, icon, updateDocIcon } = props
+
+  // init icon
+  useEffect(() => {
+    if (!icon) {
+      const newIcon = getRandomElement(DOC_ICON_LIST)
+      updateDocIcon(id, newIcon) // 更新 store
+      setTimeout(() => {
+        try {
+          updateIcon(id, newIcon) // 更新資料庫。對於新建的文件，需要延遲一秒再更新資料庫，否則資料庫中沒有這個文件
+        } catch (ex) {}
+      }, 1000)
+    }
+  }, [id, icon, updateDocIcon])
+
+  // change icon
+  const changeIconHandler = (newIcon: string) => {
+    updateDocIcon(id, newIcon) // 更新 store
+    updateIcon(id, newIcon) // 更新資料庫
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <div className="mr-2 cursor-pointer">
+          <span className="text-4xl">{icon}</span>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent className="p-2 w-80">
+        {DOC_ICON_LIST.map((i) => (
+          <div key={i} className="inline-block text-xl p-1 cursor-pointer" onClick={() => changeIconHandler(i)}>
+            <span>{i}</span>
+          </div>
+        ))}
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+function TitleInput(props: { id: string; title: string; updateDocTitle: (id: string, title: string) => void }) {
   const { id, title, updateDocTitle } = props
   const t = useTranslations('docItem')
 
@@ -80,7 +137,7 @@ function TitleInput(props: {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value
     updateDocTitle(id, newTitle)
-    updateTitle(id, newTitle || t('unTitled')) // 更新數據庫
+    updateTitle(id, newTitle || t('unTitled')) // 更新資料庫
   }
 
   function handleKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {

@@ -1,8 +1,8 @@
-import { CONTENT_WIDTH } from '@/constants'
 import { cn } from '@/lib/utils'
 import { Node } from '@tiptap/pm/model'
 import { Editor, NodeViewWrapper } from '@tiptap/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { CONTENT_WIDTH } from '@/constants'
 
 interface ImageBlockViewProps {
   editor: Editor
@@ -16,11 +16,16 @@ interface ImageBlockViewProps {
   updateAttributes: (attrs: Record<string, string>) => void
 }
 
-export default function ImageBlockView(props: ImageBlockViewProps) {
+export const ImageBlockView = (props: ImageBlockViewProps) => {
   const { editor, getPos, node } = props
   const { src } = node.attrs
   const imgContainerRef = useRef<HTMLDivElement>(null)
 
+  // GCS 没有 OSS 的 x-oss-process 即时裁剪能力。
+  // 图片在上传前已由 browser-image-compression 压缩过，这里直接使用原图。
+  // 之后若需要服务端缩图，可在 Cloud Run 上挂 imgproxy，再把网址改成走它。
+
+  // 对齐方式
   const wrapperClassName = cn(
     node.attrs.align === 'left' ? 'ml-0' : 'ml-auto',
     node.attrs.align === 'right' ? 'mr-0' : 'mr-auto',
@@ -29,7 +34,7 @@ export default function ImageBlockView(props: ImageBlockViewProps) {
   )
 
   const onClick = useCallback(() => {
-    editor.commands.setNodeSelection(getPos())
+    editor.commands.setNodeSelection(getPos()) // 選中圖片
   }, [getPos, editor.commands])
 
   const onDoubleClick = useCallback(() => {
@@ -37,7 +42,6 @@ export default function ImageBlockView(props: ImageBlockViewProps) {
   }, [src])
 
   const [height, setHeight] = useState('auto')
-
   useEffect(() => {
     if (isNaN(node.attrs.ratio)) return
     if (!node.attrs.ratio) return
@@ -50,11 +54,7 @@ export default function ImageBlockView(props: ImageBlockViewProps) {
 
   return (
     <NodeViewWrapper>
-      <div
-        ref={imgContainerRef}
-        className={wrapperClassName}
-        style={{ width: node.attrs.width, height }}
-      >
+      <div ref={imgContainerRef} className={wrapperClassName} style={{ width: node.attrs.width, height }}>
         {/* eslint-disable-next-line  */}
         <img
           className="block"
@@ -69,3 +69,5 @@ export default function ImageBlockView(props: ImageBlockViewProps) {
     </NodeViewWrapper>
   )
 }
+
+export default ImageBlockView

@@ -1,0 +1,8 @@
+# Cloud Build 上傳來源時排除，避免傳 2GB
+.git
+node_modules
+.next
+.env
+.env.*
+.npmrc
+*.log

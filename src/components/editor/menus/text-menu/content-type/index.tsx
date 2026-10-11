@@ -1,19 +1,11 @@
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ChevronsUpDown } from 'lucide-react'
 import { useContentType } from './useContentType'
+import { useGetEditor } from '@/components/editor'
 
-interface IProps {
-  editor: Editor | null
-}
-
-export default function ContentTypeMenu(props: IProps) {
-  const { editor } = props
+export default function ContentTypeMenu() {
+  const editor = useGetEditor()
   const options = useContentType(editor)
 
   if (editor == null) return

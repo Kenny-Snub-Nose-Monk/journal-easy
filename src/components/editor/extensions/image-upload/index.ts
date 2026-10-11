@@ -2,6 +2,7 @@ import { Node, ReactNodeViewRenderer } from '@tiptap/react'
 import ImageUploadView from './image-upload-view'
 
 declare module '@tiptap/core' {
+  // 扩展 ts 接口
   interface Commands<ReturnType> {
     imageUpload: {
       setImageUpload: () => ReturnType
@@ -11,11 +12,11 @@ declare module '@tiptap/core' {
 
 export const ImageUpload = Node.create({
   name: 'imageUpload',
-  isolate: true,
+  isolating: true,
   defining: true,
   group: 'block',
-  draggable: true,
-  selectable: true,
+  draggable: true, // 可拖拽
+  selectable: true, // 可選中節點
   inline: false,
 
   parseHTML() {

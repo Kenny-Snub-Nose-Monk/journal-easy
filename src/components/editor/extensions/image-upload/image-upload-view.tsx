@@ -11,7 +11,9 @@ interface ImageUploadViewProps {
 
 export default function ImageUploadView(props: ImageUploadViewProps) {
   const { editor } = props
+
   const [range, setRange] = useState<Range | null>(null)
+
   function setCurUploaderRange() {
     const { from, to } = editor.state.selection
     // console.log('range ', from, to)
@@ -20,13 +22,13 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
 
   const onUpload = useCallback(
     (url: string, ratio: number) => {
-      const width = getWidthPercent(ratio)
       if (url && range) {
+        const width = getWidthPercent(ratio)
         editor
           .chain()
-          .setImageBlockAt({ src: url, pos: range }) // 插入圖片 imageBlock Node
+          .setImageBlockAt({ src: url, pos: range }) // 插圖圖片 imageBlock 節點
           .setImageBlockWidth(width)
-          .setImageBlockRatio(ratio) // 刪除當前 imageUpload Node
+          .setImageBlockRatio(ratio)
           .focus()
           .run()
       }
@@ -37,10 +39,7 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
   return (
     <NodeViewWrapper>
       <div className="p-0 m-0" data-drag-handle>
-        <ImageUploader
-          onUpload={onUpload}
-          setCurUploaderRange={setCurUploaderRange}
-        />
+        <ImageUploader onUpload={onUpload} setCurUploaderRange={setCurUploaderRange} />
       </div>
     </NodeViewWrapper>
   )

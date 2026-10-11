@@ -12,22 +12,21 @@ interface IProps {
   disabled?: boolean
   className?: string
 }
+
 export default function StarDocButton(props: IProps) {
   const { id, className = '', disabled = false } = props
   const { toast } = useToast()
 
-  // 監聽 isStar 狀態
   const docs = useDocsStore((s) => s.docs)
   const updateDocIsStar = useDocsStore((s) => s.updateDocIsStar)
-  const isStar = useMemo(
-    () => docs.find((i) => i.id === id)?.isStar,
-    [docs, id]
-  )
+  const isStar = useMemo(() => docs.find((i) => i.id === id)?.isStar, [docs, id])
 
   const t = useTranslations('favorList')
 
   async function handleUpdateIsStar() {
     const newIsStar = !isStar
+
+    // 异步更新数据库
     const res = await updateIsStar(id, newIsStar)
     if (res.errno !== 0) {
       toast({
@@ -37,9 +36,11 @@ export default function StarDocButton(props: IProps) {
       })
       return
     }
-    // 更新本地狀態
+
+    // 更新本地状态
     updateDocIsStar(id, newIsStar)
   }
+
   return (
     <Button
       variant={isStar ? 'secondary' : 'ghost'}

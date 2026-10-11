@@ -1,4 +1,3 @@
-import { Inter } from 'next/font/google'
 import '../globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { isMobileDevice } from '@/lib/isMobileDevice'
@@ -6,13 +5,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 
-const inter = Inter({ subsets: ['latin'] })
-
-export async function generateMetadata({
-  params: { locale },
-}: {
-  params: { locale: string }
-}) {
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'metadata' })
 
   return {
@@ -37,19 +30,14 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans">
         <NextIntlClientProvider messages={messages}>
           {isMobile && (
             <div className="fixed bottom-0 left-0 w-full text-center text-base py-2 bg-yellow-500">
               <p>{t('notSupportMobile')}</p>
             </div>
           )}
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}
             <Toaster />
           </ThemeProvider>

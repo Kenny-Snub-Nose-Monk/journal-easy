@@ -7,13 +7,13 @@ export enum ColumnLayout {
 }
 
 declare module '@tiptap/core' {
-  // 拓展TS 接口屬性
-
+  // 扩展 TS 接口属性
   interface Commands<ReturnType> {
     columns: {
       setColumns: () => ReturnType
       setLayout: (layout: ColumnLayout) => ReturnType
       deleteColumns: () => ReturnType
+      setWithBorder: (val: boolean) => ReturnType
     }
   }
 }
@@ -22,11 +22,13 @@ export const Columns = Node.create({
   name: 'columns',
 
   // https://tiptap.dev/docs/editor/api/schema#group
-  // 其他 Node 就可以在 content 中寫 'columns'
+  // 这样，其他的 Node 就可以在 content 中写 'columns'
   group: 'columns',
 
   content: 'column column',
 
+  // https://tiptap.dev/docs/editor/api/schema#defining
+  // 内容被替换时，继续保留 column
   defining: true,
 
   isolating: true,
@@ -35,6 +37,9 @@ export const Columns = Node.create({
     return {
       layout: {
         default: ColumnLayout.TwoColumn,
+      },
+      withBorder: {
+        default: true,
       },
     }
   },
@@ -45,13 +50,17 @@ export const Columns = Node.create({
         () =>
         ({ commands }) =>
           commands.insertContent(
-            // `data-type="column"` 和 `data-position="left"` 都是在 Column.ts 中定義的
+            // `data-type="column"` 和 `data-position="left"` 都是在 Column.ts 中定义的
             `<div data-type="columns"><div data-type="column" data-position="left"><p></p></div><div data-type="column" data-position="right"><p></p></div></div>`
           ),
       setLayout:
         (layout: ColumnLayout) =>
         ({ commands }) =>
           commands.updateAttributes('columns', { layout }),
+      setWithBorder:
+        (val: boolean) =>
+        ({ commands }) =>
+          commands.updateAttributes('columns', { withBorder: val }),
       deleteColumns:
         () =>
         ({ commands }) =>
@@ -62,7 +71,7 @@ export const Columns = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       'div',
-      { 'data-type': 'columns', class: `layout-${HTMLAttributes.layout}` },
+      { 'data-type': 'columns', class: `layout-${HTMLAttributes.layout} with-border-${HTMLAttributes.withBorder}` },
       0,
     ]
   },

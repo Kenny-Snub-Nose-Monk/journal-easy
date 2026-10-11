@@ -29,16 +29,12 @@ export const LinkEditPanel = (props: LinkEditPanelProps) => {
       <div className="flex items-center gap-2">
         <Input
           type="url"
-          placeholder="https:/"
+          placeholder="https://"
           className="w-[200px] focus-visible:ring-transparent"
           value={url}
           onChange={changeUrl}
         />
-        <Button
-          size="sm"
-          onClick={() => onSetLink(url, openInNewTab)}
-          disabled={!isValidUrl}
-        >
+        <Button size="sm" onClick={() => onSetLink(url, openInNewTab)} disabled={!isValidUrl}>
           OK
         </Button>
       </div>

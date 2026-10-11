@@ -1,19 +1,53 @@
 {
   "common": {
-    "brandName": "Joural Easy",
+    "brandName": "Journal Easy",
     "notSupportMobile": "Mobile devices are not supported yet"
   },
   "metadata": {
-    "title": "Huashui AI",
-    "description": "Based on the latest AI technology, AI writing, Collaborative writing"
+    "title": "Journal Easy",
+    "description": "Journal Easy — AI-powered writing space for your notes, journals and documents. AI writing, collaborative editing."
   },
   "home": {
-    "slogan": "Intelligent Writing",
-    "subTitle": "Based on the latest AI technology, AI writing, Collaborative writing",
+    "sloganPart1": "Your ideas deserve a",
+    "sloganPart2": "smarter workspace",
+    "subTitle": "Write, plan, share, and think together. With AI by your side, transform how you work with documents, collaborate with teams, and bring ideas to life.",
     "login": "Login",
     "register": "Register",
     "getStarted": "Get Started",
-    "trial": "Apply for Trial"
+    "AIWriting": "AI Writing",
+    "AIWritingDesc": "Improve writing efficiency and quality with AI technology",
+    "collab": "Collaborative Writing",
+    "AIChat": "AI Chat Assistant",
+    "AIChatDesc": "Interact with AI chat, get inspiration, solve problems, and easily insert or copy to the editor",
+    "collabDesc": "Real-time collaboration with others to complete projects together",
+    "AIGenText": "AI Text Generation",
+    "AIProcessText": "AI Text Processing",
+    "shareAndCollab": "Share & Collaborate",
+    "AIGenTextTitle": "AI Text Generation with Commands",
+    "AIGenTextDesc": "According the doc title and content, continue writing, generate outline, generate summary, brainstorm, cover all writing needs",
+    "AIProcessTextTitle": "AI Text Optimization with Selected Text",
+    "AIProcessTextDesc": "According the selection content, expand, simplify, switch tone, translate, explain, generate different styles with one click",
+    "shareAndCollabTitle": "Share with multiple people, real-time collaboration",
+    "shareAndCollabDesc": "One-click sharing, control permissions, multiple people editing, real-time collaboration, complete projects together",
+    "features": "Features",
+    "about": "About",
+    "title2": "Everything you need to work smarter",
+    "desc2": "From simple notes to complex projects, our platform adapts to your workflow",
+    "documentManagement": "Document Management",
+    "documentManagementDesc": "Supports document creation, deletion, editing, sorting, etc. Making it easy to manage your documents",
+    "richTextEditor": "Rich Text Editor",
+    "richTextEditorDesc": "Beautiful, intuitive editor with blocks, formatting, embeds, and everything you need to create stunning documents",
+    "title3": "Focus on Core Features",
+    "desc3": "Discover how our powerful features transform the way you work",
+    "title4": "Smart Writing, Efficient Work",
+    "inspiration": "Find Inspiration",
+    "inspirationDesc": "Stuck on how to start? Let AI brainstorm some ideas for you",
+    "optimization": "Optimize writing",
+    "optimizationDesc": "How to write better and more professionally? Let AI help you optimize and polish your text",
+    "askQuestion": "Ask Questions",
+    "askQuestionDesc": "Encountering problems? Use AI chat to query and find answers",
+    "title5": "Ready to join us?",
+    "desc5": "Create your personal smart writing space for free"
   },
   "theme": {
     "title": "Change theme",
@@ -21,24 +55,25 @@
     "dark": "Dark",
     "system": "System"
   },
-  "invitationCode": {
-    "notLogin": "You need to login first",
-    "invited": "You have been invited",
-    "goBackHome": "Go back to home page",
-    "title": "The project is still in the trial stage, please enter the invitation code to continue",
-    "subTitle": "If you don't have an invitation code, you can apply one by <joinLink>WeChat group</joinLink> or <mail>Email</mail> for free",
-    "inputPlaceholder": "Invitation code",
-    "submit": "Submit",
-    "checkedSuccess": "Checked in successfully",
-    "checkedFailed": "Failed to check in",
-    "invalidCode": "Invalid code"
-  },
   "userInfo": {
     "goBackHome": "Go back to home page",
     "haveLogin": "You have logged in",
     "login": "Login",
     "logout": "Logout",
     "logoutConfirm": "Are you sure you want to log out?"
+  },
+  "signin": {
+    "title": "Welcome back",
+    "subTitle": "Enter your email to get a magic link sent to your inbox",
+    "withGithub": "Continue with Github",
+    "others": "OR CONTINUE WITH",
+    "email": "Email",
+    "enterYourEmail": "Enter your email address",
+    "withEmail": "Continue with Email"
+  },
+  "verifyRequest": {
+    "title": "Check your email",
+    "subTitle": "A sign in link has been sent to your email address"
   },
   "userAndSetting": {
     "title": "User / Setting",
@@ -61,9 +96,8 @@
     "favor": "Favorite",
     "favored": "Favorited"
   },
-  "CollabList": {
-    "title": "Collaboration",
-    "mySharing": "My sharing",
+  "MyShareList": {
+    "title": "My share",
     "notFound": "No data, open a doc and share it"
   },
   "trash": {
@@ -78,7 +112,9 @@
     "restore": "Restore",
     "delete": "Delete",
     "inputPlaceholder": "Doc title...",
-    "unTitled": "UnTitled"
+    "unTitled": "UnTitled",
+    "deleteSuccess": "Deleted {count} documents, moved to trash",
+    "openTrash": "Open trash"
   },
   "othersDocs": {
     "title": "Other's Docs",
@@ -87,7 +123,11 @@
   },
   "myDocs": {
     "title": "My Docs",
-    "create": "Create"
+    "create": "Create",
+    "sortByDefault": "Default",
+    "sortByTitle": "Doc title",
+    "sortByCreatedAt": "CreatedAt",
+    "sortByUpdatedAt": "UpdatedAt"
   },
   "docItem": {
     "unTitled": "UnTitled",
@@ -101,30 +141,67 @@
     "delete": "Delete",
     "notFound": "Cannot find the doc",
     "create": "Create",
-    "titleInputPlaceholder": "Doc title..."
+    "titleInputPlaceholder": "Doc title...",
+    "exportPDF": "Export PDF",
+    "downloadPDF": "Click to download PDF manually",
+    "createdAt": "CreatedAt",
+    "updatedAt": "UpdatedAt"
   },
   "shareDoc": {
     "share": "Share",
     "shared": "Shared",
     "shareDesc": "Share for collaboration",
-    "startToShare": "Start to share",
-    "cancelShareConfirm": "Do you want to cancel sharing this doc?",
-    "cancelShare": "Cancel sharing",
-    "copyText": "Journal Easy shared a doc with you, link is {link} , and password is {password}",
-    "link": "Link",
-    "password": "Password",
+    "notShared": "Not shared",
+    "confirmRemove": "Do you want to remove this user?",
+    "canNotShareToSelf": "Can't share to yourself",
+    "noAccess": "Choose an access please",
+    "shareExist": "This user has been added",
+    "maxShare": "You can share at most {maxNum} users",
+    "email": "User email",
+    "newShare": "New share",
+    "access": "Access",
+    "read": "Read",
+    "write": "Write",
+    "copyLink": "Copy link",
     "copy": "Copy",
     "copied": "Copied"
   },
+  "pubDoc": {
+    "publish": "Publish",
+    "published": "Published",
+    "republish": "Republish",
+    "pubDesc": "Publish doc, anyone can view it",
+    "pubSubordinateDocs": "Publish subordinate docs",
+    "customUrlSuffix": "Custom URL Suffix",
+    "URL": "URL",
+    "InvalidTip": "Only letters, numbers, horizontal lines, underscores, and more than 8 characters",
+    "copy": "Copy",
+    "copied": "Copied",
+    "confirmPublish": "Do you want to publish this doc?",
+    "urlExist": "This URL already exists, please modify the URL suffix",
+    "pubSuccess": "Published successfully",
+    "pubFailed": "Publish failed"
+  },
+  "myPubDocList": {
+    "title": "My Publish",
+    "notFound": "No publish data",
+    "deleteConfirm": "Do you want to delete the publish content?",
+    "copyLink": "Copy link",
+    "copySuccess": "Copy success"
+  },
+  "contentHome": {
+    "title": "My Home",
+    "searchPlaceholder": "Search documents...",
+    "newDoc": "New Document",
+    "recentDocs": "Recent Documents",
+    "favorDocs": "Favorite Documents",
+    "sharedDocs": "Shared Documents",
+    "more": "More",
+    "notFound": "Not Found"
+  },
   "sharedDocPage": {
     "unTitled": "UnTitled",
-    "checking": "Shared priority is checking",
-    "notShared": "The doc is not shared, you can't edit it",
-    "inputPassword": "Input shared password",
-    "passwordWrong": "Password is wrong, please refresh the page and try again",
-    "isMyDoc": "This is my own doc, not shared by others",
-    "shareTip": "This is a shared doc",
-    "toMyDocs": "Back to my docs"
+    "readonly": "Readonly document, you can't edit it"
   },
   "editor": {
     "collabConnFailed": "Collaboration connected failed, please refresh the page and try again",
@@ -153,7 +230,42 @@
     "copied": "Has copied to clipboard",
     "duplicate": "Duplicate",
     "delete": "Delete",
-    "success": "Success"
+    "success": "Success",
+    "titles": "Titles",
+    "collaborating": "Collaborating",
+    "findPlaceholder": "Find",
+    "replacePlaceholder": "Replace",
+    "replaceCurrent": "Replace current",
+    "replaceAll": "Replace all",
+    "findPrev": "Previous",
+    "findNext": "Next",
+    "findReplace": "Replace",
+    "findClose": "Close",
+    "findPrevShortcut": "⇧+↵",
+    "findNextShortcut": "↵",
+    "mermaidDiagram": "Mermaid Diagram",
+    "mermaidDiagramDesc": "Insert a Mermaid diagram",
+    "mermaidSplitView": "Split view",
+    "mermaidEditOnly": "Edit only",
+    "mermaidPreviewOnly": "Preview only",
+    "mermaidInsertToDoc": "Insert into document",
+    "mermaidRenderFailed": "Mermaid render failed",
+    "mermaidRenderFailedTip": "Mermaid render failed. Please check the diagram syntax."
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "tooltip": "Keyboard shortcuts",
+    "undo": "Undo",
+    "redo": "Redo",
+    "redoKeys": "⌘/Ctrl+Shift+Z (or Ctrl+Y)",
+    "paste": "Paste",
+    "spaceKey": "Space (empty paragraph)",
+    "aiPanel": "Open/focus AI panel",
+    "search": "Open document search",
+    "saved": "Saved",
+    "savedConnecting": "Connecting… changes are saved locally and will sync automatically once connected.",
+    "savedDisconnected": "Offline: changes are saved locally and will sync automatically when the connection is restored.",
+    "findReplace": "Find and replace"
   },
   "colors": {
     "orange": "Orange",
@@ -164,6 +276,14 @@
     "clear": "Clear"
   },
   "AIInput": {
+    "AIWriting": "AI Writing",
+    "AIWritingChat": "AI Writing and Chat",
+    "clearChat": "Clear chat",
+    "clearChatConfirmTitle": "Clear current chat?",
+    "clearChatConfirmDesc": "This will remove the chat history for this document.",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "useAIWritingChat": "Use AI to write or chat",
     "mistakeTip": "AI may make mistakes, please check it",
     "limitTip": "Your monthly <limit>AI token limit</limit> left ",
     "whatIsLimit": "What is AI token limit?",
@@ -172,6 +292,7 @@
     "inputPlaceholder2": "Input AI command, such as: outline based on title",
     "inputPlaceholder3": "Input AI command for selected content, such as: expand this content",
     "AIgenerating": "AI generating...",
+    "copy": "Copy",
     "replace": "Replace",
     "insert": "Insert",
     "regenerate": "Regenerate",
@@ -204,7 +325,7 @@
     "translateDesc": "Translate this into {lang}",
     "English": "English",
     "Japanese": "Japanese",
-    "Chinese": "Chinese",
+    "Chinese": "Traditional Chinese (Taiwan)",
     "tone": "Tone",
     "toneDesc": "Rewrite this with {tone} tone",
     "professional": "Professional",
@@ -215,6 +336,31 @@
     "expand": "Expand",
     "expandDesc": "Expand this content to make it more detailed",
     "simply": "Simply",
-    "simplyDesc": "Simplify this content to make it more concise"
+    "simplyDesc": "Simplify this content to make it more concise",
+    "viewMore": "查看更多",
+    "viewLess": "收起"
+  },
+  "template": {
+    "todos": "Todos",
+    "todosDesc": "Record work and life items",
+    "projectHighlight": "Project Highlights",
+    "projectHighlightDesc": "For interview, STAR pattern",
+    "resume": "Programmer Resume",
+    "resumeDesc": "AI optimization, export PDF"
+  },
+  "docVersion": {
+    "entry": "View version history",
+    "dialogDescription": "Review this document's version history and restore a selected version if needed.",
+    "loading": "Loading versions...",
+    "loadFailed": "Failed to load version history. Please try again later.",
+    "noVersions": "No version history",
+    "noVersionsDesc": "This document does not have any historical versions yet.",
+    "currentUser": "Current user",
+    "restore": "Restore",
+    "restoring": "Restoring...",
+    "restoreConfirm": "Restore this historical version? Your current content will be saved as a new version first.",
+    "restoreSuccess": "Version restored successfully.",
+    "restoreFailed": "Failed to restore this version.",
+    "snapshotMissing": "Current snapshot is unavailable."
   }
 }

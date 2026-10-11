@@ -13,7 +13,7 @@ export async function PATCH(request: Request) {
     data: {
       name,
       image: avatar,
-      // 暫不更新 email
+      // 暂不更新 email
     },
   })
 

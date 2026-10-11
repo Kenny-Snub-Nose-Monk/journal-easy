@@ -1,21 +1,12 @@
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Brush, ChevronDown } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useGetEditor } from '@/components/editor'
 
-interface IProps {
-  editor: Editor | null
-}
-
-export default function HighlightMenu(props: IProps) {
-  const t = useTranslations('colors')
-  const { editor } = props
-  if (editor == null) return null
+export default function HighlightMenu() {
+  const editor = useGetEditor()
+  if (editor == null) return
 
   return (
     <Popover>
@@ -27,16 +18,17 @@ export default function HighlightMenu(props: IProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <ColorPanel editor={editor} />
+        <ColorPanel />
       </PopoverContent>
     </Popover>
   )
 }
 
-function ColorPanel(props: IProps) {
+function ColorPanel() {
   const t = useTranslations('colors')
-  const { editor } = props
-  if (editor == null) return null
+  const editor = useGetEditor()
+
+  if (editor == null) return
 
   const colors = [
     { name: t('orange'), color: '#ffc078' },
@@ -45,7 +37,6 @@ function ColorPanel(props: IProps) {
     { name: t('purple'), color: '#b197fc' },
     { name: t('red'), color: 'red' },
   ]
-
   const ItemClassName = 'block px-3 py-1 m-1'
 
   return (
@@ -56,9 +47,7 @@ function ColorPanel(props: IProps) {
           className={ItemClassName}
           size="sm"
           style={{ background: item.color }}
-          onClick={() =>
-            editor.chain().focus().setHighlight({ color: item.color }).run()
-          }
+          onClick={() => editor.chain().focus().setHighlight({ color: item.color }).run()}
           tabIndex={-1}
         >
           {item.name}

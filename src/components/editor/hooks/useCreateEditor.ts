@@ -7,7 +7,15 @@ import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { getExtensions } from '../extensions'
 import { getRandomElement } from '@/lib/utils'
-import { get } from '@/lib/ajax'
+import { get, patch } from '@/lib/ajax'
+import { collaborationEnabled } from '@/lib/editor-mode'
+import { createSaveQueue } from '@/lib/autosave/queue'
+import {
+  registerDocUpdater,
+  unregisterDocUpdater,
+  registerDocFlusher,
+  unregisterDocFlusher,
+} from '@/lib/doc-version/snapshot-provider'
 import {
   EDITOR_PADDING_BOTTOM,
   COLLABORATE_EDIT_USER_COLORS,
@@ -18,9 +26,12 @@ import { useUserStore } from '@/stores/user-store'
 import { useEditorStore } from '@/stores/editor-store'
 import { useDocsStore, IDoc } from '@/stores/docs-store'
 import { useLocale, useTranslations } from 'next-intl'
+import { uint8ArrayToBase64 } from '@/lib/doc-version/binary'
+import { registerDocSnapshotProvider, unregisterDocSnapshotProvider } from '@/lib/doc-version/snapshot-provider'
 
 export default function useCreateEditor(id: string) {
   const userInfo = useUserStore((s) => s.userInfo)
+  const collabAPUToken = useUserStore((s) => s.collabAPIToken)
   const locale = useLocale()
   const t = useTranslations('editor')
 
@@ -32,22 +43,30 @@ export default function useCreateEditor(id: string) {
 
   // Yjs document and provider
   const ydoc = useMemo(() => new Y.Doc({ guid: id }), [id])
-
   useEffect(() => {
-    new IndexeddbPersistence(id, ydoc) // Store the Y document in the browser
+    // 将协同编辑内容缓存在本地， 断线或刷新后可继续恢复编辑状态
+    if (!collaborationEnabled) return
+    const persistence = new IndexeddbPersistence(id, ydoc)
+    return () => {
+      void persistence.destroy()
+    }
   }, [id, ydoc])
 
   const provider = useMemo(() => {
-    return new HocuspocusProvider({
-      url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
-      name: id,
-      document: ydoc,
-      connect: false, // connect later
-    })
-  }, [id, ydoc])
+    if (collaborationEnabled && collabAPUToken) {
+      return new HocuspocusProvider({
+        url: process.env.NEXT_PUBLIC_COLLABORATE_EDIT_URL || '',
+        name: id,
+        document: ydoc,
+        connect: false, // connect later
+        token: collabAPUToken,
+      })
+    }
+  }, [id, ydoc, collabAPUToken])
 
   // connect and disconnect
   useEffect(() => {
+    if (provider == null) return
     const status = provider.configuration.websocketProvider.status // disconnected connecting connected
     // console.log('provider status...', status, provider.isConnected)
     if (status !== 'connected') {
@@ -61,14 +80,14 @@ export default function useCreateEditor(id: string) {
       provider.configuration.websocketProvider.disconnect() // https://github.com/ueberdosis/hocuspocus/issues/594#issuecomment-1740599461
       provider.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, provider])
 
   // detect disconnect (maybe server closed)
   const [isDisconnected, setIsDisconnected] = useState(false)
   useEffect(() => {
+    if (provider == null) return
     const onConnect = () => {
-      console.log('editor provider connect...')
+      console.log('editor provider connect......')
       setIsDisconnected(false)
     }
     const onDisconnect = ({ event }: { event: CloseEvent }) => {
@@ -78,7 +97,7 @@ export default function useCreateEditor(id: string) {
           const status = provider.configuration.websocketProvider.status
           if (status === 'connected') return // maybe reconnect soon itself
           setIsDisconnected(true)
-        }, 1200)
+        }, 3 * 1000)
       }
     }
     provider.on('connect', onConnect)
@@ -91,18 +110,20 @@ export default function useCreateEditor(id: string) {
 
   // is connected timeout
   const [isConnectedTimeout, setIsConnectedTimeout] = useState(false)
-
   useEffect(() => {
+    if (provider == null) return
     setTimeout(() => {
-      if (provider.isConnected) return
+      const status = provider.configuration.websocketProvider.status
+      if (status === 'connected') return
       setIsConnectedTimeout(true)
     }, 6 * 1000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, provider])
 
   const extensions = getExtensions({
     placeholder: t('placeholder'),
+    collaborative: true,
   })
-
   const editor = useEditor(
     {
       extensions: [
@@ -110,15 +131,19 @@ export default function useCreateEditor(id: string) {
         Collaboration.configure({
           document: ydoc,
         }),
-        CollaborationCursor.configure({
-          provider,
-          user: {
-            name: userInfo?.name || userInfo?.email,
-            email: userInfo?.email,
-            avatar: userInfo?.image,
-            color: getRandomElement(COLLABORATE_EDIT_USER_COLORS), // random color
-          },
-        }),
+        ...(provider
+          ? [
+              CollaborationCursor.configure({
+                provider,
+                user: {
+                  name: userInfo?.name || userInfo?.email,
+                  email: userInfo?.email,
+                  avatar: userInfo?.image,
+                  color: getRandomElement(COLLABORATE_EDIT_USER_COLORS), // random color
+                },
+              }),
+            ]
+          : []),
       ],
       onCreate: ({ editor }) => {
         provider?.on('open', async () => {
@@ -126,12 +151,8 @@ export default function useCreateEditor(id: string) {
           const doc = docs.find((i) => i.id === id)
           if (doc == null) return
 
-          const AutoCreatedTitle =
-            locale === 'zh-tw'
-              ? DEFAULT_NEW_DOC_TITLE
-              : DEFAULT_NEW_DOC_TITLE_EN
-          const isAutoCreated = doc.title === AutoCreatedTitle // 自定创建的文档，只有 JSON 格式，需要转化一次格式
-
+          const AutoCreatedTitle = locale === 'zh-tw' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN
+          const isAutoCreated = doc.title === AutoCreatedTitle // 自定創建的文檔，只有 JSON 格式，需要轉化一次格式
           const isRecentlyUpdated = isDocRecentlyUpdated(doc)
           if (isRecentlyUpdated && !isAutoCreated) return
 
@@ -168,6 +189,137 @@ export default function useCreateEditor(id: string) {
     [id, ydoc, provider, userInfo, locale]
   )
 
+  useEffect(() => {
+    if (collaborationEnabled || !editor || !userInfo?.id) return
+    let active = true
+    let ready = false
+    let expectedContent = ''
+    const draftKey = `journal-draft:${userInfo.id}:${id}`
+    const setState = useEditorStore.getState().setCollaborativeState
+    const queue = createSaveQueue<{ content: string; contentBinaryBase64: string; title?: string }>(
+      async (snapshot) => {
+        try {
+          const result = await patch(`/api/doc/${id}`, { ...snapshot, expectedContent })
+          if (result.errno !== 0) throw new Error(result.msg || 'Save failed')
+          expectedContent = snapshot.content
+          // A newer draft may already exist while this write was in flight.
+          const draft = JSON.parse(localStorage.getItem(draftKey) || 'null')
+          if (draft?.content === snapshot.content && draft?.title === snapshot.title) localStorage.removeItem(draftKey)
+          else if (draft) localStorage.setItem(draftKey, JSON.stringify({ ...draft, baseContent: expectedContent }))
+          if (active)
+            setState(
+              draft && (draft.content !== snapshot.content || draft.title !== snapshot.title)
+                ? 'connecting'
+                : 'connected'
+            )
+        } catch (error) {
+          if (active) setState('disconnected')
+          throw error
+        }
+      }
+    )
+    const snapshot = () => ({
+      ...(useDocsStore.getState().docs.find((doc) => doc.id === id)?.title !== undefined
+        ? { title: useDocsStore.getState().docs.find((doc) => doc.id === id)!.title }
+        : {}),
+      content: JSON.stringify(editor.getJSON()),
+      contentBinaryBase64: uint8ArrayToBase64(Y.encodeStateAsUpdate(ydoc)),
+    })
+    const update = () => {
+      if (!ready || !editor.isEditable || editor.isDestroyed) return
+      const data = snapshot()
+      try {
+        localStorage.setItem(draftKey, JSON.stringify({ ...data, baseContent: expectedContent }))
+      } catch {
+        /* HTTP persistence remains available */
+      }
+      setState('connecting')
+      queue.schedule(data)
+    }
+    async function load() {
+      setLoading(true)
+      try {
+        const result = await get(`/api/doc/${id}`)
+        if (!active) return
+        if (result.errno !== 0 || !result.data) throw new Error('Document load failed')
+        const doc = result.data
+        expectedContent = doc.content || ''
+        let recoveredDraft = false
+        let content = doc.content ? JSON.parse(doc.content) : { type: 'doc', content: [{ type: 'paragraph' }] }
+        // JSON is the authoritative snapshot in single-user mode; do not merge stale Yjs updates.
+        try {
+          const draft = JSON.parse(localStorage.getItem(draftKey) || 'null')
+          if (
+            draft?.content &&
+            (draft.baseContent === expectedContent ||
+              window.confirm('發現未儲存草稿，是否恢復？ / Restore unsaved draft?'))
+          ) {
+            content = JSON.parse(draft.content)
+            recoveredDraft = true
+            if (typeof draft.title === 'string') useDocsStore.getState().updateDocTitle(id, draft.title)
+          }
+        } catch {
+          /* Ignore malformed browser drafts; the database content is intact. */
+        }
+        editor?.commands.setContent(content, true)
+        ready = true
+        setDocId(id)
+        setLoading(false)
+        setState('connected')
+        // Persist a recovered draft as well as an empty newly created document.
+        if (recoveredDraft || JSON.stringify(content) !== expectedContent) update()
+      } catch {
+        if (active) {
+          setLoading(false)
+          setIsConnectedTimeout(true)
+        }
+      }
+    }
+    void load()
+    editor.on('update', update)
+    const retry = () => {
+      void queue.flush().catch(() => {})
+    }
+    const retryTimer = setInterval(retry, 10000)
+    window.addEventListener('online', retry)
+    registerDocFlusher(id, queue.flush)
+    registerDocUpdater(id, () => {
+      if (!ready) return false
+      update()
+      return true
+    })
+    return () => {
+      active = false
+      clearInterval(retryTimer)
+      window.removeEventListener('online', retry)
+      editor.off('update', update)
+      unregisterDocFlusher(id)
+      unregisterDocUpdater(id)
+      void queue.flush().catch(() => {})
+    }
+  }, [editor, id, ydoc, userInfo?.id, setDocId])
+
+  useEffect(() => {
+    if (editor == null) return
+
+    // 注册当前编辑器快照提供器，供版本保存和恢复时读取最新正文状态。
+    registerDocSnapshotProvider(id, () => {
+      if (editor.isDestroyed) return null
+      const currentDoc = useDocsStore.getState().docs.find((item) => item.id === id)
+
+      return {
+        docId: id,
+        title: currentDoc?.title || '',
+        content: JSON.stringify(editor.getJSON()),
+        contentBinaryBase64: uint8ArrayToBase64(Y.encodeStateAsUpdate(ydoc)),
+      }
+    })
+
+    return () => {
+      unregisterDocSnapshotProvider(id)
+    }
+  }, [editor, id, ydoc])
+
   return {
     editor,
     loading,
@@ -178,21 +330,21 @@ export default function useCreateEditor(id: string) {
 }
 
 /**
- * 判斷該文檔是否是最近更新的文檔（最近更新的，會有 binary 格式，不用從 JSON 轉換）
+ * 判断该文档是否是最近更新的文档（最近更新的，会有 binary 格式，不用从 JSON 转换）
  * @param doc doc
  * @returns boolean
  */
 function isDocRecentlyUpdated(doc: IDoc) {
   const createdAt = new Date(doc.createdAt || 0).getTime()
   const updatedAt = new Date(doc.updatedAt || 0).getTime()
-  const dt = new Date('2025/02/28').getTime() // 協同編輯發布到預覽
+  const dt = new Date('2024/08/15').getTime() // 08.14 協同編輯發布到預覽
   if (createdAt > dt) return true
   if (updatedAt > dt) return true
   return false
 }
 
 /**
- * 判斷該文檔是否已經解析過內容（不要重複解析）
+ * 判断该文档是否已经解析过内容（不要重复解析）
  * @param docId doc id
  * @returns boolean
  */

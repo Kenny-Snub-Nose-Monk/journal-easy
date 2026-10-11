@@ -1,89 +1,35 @@
 import { v4 as uuid } from 'uuid'
 import { getUserInfo } from '@/lib/session'
-import {
-  genSuccessData,
-  genUnAuthData,
-  genErrorData,
-} from '../utils/gen-res-data'
-import { bucket } from '@/lib/gcs'
-import { getFileExtension } from './util'
+import { genSuccessData, genUnAuthData, genErrorData } from '../utils/gen-res-data'
+import { uploadFile } from '@/lib/storage'
 
-// 這是一個處理文件上傳的 API 端點
 export async function POST(req: Request) {
-  console.log('1. Upload endpoint hit')
+  const user = await getUserInfo()
+  if (user == null) return Response.json(genUnAuthData())
+
+  const formData = await req.formData()
+  const file = formData.get('file') as File // `file` 是 FormData key
+  if (!file || typeof file.arrayBuffer !== 'function')
+    return Response.json(genErrorData('File required'), { status: 400 })
+  const types: Record<string, string> = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/gif': 'gif',
+    'image/webp': 'webp',
+  }
+  const ext = types[file.type]
+  if (!ext || file.size > 5 * 1024 * 1024)
+    return Response.json(genErrorData('Only PNG/JPEG/GIF/WebP up to 5 MB'), { status: 400 })
+
+  // 物件名稱： `/` 可自动创建文件夹，`uuid()` 用于避免文件名重复
+  const objectName = `files/u-${user.id}/imgs/${uuid()}.${ext}`
 
   try {
-    // 步驟 1: 檢查用戶認證
-    console.log('2. Checking user authentication...')
-    const user = await getUserInfo()
-    console.log('3. User info:', user)
+    const result = await uploadFile(objectName, Buffer.from(await file.arrayBuffer()), file.type)
 
-    if (user == null) {
-      console.log('4A. Authentication failed')
-      return Response.json(genUnAuthData())
-    }
-    console.log('4B. Authentication successful')
-
-    // 步驟 2: 處理表單數據
-    console.log('5. Processing form data...')
-    const formData = await req.formData()
-    const file = formData.get('file') as File
-    const ext = getFileExtension(file.name)
-    console.log('6. File details:', {
-      name: file?.name,
-      type: file?.type,
-      size: file?.size,
-      exists: !!file,
-    })
-
-    // 步驟 3: 準備文件名
-    console.log('7. Preparing file name...')
-    const fileName = `files/${user.id}/imgs/${uuid()}.${ext}`
-    console.log('8. Generated file name:', fileName)
-
-    try {
-      // 步驟 4: 準備文件數據
-      console.log('9. Converting file to buffer...')
-      const fileBuffer = Buffer.from(await file.arrayBuffer())
-
-      // 步驟 5: 創建 GCS 文件對象
-      console.log('10. Creating GCS file object...')
-      const blob = bucket.file(fileName)
-
-      // 步驟 6: 上傳到 GCS
-      console.log('11. Uploading to GCS...')
-      // 簡單的上傳，不設置 ACL
-      await blob.save(fileBuffer)
-
-      console.log('12. File uploaded successfully to GCS')
-
-      // 步驟 7: 生成公開 URL
-      console.log('13. Generating public URL...')
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`
-      console.log('14. Public URL generated:', publicUrl)
-
-      // 返回成功響應
-      console.log('15. Sending success response')
-      return Response.json(genSuccessData({ url: publicUrl }))
-    } catch (uploadError) {
-      // GCS 相關錯誤的詳細日誌
-      console.error('GCS operation failed:', {
-        step: 'GCS upload',
-        error: uploadError,
-        // errorMessage: uploadError.message,
-        // errorCode: uploadError.code,
-        // errorStack: uploadError.stack,
-      })
-      throw uploadError // 重新拋出錯誤以便被外層 catch 捕獲
-    }
+    return Response.json(genSuccessData(result))
   } catch (e) {
-    // 最外層錯誤處理
-    console.error('Final error catch:', {
-      error: e,
-      // message: e.message,
-      // stack: e.stack,
-      type: typeof e,
-    })
+    console.error('upload error', e)
     return Response.json(genErrorData('upload error'))
   }
 }

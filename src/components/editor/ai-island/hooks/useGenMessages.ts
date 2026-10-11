@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Editor } from '@tiptap/react'
 import { AI_CONTEXT_MAX_LENGTH } from '@/constants'
-import { getTitle } from '../util'
+import { useDocsStore } from '@/stores/docs-store'
 import { useTranslations } from 'next-intl'
 
 export interface IMessage {
@@ -13,27 +13,24 @@ export type MessagesType = IMessage[]
 
 export function useGenSystemMessage(): IMessage {
   const t = useTranslations('AIInput')
-  const [message, setMessage] = useState<IMessage>({
-    role: 'system',
-    content: t('writingArticle'),
-  })
+  const [message, setMessage] = useState<IMessage>({ role: 'system', content: t('writingArticle') })
+
+  // get doc title
+  const docs = useDocsStore((s) => s.docs)
+  const id = useDocsStore((s) => s.curDocId)
+  const curDoc = useMemo(() => docs.find((d) => d.id === id), [docs, id])
+  const { title = '' } = curDoc || {}
 
   useEffect(() => {
-    const title = getTitle()
     if (title) {
-      setMessage({
-        role: 'system',
-        content: t('writingArticle') + ', ' + t('titleTip', { title }),
-      })
+      setMessage({ role: 'system', content: t('writingArticle') + ', ' + t('titleTip', { title }) })
     }
-  }, [t])
+  }, [t, title])
 
   return message
 }
 
-export function useGenSelectedContentMessages(
-  editor: Editor | null
-): MessagesType {
+export function useGenSelectedContentMessages(editor: Editor | null): MessagesType {
   const t = useTranslations('AIInput')
   const [messages, setMessages] = useState<MessagesType>([])
 
@@ -43,14 +40,11 @@ export function useGenSelectedContentMessages(
     if (empty) return
     let selectedText = editor.state.doc.textBetween(from, to)
     if (selectedText.length > AI_CONTEXT_MAX_LENGTH) {
-      selectedText = selectedText.slice(0, AI_CONTEXT_MAX_LENGTH) + '...' // 截断
+      selectedText = selectedText.slice(0, AI_CONTEXT_MAX_LENGTH) + '...' // 截斷
     }
-    setMessages((arr) =>
-      arr.concat({ role: 'user', content: t('contentWillHandle') })
-    )
-    setMessages((arr) =>
-      arr.concat({ role: 'assistant', content: selectedText })
-    )
+    setMessages([])
+    setMessages((arr) => arr.concat({ role: 'user', content: t('contentWillHandle') }))
+    setMessages((arr) => arr.concat({ role: 'assistant', content: selectedText }))
   }, [editor, t])
 
   return messages

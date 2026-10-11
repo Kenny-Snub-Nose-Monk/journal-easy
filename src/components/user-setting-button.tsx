@@ -15,12 +15,6 @@ import { useUserStore } from '@/stores/user-store'
 import { User } from 'next-auth'
 import { useTranslations } from 'next-intl'
 
-interface IUser {
-  name?: string | null
-  image?: string | null
-  email?: string | null
-}
-
 export default function UserSettingButton() {
   const userInfo = useUserStore((s) => s.userInfo)
   const { name, image, email } = userInfo || {}
@@ -32,18 +26,14 @@ export default function UserSettingButton() {
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 " variant="ghost">
           <UserAvatar user={userInfo} />
-          &nbsp;&nbsp;{t('title')}
+          {t('title')}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent role="user-setting-content">
         <DialogHeader>
           <DialogTitle>{t('changeUerInfo')}</DialogTitle>
-          <UserProfileForm
-            name={name || ''}
-            avatar={image || ''}
-            email={email || ''}
-          />
         </DialogHeader>
+        <UserProfileForm name={name || ''} avatar={image || ''} email={email || ''} />
       </DialogContent>
     </Dialog>
   )
@@ -54,7 +44,7 @@ function UserAvatar({ user }: { user: User | null }) {
   if (!name) name = email
 
   return (
-    <Avatar className="h-7 w-7 border">
+    <Avatar className="h-7 w-7 border mr-1">
       <AvatarImage src={image || ''} alt={name || ''} />
       <AvatarFallback>{name?.slice(0, 1)}</AvatarFallback>
     </Avatar>

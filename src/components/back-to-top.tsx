@@ -1,22 +1,17 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { ArrowUpFromLine } from 'lucide-react'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import debounce from 'lodash.debounce'
 import { useEffect, useState } from 'react'
-import { WORK_CONTENT_SCROLL_CONTAINER } from '@/constants'
+import { WORK_CONTENT_SCROLL_CONTAINER, WORK_CONTENT_CONTAINER_ID } from '@/constants'
 
-export default function BackToTop(props: { target: React.RefObject<any> }) {
-  const { target } = props
-
+export default function BackToTop() {
   const [shouldShowBackToTop, setShouldShowBackToTop] = useState(false)
 
-  // 檢查滾動條狀態，判斷是否展示”返回頂部“按鈕。
+  // 检查滚动条状态，判断是否展示”返回顶部“按钮。
   const checkScrollBar = debounce(() => {
     const element = document.getElementById(WORK_CONTENT_SCROLL_CONTAINER)
     if (element) {
@@ -26,7 +21,7 @@ export default function BackToTop(props: { target: React.RefObject<any> }) {
   }, 200)
 
   useEffect(() => {
-    // 由於滾動條的捕獲元素為WORK_CONTENT_SCROLL_CONTAINER，所以在此處捕獲其滾動事件
+    // 由于滚动条的捕获元素为WORK_CONTENT_SCROLL_CONTAINER，所以在此处捕获其滚动事件
     const element = document.getElementById(WORK_CONTENT_SCROLL_CONTAINER)
     if (element) {
       element.addEventListener('scroll', checkScrollBar)
@@ -39,7 +34,9 @@ export default function BackToTop(props: { target: React.RefObject<any> }) {
   }, [checkScrollBar])
 
   const scrollToTop = () => {
-    scrollIntoView(target.current!, {
+    const container = document.getElementById(WORK_CONTENT_CONTAINER_ID)
+    if (!container) return
+    scrollIntoView(container, {
       behavior: 'smooth',
       block: 'start',
     })
@@ -51,16 +48,12 @@ export default function BackToTop(props: { target: React.RefObject<any> }) {
         <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                onClick={scrollToTop}
-                className="fixed bottom-24 right-10 rounded-full"
-              >
-                <ArrowUpFromLine />
+              <Button variant="outline" onClick={scrollToTop} size="icon" className="rounded-full">
+                <ArrowUpFromLine className="w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent align="center">
-              <p>回頂部</p>
+              <p>Back to top</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

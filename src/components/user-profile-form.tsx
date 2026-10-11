@@ -5,15 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { patch } from '@/lib/ajax'
 import { useTranslations } from 'next-intl'
 
 // Define your form schema.
@@ -47,28 +41,19 @@ export function UserProfileForm(props: IProps) {
 
   // Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // console.log(values)
-
-    const res = await fetch('/api/user', {
-      body: JSON.stringify({
-        ...values,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-    })
-    const data = await res.json()
-    // console.log('res data', data)
-    if (data.errno === 0) {
+    const { errno } = await patch('/api/user', values)
+    if (errno === 0) {
       setSuccessStatus(true)
     }
+    setTimeout(() => {
+      location.href = location.href
+    }, 500)
   }
 
   return (
     <div className="p-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" role="user-profile-form">
           <FormField
             control={form.control}
             name="email"
@@ -76,7 +61,7 @@ export function UserProfileForm(props: IProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} disabled />
+                  <Input role="email-input" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,7 +74,7 @@ export function UserProfileForm(props: IProps) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Input your name" {...field} />
+                  <Input role="name-input" placeholder="Input your name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -102,16 +87,13 @@ export function UserProfileForm(props: IProps) {
               <FormItem>
                 <FormLabel>Avatar</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="https://github.com/username.png"
-                    {...field}
-                  />
+                  <Input role="avatar-input" placeholder="https://github.com/username.png" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={successStatus}>
+          <Button role="submit-button" type="submit" disabled={successStatus}>
             {successStatus ? t('success') : t('submit')}
           </Button>
         </form>

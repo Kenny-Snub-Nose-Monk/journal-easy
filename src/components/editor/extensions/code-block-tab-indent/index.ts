@@ -6,13 +6,13 @@ export const extensionName = 'codeBlockTabIndent'
 export const CodeBlockTabIndent = Extension.create({
   name: extensionName,
 
-  //自定義插件，用於tab 鍵處理縮進
+  //自定义插件，用于tab 键处理缩进
   addProseMirrorPlugins() {
     return [
       new Plugin({
         key: new PluginKey(extensionName),
         props: {
-          // handleKeyDown是ProseMirror 插件 API 的一部分，用於在插件中捕獲和處理鍵盤事件。
+          // handleKeyDown是ProseMirror 插件 API 的一部分，用于在插件中捕获和处理键盘事件。
           handleKeyDown(view, event) {
             if (event.key === 'Tab') {
               const { state, dispatch } = view
@@ -20,16 +20,16 @@ export const CodeBlockTabIndent = Extension.create({
               if (empty) {
                 if ($from.parent.type.name === 'codeBlock') {
                   event.preventDefault()
-                  // 創建一個事務，在當前光標位置插入 縮進(4個空格)
+                  // 创建一个事务，在当前光标位置插入 缩进(4个空格)
                   const tr = state.tr.insertText('    ', $from.pos)
-                  // 派發該事務，從而更新文檔內容並通知編輯器視圖進行更新。
+                  // 派发该事务，从而更新文档内容并通知编辑器视图进行更新。
                   dispatch(tr)
-                  // true，表示事件已經處理，不需要再傳遞給其他插件或默認行為
+                  // true，表示事件已经处理，不需要再传递给其他插件或默认行为
                   return true
                 }
               }
             }
-            // false，表示事件未處理，可以繼續傳遞給其他插件或默認行為
+            // false，表示事件未处理，可以继续传递给其他插件或默认行为
             return false
           },
         },

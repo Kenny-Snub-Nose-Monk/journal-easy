@@ -1,105 +1,46 @@
-import 'server-only'
+import 'server-only' // 標記只在伺服器端使用（客戶端組件引入會報錯）
+
 import nodemailer from 'nodemailer'
 
-interface EmailConfig {
-  subject: string
-  to: string | string[]
-  template: string
-}
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
+const config = {
+  host: process.env.EMAIL_HOST,
+  port: parseInt(process.env.EMAIL_PORT || '', 10),
   auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
+    user: process.env.EMAIL_FROM,
+    pass: process.env.EMAIL_PASSWORD,
   },
-})
-
-// Verify email configuration
-function verifyEmailConfig() {
-  if (!process.env.EMAIL_SERVER_USER || !process.env.EMAIL_SERVER_PASSWORD) {
-    console.error('Missing email configuration:', {
-      hasEmailUser: !!process.env.EMAIL_SERVER_USER,
-      hasServerPassword: !!process.env.EMAIL_SERVER_PASSWORD,
-    })
-    throw new Error('Email configuration is missing')
-  }
 }
 
-// Generic email sending function
-export async function sendEmail({ subject, to, template }: EmailConfig) {
-  verifyEmailConfig()
+const transporter = nodemailer.createTransport(config)
 
-  const mailOptions = {
-    from: process.env.EMAIL_SERVER_USER,
-    to,
+interface SendEmailOpt {
+  subject?: string
+  text?: string
+  toEmail?: string
+}
+
+export async function sendEmail(opt: SendEmailOpt = {}) {
+  const { subject = '', text = '', toEmail } = opt
+  if (!subject) {
+    console.error('subject required')
+    return
+  }
+
+  if (!process.env.EMAIL_HOST || !process.env.EMAIL_FROM || !(toEmail || process.env.NOTICE_EMAIL_TO)) {
+    console.log('Wont send email in dev env... ', subject, text)
+    return
+  }
+
+  const mailConfig = {
+    from: `Journal Easy<${process.env.EMAIL_FROM}>`, // '暱稱<發件人郵箱>'
     subject,
-    html: template,
+    to: toEmail || process.env.NOTICE_EMAIL_TO,
+    text,
   }
-
-  try {
-    await transporter.verify()
-    console.log('Email service ready')
-
-    const info = await transporter.sendMail(mailOptions)
-    console.log('Email sent successfully:', info.response)
-    return info
-  } catch (emailError) {
-    console.error('Failed to send email:', emailError)
-    throw emailError
-  }
-}
-
-// Predefined email templates
-export const EmailTemplates = {
-  ERROR_ALERT: (error: any, context: string) => `
-    <h2>System Error Alert</h2>
-    <p><strong>Context:</strong> ${context}</p>
-    <p><strong>Error Message:</strong> ${error.message || 'Unknown error'}</p>
-    <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-    <p><strong>Stack Trace:</strong></p>
-    <pre>${error.stack || 'No stack trace available'}</pre>
-  `,
-
-  USAGE_ALERT: (usage: { user: string; tokens: number }) => `
-    <h2>Usage Alert</h2>
-    <p><strong>User:</strong> ${usage.user}</p>
-    <p><strong>Tokens Used:</strong> ${usage.tokens}</p>
-    <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-  `,
-
-  USER_FEEDBACK: (feedback: { user: string; message: string }) => `
-    <h2>User Feedback Received</h2>
-    <p><strong>From User:</strong> ${feedback.user}</p>
-    <p><strong>Message:</strong> ${feedback.message}</p>
-    <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-  `,
-}
-
-// Utility functions for common email scenarios
-export async function sendErrorAlert(error: any, context: string) {
-  return sendEmail({
-    subject: 'System Error Alert',
-    to: 'love970057@gmail.com', // Consider moving to environment variable
-    template: EmailTemplates.ERROR_ALERT(error, context),
+  const res = await transporter.sendMail(mailConfig).catch((error) => {
+    console.error('Email delivery failed', error.message)
+    return null
   })
-}
-
-export async function sendUsageAlert(usage: { user: string; tokens: number }) {
-  return sendEmail({
-    subject: 'Usage Alert',
-    to: 'love970057@gmail.com',
-    template: EmailTemplates.USAGE_ALERT(usage),
-  })
-}
-
-export async function sendUserFeedback(feedback: {
-  user: string
-  message: string
-}) {
-  return sendEmail({
-    subject: 'User Feedback',
-    to: 'love970057@gmail.com',
-    template: EmailTemplates.USER_FEEDBACK(feedback),
-  })
+  console.log('Message sent: %s', res?.messageId)
+  return res
 }

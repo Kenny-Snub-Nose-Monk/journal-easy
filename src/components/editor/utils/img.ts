@@ -1,17 +1,20 @@
 import imageCompression from 'browser-image-compression'
-// 壓縮圖片的配置，參考文檔 https://www.npmjs.com/package/browser-image-compression
+
+// 压缩图片的配置，参考文档 https://www.npmjs.com/package/browser-image-compression
 const imageCompressionOptions = {
-  maxSizeMB: 1,
-  maxWidthOrHeight: 1200,
+  maxSizeMB: 2,
+  maxWidthOrHeight: 2200,
   useWebWorker: true,
 }
-// 壓縮圖片
+
+// 压缩图片
 export async function compressImage(file: File) {
   const blob = await imageCompression(file, imageCompressionOptions)
   const compressedFile = new File([blob], file.name)
   return compressedFile
 }
-// 獲取圖片尺寸
+
+// 获取图片尺寸
 export async function getImageSize(file: File) {
   return new Promise<{ width: number; height: number }>((resolve) => {
     const img = new Image()
@@ -22,7 +25,7 @@ export async function getImageSize(file: File) {
   })
 }
 
-// 根據寬高比 例獲取 width percent （25% 50% 75% 100%）
+// 根据宽高比例获取 width percent （25% 50% 75% 100%）
 export function getWidthPercent(ratio: number) {
   if (ratio > 2) return 100 // 如 width: 200px, height: 100px
   if (ratio > 1.5) return 75 // 如 width: 150px, height: 100px

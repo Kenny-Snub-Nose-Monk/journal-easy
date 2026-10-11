@@ -4,13 +4,11 @@ import { Image as BaseImage } from '@tiptap/extension-image'
 import ImageBlockView from './image-block-view'
 
 declare module '@tiptap/core' {
+  // 扩展 TS 类型
   interface Commands<ReturnType> {
     imageBlock: {
       setImageBlock: (attributes: { src: string }) => ReturnType
-      setImageBlockAt: (attributes: {
-        src: string
-        pos: number | Range
-      }) => ReturnType
+      setImageBlockAt: (attributes: { src: string; pos: number | Range }) => ReturnType
       setImageBlockAlign: (align: 'left' | 'center' | 'right') => ReturnType
       setImageBlockWidth: (width: number) => ReturnType
       setImageBlockRatio: (ratio: number) => ReturnType
@@ -18,20 +16,36 @@ declare module '@tiptap/core' {
   }
 }
 
+function genMargin(align: string) {
+  switch (align) {
+    case 'left':
+      return '0 auto 0 0'
+    case 'right':
+      return '0 0 0 auto'
+    case 'center':
+      return '0 auto'
+    default:
+      return ''
+  }
+}
+
 const ImageBlock = BaseImage.extend({
   name: 'imageBlock',
-  group: 'block',
+
+  group: 'block', // 歸類為 block 類型
+
   defining: true,
+
   isolating: true,
 
-  //定義屬性
+  // 定义属性
   addAttributes() {
     return {
       src: {
         default: '',
-        parseHTML: (element) => element.getAttribute('src'),
+        parseHTML: (element) => element.getAttribute('src'), // 從 HTML 中解析出屬性
         renderHTML: (attributes) => ({
-          //把屬性渲染到HTML中
+          // 把属性渲染到 HTML 中
           src: attributes.src,
         }),
       },
@@ -42,6 +56,7 @@ const ImageBlock = BaseImage.extend({
           'data-width': attributes.width,
         }),
       },
+      // 宽高比例
       ratio: {
         default: NaN,
         parseHTML: (element) => element.getAttribute('data-ratio'),
@@ -49,6 +64,7 @@ const ImageBlock = BaseImage.extend({
           'data-ratio': attributes.ratio,
         }),
       },
+      // 对齐方式
       align: {
         default: 'center',
         parseHTML: (element) => element.getAttribute('data-align'),
@@ -67,7 +83,15 @@ const ImageBlock = BaseImage.extend({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['img', mergeAttributes(this.options, HTMLAttributes)]
+    return [
+      'div',
+      {},
+      [
+        'div',
+        { style: `width: ${HTMLAttributes['data-width']}; margin: ${genMargin(HTMLAttributes['data-align'])};` },
+        ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)],
+      ],
+    ]
   },
 
   addCommands() {
@@ -92,13 +116,13 @@ const ImageBlock = BaseImage.extend({
           })
         },
 
-      // 設置對齊方式
+      // 设置对齐方式
       setImageBlockAlign:
         (align) =>
         ({ commands }) =>
           commands.updateAttributes('imageBlock', { align }),
 
-      // 設置寬度
+      // 设置宽度
       setImageBlockWidth:
         (width) =>
         ({ commands }) =>
@@ -106,7 +130,7 @@ const ImageBlock = BaseImage.extend({
             width: `${Math.max(0, Math.min(100, width))}%`,
           }),
 
-      // 設置比例
+      // 设置比例
       setImageBlockRatio:
         (ratio) =>
         ({ commands }) =>
@@ -115,8 +139,8 @@ const ImageBlock = BaseImage.extend({
           }),
     }
   },
+
   addNodeView() {
-    // @ts-ignore
     return ReactNodeViewRenderer(ImageBlockView)
   },
 })

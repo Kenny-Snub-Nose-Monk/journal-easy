@@ -4,35 +4,23 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { IDoc } from '@/stores/docs-store'
 import { timeAgo } from '@/lib/dt'
 import { get } from '@/lib/ajax'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import debounce from 'lodash.debounce'
-import useBindKeyPress from '../hooks/useBindKeyPress'
+import useDialogListKeyPress from './hooks/useDialogListKeyPress'
 import { cn } from '@/lib/utils'
 import { useTranslations, useLocale } from 'next-intl'
+import { useDialogStore } from '@/stores/dialog-store'
 
 export default function StarList() {
   const t = useTranslations('favorList')
-
+  const { favoriteDialogOpen, setFavoriteDialogOpen } = useDialogStore()
   return (
-    <Dialog>
+    <Dialog open={favoriteDialogOpen} onOpenChange={setFavoriteDialogOpen}>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <Star className="h-4 w-4 mr-1" />
@@ -72,7 +60,7 @@ function StarListTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 搜索關鍵字
+  // 搜索关键字
   const [keyword, setKeyword] = useState('')
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newKeyword = e.target.value
@@ -81,18 +69,14 @@ function StarListTable() {
     searchFn(newKeyword)
   }
 
-  // 點擊，跳轉
+  // 点击，跳转
   function handleClick(doc: IDoc) {
     const { id } = doc
     location.href = `/work/${id}`
   }
 
-  // 監聽鍵盤上下鍵和回車鍵，返回當前激活的文檔的索引 currentIndex
-  const { currentIndex, setCurrentIndex } = useBindKeyPress({
-    list,
-    handleClick,
-    setKeyword,
-  })
+  // 监听键盘上下键和回车键，返回当前激活的文档的索引 currentIndex
+  const { currentIndex, setCurrentIndex } = useDialogListKeyPress({ list, handleClick, setKeyword })
 
   return (
     <div className="h-96 flex flex-col">
@@ -108,16 +92,12 @@ function StarListTable() {
       <div className="flex-1 overflow-y-auto">
         {loading && (
           <div className="h-96">
-            <p className="mt-10 text-center text-muted-foreground">
-              loading...
-            </p>
+            <p className="mt-10 text-center text-muted-foreground">loading...</p>
           </div>
         )}
         {!loading && list.length === 0 && (
           <div className="h-96">
-            <p className="mt-10 text-center text-muted-foreground">
-              {t('notFound')}
-            </p>
+            <p className="mt-10 text-center text-muted-foreground">{t('notFound')}</p>
           </div>
         )}
         {!loading && list.length > 0 && (
@@ -155,7 +135,7 @@ interface ItemProps {
   handleClick: (doc: IDoc) => void
 }
 
-// 單獨拆分出 Item 組件，使得列表元素過多並需要滾動時，滾動到超出視口的文章
+// 单独拆分出 Item 组件，使得列表元素过多并需要滚动时，滚动到超出视口的文章
 function Item(props: ItemProps) {
   const { doc, docIndex, currentIndex, handleClick } = props
   const isCurrent = currentIndex === docIndex
@@ -173,7 +153,7 @@ function Item(props: ItemProps) {
     })
   }, [isCurrent])
 
-  // 緩存一下更新時間，防止鍵盤上下鍵選擇的時候，由於父組件重新渲染，導致更新時間頻繁重複渲染
+  // 缓存一下更新时间，防止键盘上下键选择的时候，由于父组件重新渲染，导致更新时间频繁重复渲染
   const time = useMemo(() => {
     return timeAgo(doc.updatedAt?.toString() || '', locale === 'zh-tw')
   }, [doc.updatedAt, locale])

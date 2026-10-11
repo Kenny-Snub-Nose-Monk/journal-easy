@@ -1,11 +1,16 @@
 'use client'
+
 import { Link } from '@/i18n/routing'
-import { useEffect } from 'react'
+import { useEffect, CSSProperties } from 'react'
 import { get, IAjaxRes } from '@/lib/ajax'
 import { useEditorStore } from '@/stores/editor-store'
 import { useTranslations } from 'next-intl'
 
-export default function Info() {
+interface IProps {
+  style?: CSSProperties
+}
+
+export default function Info(props: IProps) {
   const AITokenLimit = useEditorStore((s) => s.AITokenLimit)
   const setAITokenLimit = useEditorStore((s) => s.setAITokenLimit)
   const t = useTranslations('AIInput')
@@ -24,8 +29,9 @@ export default function Info() {
       setAITokenLimit(tokensLimit)
     })
   }, [AITokenLimit, setAITokenLimit])
+
   return (
-    <p className="text-sm text-center my-1 text-muted-foreground">
+    <p className="text-sm text-center my-1 text-muted-foreground" style={props.style}>
       {t('mistakeTip')}.&nbsp;
       {t.rich('limitTip', {
         limit: (chunks: any) => (

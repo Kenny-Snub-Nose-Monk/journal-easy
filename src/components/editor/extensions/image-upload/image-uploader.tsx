@@ -18,10 +18,9 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
   const imgRef = useRef<HTMLImageElement>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
-
   function handleUploadClick(e: React.MouseEvent<HTMLDivElement>) {
     if (draggedInside) return
-    setCurUploaderRange() // 設置當前上傳圖片的位置
+    setCurUploaderRange() // 設定當前上傳圖片的位置
     fileInputRef.current?.click()
   }
 
@@ -33,13 +32,11 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
   const onFileChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) return
-
       const file = e.target.files[0]
-
       if (!file) return
       uploadFile(file)
       setSelectedFile(file)
-    }, // 選擇文件後，調用 uploadFile 方法, 沒選擇回傳 null
+    },
     [uploadFile]
   )
 
@@ -76,12 +73,7 @@ export default function ImageUploadView(props: ImageUploadViewProps) {
   )
 
   return (
-    <div
-      className={wrapperClass}
-      onDrop={onDrop}
-      onDragOver={onDragEnter}
-      onDragLeave={onDragLeave}
-    >
+    <div className={wrapperClass} onDrop={onDrop} onDragOver={onDragEnter} onDragLeave={onDragLeave}>
       <ImageIcon className="w-12 h-12 mb-4 text-black dark:text-white opacity-20" />
       <div className="flex flex-col items-center justify-center gap-2">
         <div className="text-sm font-medium text-center text-neutral-400 dark:text-neutral-500">

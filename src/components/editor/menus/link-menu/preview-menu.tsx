@@ -1,4 +1,4 @@
-import { Square, SquarePen, Unlink } from 'lucide-react'
+import { SquarePen, Unlink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export type LinkPreviewMenuProps = {
@@ -13,12 +13,7 @@ export function LinkPreviewMenu(props: LinkPreviewMenuProps) {
   return (
     <>
       <div className="inline-block max-w-[200px] text-nowrap overflow-hidden text-ellipsis pl-2 mt-1">
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm underline"
-        >
+        <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm underline">
           {url}
         </a>
       </div>
