@@ -29,6 +29,8 @@ npm run dev
 
 開啟 `http://localhost:3000`，以 `LOCAL_PASSWORD` 登入。登入後可建立日記、編輯、搜尋、收藏、管理版本與發布。資料存在 Docker 的 `journal-db` volume，圖片存在 `data/uploads`；瀏覽器草稿只是短期恢復用途，不是備份。
 
+啟動指令綁定 `localhost`，讓 Next.js 的伺服器位址與語系 middleware 的內部改寫使用相同主機。在目前框架版本下，指定 `127.0.0.1` 可能讓內部改寫變成代理請求，造成首頁反覆重新導向。請使用上面的 `npm run dev` 與 `http://localhost:3000`。
+
 若已有自己的本機 PostgreSQL，直接設定 `DATABASE_URL`，不需執行 Docker。
 
 ## 舊版資料升級
