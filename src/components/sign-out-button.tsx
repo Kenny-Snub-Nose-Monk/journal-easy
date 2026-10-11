@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { post } from '@/lib/ajax'
 import { useTranslations } from 'next-intl'
@@ -13,16 +14,10 @@ export default function SignOutButton({
   children: React.ReactNode
   className?: string
   size?: 'sm' | 'lg'
-  variant?:
-    | 'secondary'
-    | 'ghost'
-    | 'link'
-    | 'default'
-    | 'destructive'
-    | 'outline'
-    | null
+  variant?: 'secondary' | 'ghost' | 'link' | 'default' | 'destructive' | 'outline' | null
 }) {
   const t = useTranslations('userInfo')
+  const [disabled, setDisabled] = useState(false)
 
   async function onClick() {
     const text = t('logoutConfirm')
@@ -31,18 +26,14 @@ export default function SignOutButton({
 
     try {
       await post('/api/user/sign-out', {})
+      setDisabled(true)
     } catch (e) {}
     console.log('sign out')
     location.href = '/'
   }
   return (
     <div className="w-full">
-      <Button
-        className={className}
-        size={size}
-        variant={variant}
-        onClick={onClick}
-      >
+      <Button className={className} size={size} variant={variant} onClick={onClick} disabled={disabled}>
         {children}
       </Button>
     </div>

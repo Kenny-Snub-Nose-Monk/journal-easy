@@ -2,6 +2,7 @@ import { db } from '@/db/db'
 import { redirect } from '@/i18n/routing'
 import { getLocale } from 'next-intl/server'
 import { getUserInfo } from '@/lib/session'
+import { getNextSortOrderForParent } from '@/lib/doc-sort-order.server'
 import {
   DEFAULT_NEW_DOC_TITLE,
   DEFAULT_NEW_DOC_CONTENT,
@@ -23,7 +24,7 @@ export default async function Work() {
     },
   })
   if (firstDoc != null) {
-    // 找到第一篇文檔，然後跳轉過去
+    // 找到第一篇文档，然后跳转过去
     redirect(`/work/${firstDoc?.id}`)
     return
   }
@@ -32,27 +33,27 @@ export default async function Work() {
     where: { userId: user.id }, // 不限制 delete
   })
   if (count > 0) {
-    // 有文檔，但是都是刪除狀態
+    // 有文档，但是都是删除状态
     redirect(`/work/0`)
     return
   }
 
-  // 找不到任何文檔，則新建文檔
+  // 找不到任何文档，则新建文档
   const locale = await getLocale()
+  const sortOrder = await getNextSortOrderForParent(user.id, null)
   const newDoc = await db.doc.create({
     data: {
       userId: user.id,
-      title:
-        locale === 'zh-tw' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN, // useCreateEditor 中會用到這個變量，做判斷
-      content:
-        locale === 'zh-tw'
-          ? DEFAULT_NEW_DOC_CONTENT
-          : DEFAULT_NEW_DOC_CONTENT_EN,
+      icon: '🐈',
+      title: locale === 'zh-tw' ? DEFAULT_NEW_DOC_TITLE : DEFAULT_NEW_DOC_TITLE_EN, // useCreateEditor 中會用到這個變量，做判斷
+      content: locale === 'zh-tw' ? DEFAULT_NEW_DOC_CONTENT : DEFAULT_NEW_DOC_CONTENT_EN,
+      isStar: true,
+      sortOrder,
     },
   })
-  // 跳轉
+  // 跳转
   redirect(`/work/${newDoc.id}`)
 
-  // 不渲染頁面
+  // 不渲染页面
   return null
 }

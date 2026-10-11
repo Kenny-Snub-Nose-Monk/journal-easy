@@ -12,6 +12,7 @@ import {
   Columns2,
   Image,
   Table,
+  Workflow,
 } from 'lucide-react'
 import { Group } from './types'
 
@@ -91,26 +92,12 @@ export const GROUPS: Group[] = [
       },
       {
         name: 'codeBlock',
-        label: 'CodeBlock 代碼塊',
+        label: 'CodeBlock 程式碼區塊',
         Icon: SquareCode,
         description: 'Code block with syntax highlighting',
         shouldBeHidden: (editor: Editor) => editor.isActive('columns'),
         action: (editor: Editor) => {
           editor.chain().focus().setCodeBlock().run()
-        },
-      },
-      {
-        name: 'table',
-        label: 'Table 表格',
-        Icon: Table,
-        description: 'Insert a table',
-        shouldBeHidden: (editor) => editor.isActive('columns'),
-        action: (editor) => {
-          editor
-            .chain()
-            .focus()
-            .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
-            .run()
         },
       },
     ],
@@ -119,10 +106,19 @@ export const GROUPS: Group[] = [
     name: 'insert',
     title: '插入',
     commands: [
-      // TODO: table
+      {
+        name: 'table',
+        label: 'Table 表格',
+        Icon: Table,
+        description: 'Insert a table',
+        shouldBeHidden: (editor) => editor.isActive('columns'),
+        action: (editor) => {
+          editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run()
+        },
+      },
       {
         name: 'image',
-        label: 'Image 图片',
+        label: 'Image 圖片',
         Icon: Image,
         description: 'Insert an image',
         aliases: ['img'],
@@ -154,6 +150,17 @@ export const GROUPS: Group[] = [
         aliases: ['hr'],
         action: (editor: Editor) => {
           editor.chain().focus().setHorizontalRule().run()
+        },
+      },
+      {
+        name: 'mermaid',
+        label: 'Mermaid 圖表',
+        Icon: Workflow,
+        description: 'Insert a Mermaid diagram',
+        aliases: ['diagram', 'flowchart', 'chart'],
+        shouldBeHidden: (editor) => editor.isActive('columns'),
+        action: (editor) => {
+          editor.chain().focus().setMermaidBlock().run()
         },
       },
     ],

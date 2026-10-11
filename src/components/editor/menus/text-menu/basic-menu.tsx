@@ -1,11 +1,9 @@
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { Bold, Italic, Code, Underline } from 'lucide-react'
-interface IProps {
-  editor: Editor | null
-}
-export default function BasicMenu(props: IProps) {
-  const { editor } = props
+import { useGetEditor } from '@/components/editor'
+
+export default function BasicMenu() {
+  const editor = useGetEditor()
   if (editor == null) return
 
   return (

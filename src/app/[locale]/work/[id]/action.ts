@@ -1,5 +1,5 @@
 import { db } from '@/db/db'
-import { sendErrorAlert } from '@/lib/mailer'
+import { sendEmail } from '@/lib/mailer'
 
 export async function getDoc(id: string) {
   try {
@@ -8,7 +8,6 @@ export async function getDoc(id: string) {
       select: {
         title: true,
         isStar: true,
-        sharePassword: true,
         userId: true,
       },
     })
@@ -16,7 +15,7 @@ export async function getDoc(id: string) {
     return doc
   } catch (err: any) {
     console.error('getDoc error: ', err)
-    sendErrorAlert(err, 'getDoc error')
+    sendEmail({ subject: 'getDoc error', text: err.message || 'error' })
     return err
   }
 }

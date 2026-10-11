@@ -1,21 +1,13 @@
 'use client'
 
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { AlignLeft, AlignCenter, AlignRight, ChevronDown } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { AlignCenter, AlignLeft, AlignRight, ChevronDown } from 'lucide-react'
+import { useGetEditor } from '@/components/editor'
 
-interface IProps {
-  editor: Editor | null
-}
-
-export default function AlignMenu(props: IProps) {
-  const { editor } = props
-  if (editor == null) return null
+export default function AlignMenu() {
+  const editor = useGetEditor()
+  if (editor == null) return
 
   return (
     <Popover>
@@ -30,6 +22,7 @@ export default function AlignMenu(props: IProps) {
         <Button
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          variant={editor.isActive({ textAlign: 'left' }) ? 'secondary' : 'ghost'}
           tabIndex={-1}
         >
           <AlignLeft className="h-4 w-4" />
@@ -37,9 +30,7 @@ export default function AlignMenu(props: IProps) {
         <Button
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          variant={
-            editor.isActive({ textAlign: 'center' }) ? 'secondary' : 'ghost'
-          }
+          variant={editor.isActive({ textAlign: 'center' }) ? 'secondary' : 'ghost'}
           tabIndex={-1}
         >
           <AlignCenter className="h-4 w-4" />
@@ -47,9 +38,7 @@ export default function AlignMenu(props: IProps) {
         <Button
           size="sm"
           onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          variant={
-            editor.isActive({ textAlign: 'right' }) ? 'secondary' : 'ghost'
-          }
+          variant={editor.isActive({ textAlign: 'right' }) ? 'secondary' : 'ghost'}
           tabIndex={-1}
         >
           <AlignRight className="h-4 w-4" />

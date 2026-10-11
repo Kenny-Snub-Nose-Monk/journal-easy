@@ -3,13 +3,11 @@ import { HocuspocusProvider, WebSocketStatus } from '@hocuspocus/provider'
 import { Editor } from '@tiptap/core'
 import { useEditorStore, ICollabUser } from '@/stores/editor-store'
 
-export default function useCollabStateAndUsers(
-  editor: Editor | null,
-  provider: HocuspocusProvider
-) {
+export default function useCollabStateAndUsers(editor: Editor | null, provider: HocuspocusProvider | undefined) {
   // update collaborative state
   const setCollaborativeState = useEditorStore((s) => s.setCollaborativeState)
   useEffect(() => {
+    if (provider == null) return
     const fn = (event: { status: WebSocketStatus }) => {
       setCollaborativeState(event.status)
     }
@@ -23,8 +21,7 @@ export default function useCollabStateAndUsers(
   // get collaboration users
   const setCollaborativeUsers = useEditorStore((s) => s.setCollaborativeUsers)
   useEffect(() => {
-    const users = (editor?.storage.collaborationCursor?.users ||
-      []) as ICollabUser[]
+    const users = (editor?.storage.collaborationCursor?.users || []) as ICollabUser[]
     if (users.length <= 0) {
       setCollaborativeUsers([])
       return

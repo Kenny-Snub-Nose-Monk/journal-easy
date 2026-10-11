@@ -14,6 +14,7 @@ const useDropZone = ({ uploader }: { uploader: (file: File) => void }) => {
     document.body.addEventListener('dragstart', dragStartHandler)
     document.body.addEventListener('dragend', dragEndHandler)
 
+    // 组件销毁时移除事件监听，否则可能会导致内存泄漏
     return () => {
       document.body.removeEventListener('dragstart', dragStartHandler)
       document.body.removeEventListener('dragend', dragEndHandler)
@@ -38,7 +39,7 @@ const useDropZone = ({ uploader }: { uploader: (file: File) => void }) => {
 
       const file = filteredFiles[0]
       if (file) {
-        uploader(file) // 上传图片
+        uploader(file) // 上傳圖片
       }
     },
     [uploader]

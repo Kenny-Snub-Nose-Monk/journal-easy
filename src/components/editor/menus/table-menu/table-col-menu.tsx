@@ -1,15 +1,17 @@
 import { BubbleMenu } from '@tiptap/react'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { ArrowLeftToLine, ArrowRightToLine, Trash2 } from 'lucide-react'
 import { MenuProps, ShouldShowProps } from '../types'
 import Wrapper from '../bubble-menu-wrapper'
 import { Button } from '@/components/ui/button'
 import { isColumnGripSelected } from './utils'
 import { useTranslations } from 'next-intl'
+import { useGetEditor } from '@/components/editor'
 
 export const TableColMenu = (props: MenuProps) => {
-  const { editor, appendTo } = props
+  const { appendTo } = props
   const t = useTranslations('editor')
+  const editor = useGetEditor()
 
   const shouldShow = useCallback(
     ({ view, state, from }: ShouldShowProps) => {
@@ -21,23 +23,29 @@ export const TableColMenu = (props: MenuProps) => {
     },
     [editor]
   )
+
   // 前面插入列
   const onAddColumnBefore = useCallback(() => {
     editor && editor.chain().focus().addColumnBefore().run()
   }, [editor])
-  // 後面插入列
+
+  // 后面插入列
   const onAddColumnAfter = useCallback(() => {
     editor && editor.chain().focus().addColumnAfter().run()
   }, [editor])
-  // 刪除列
+
+  // 删除列
   const onDeleteColumn = useCallback(() => {
     editor && editor.chain().focus().deleteColumn().run()
   }, [editor])
+
   if (editor == null) return
+  if (!editor.isEditable) return
+
   return (
     <BubbleMenu
       editor={editor}
-      pluginKey="tableRowMenu"
+      pluginKey="tableColMenu"
       updateDelay={0}
       shouldShow={shouldShow}
       tippyOptions={{
@@ -50,7 +58,7 @@ export const TableColMenu = (props: MenuProps) => {
         },
       }}
     >
-      <Wrapper className="flex-col items-start">
+      <Wrapper className="flex-col items-start" menuType="table-menu">
         <Button onClick={onAddColumnBefore} size="sm" variant="ghost">
           <ArrowLeftToLine className="w-4 h-4 mr-1" />
           {t('insertColBefore')}
@@ -59,7 +67,7 @@ export const TableColMenu = (props: MenuProps) => {
           <ArrowRightToLine className="w-4 h-4 mr-1" />
           {t('insertColAfter')}
         </Button>
-        <Button onClick={onDeleteColumn} size="sm" variant="ghost">
+        <Button onClick={onDeleteColumn} size="sm" className="w-full flex justify-start" variant="ghost">
           <Trash2 className="w-4 h-4 mr-1" />
           {t('removeCol')}
         </Button>

@@ -1,14 +1,6 @@
 import { Editor } from '@tiptap/react'
 import { useMemo } from 'react'
-import {
-  Heading1,
-  Heading2,
-  Heading3,
-  Pilcrow,
-  List,
-  ListOrdered,
-  ListTodo,
-} from 'lucide-react'
+import { Heading1, Heading2, Heading3, Pilcrow, List, ListOrdered, ListTodo } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 export const useContentType = (editor: Editor | null) => {
@@ -23,29 +15,15 @@ export const useContentType = (editor: Editor | null) => {
         label: t('heading1'),
         disabled: () => !editor.can().setHeading({ level: 1 }),
         isActive: () => editor.isActive('heading', { level: 1 }),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .lift('taskItem')
-            .liftListItem('listItem')
-            .setHeading({ level: 1 })
-            .run(),
+        onClick: () => editor.chain().focus().lift('taskItem').liftListItem('listItem').setHeading({ level: 1 }).run(),
       },
       {
         id: 'heading2',
         Icon: () => <Heading2 className="mr-2 h-4 w-4" />,
-        llabel: t('heading2'),
+        label: t('heading2'),
         disabled: () => !editor.can().setHeading({ level: 2 }),
         isActive: () => editor.isActive('heading', { level: 2 }),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .lift('taskItem')
-            .liftListItem('listItem')
-            .setHeading({ level: 2 })
-            .run(),
+        onClick: () => editor.chain().focus().lift('taskItem').liftListItem('listItem').setHeading({ level: 2 }).run(),
       },
       {
         id: 'heading3',
@@ -53,14 +31,7 @@ export const useContentType = (editor: Editor | null) => {
         label: t('heading3'),
         disabled: () => !editor.can().setHeading({ level: 3 }),
         isActive: () => editor.isActive('heading', { level: 3 }),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .lift('taskItem')
-            .liftListItem('listItem')
-            .setHeading({ level: 3 })
-            .run(),
+        onClick: () => editor.chain().focus().lift('taskItem').liftListItem('listItem').setHeading({ level: 3 }).run(),
       },
       {
         id: 'paragraph',
@@ -72,14 +43,7 @@ export const useContentType = (editor: Editor | null) => {
           !editor.isActive('orderedList') &&
           !editor.isActive('bulletList') &&
           !editor.isActive('taskList'),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .lift('taskItem')
-            .liftListItem('listItem')
-            .setParagraph()
-            .run(),
+        onClick: () => editor.chain().focus().lift('taskItem').liftListItem('listItem').setParagraph().run(),
       },
       {
         id: 'list',
@@ -106,6 +70,7 @@ export const useContentType = (editor: Editor | null) => {
         onClick: () => editor.chain().focus().toggleTaskList().run(),
       },
     ]
-  }, [editor])
+  }, [editor, t])
+
   return options
 }

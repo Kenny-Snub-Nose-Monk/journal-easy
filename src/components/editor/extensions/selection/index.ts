@@ -1,10 +1,13 @@
 import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
+
 export const Selection = Extension.create({
   name: 'selection',
+
   addProseMirrorPlugins() {
     const { editor } = this
+
     return [
       new Plugin({
         key: new PluginKey('selection'),
@@ -12,7 +15,8 @@ export const Selection = Extension.create({
           decorations(state) {
             if (state.selection.empty) return null
             if (editor.isFocused === true) return null
-            // 為選中的區域增加 CSS class `selection`
+
+            // 为选中的区域增加 CSS class `selection`
             return DecorationSet.create(state.doc, [
               Decoration.inline(state.selection.from, state.selection.to, {
                 class: 'selection',
@@ -24,4 +28,5 @@ export const Selection = Extension.create({
     ]
   },
 })
+
 export default Selection

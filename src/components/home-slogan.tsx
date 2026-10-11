@@ -22,7 +22,7 @@ export default function Slogan({ text }: { text: string }) {
   }, [text])
 
   return (
-    <p className="leading-7 [&:not(:first-child)]:mt-6 text-lg">
+    <p role="slogan" className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
       <span ref={el}>&nbsp;</span>
     </p>
   )

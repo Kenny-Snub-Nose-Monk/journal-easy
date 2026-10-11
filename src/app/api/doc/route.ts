@@ -1,45 +1,47 @@
 import { type NextRequest } from 'next/server'
+import { z } from 'zod'
 import { getUserInfo } from '@/lib/session'
 import { db } from '@/db/db'
-import {
-  genSuccessData,
-  genErrorData,
-  genUnAuthData,
-} from '@/app/api/utils/gen-res-data'
+import { genSuccessData, genErrorData, genUnAuthData } from '@/app/api/utils/gen-res-data'
 import { MAX_DOC_COUNT } from '@/constants'
-import { sendErrorAlert } from '@/lib/mailer'
+import { sendEmail } from '@/lib/mailer'
+import { getNextSortOrderForParent } from '@/lib/doc-sort-order.server'
 
-// 創建 doc
+const updateDocsSchema = z
+  .object({
+    ids: z.array(z.string().min(1)).min(1),
+    data: z.object({ isDeleted: z.boolean() }).strict(),
+  })
+  .strict()
+
+// 创建 doc
 export async function POST(request: Request) {
   const user = await getUserInfo()
   if (user == null) return Response.json(genUnAuthData())
 
-  // 當前文檔數量
+  // 当前文档数量
   const docCount = await db.doc.count({
     where: {
       userId: user.id,
       isDeleted: false,
     },
   })
-  if (docCount > MAX_DOC_COUNT) {
-    return Response.json(
-      genErrorData(`You only can create up to ${MAX_DOC_COUNT} docs`)
-    )
+  if (docCount >= MAX_DOC_COUNT) {
+    return Response.json(genErrorData(`You only can create up to ${MAX_DOC_COUNT} docs`))
   }
 
   const body = await request.json()
-  let {
-    originId,
-    id = undefined,
-    title = '',
-    content = '',
-    parentId = null,
-  } = body
+  let { originId, id = undefined, title = '', content = '', parentId = null } = body
+  let contentBinary = null
 
-  // 從 originId 複製一個
+  // 从 originId 复制一个
   if (originId) {
     const originDoc = await db.doc.findUnique({
-      where: { id: originId },
+      where: {
+        id: originId,
+        isDeleted: false,
+        OR: [{ userId: user.id }, { shareRelations: { some: { userId: user.id } } }],
+      },
     })
     if (originDoc == null) {
       return Response.json(genErrorData('Origin doc not found'))
@@ -47,24 +49,32 @@ export async function POST(request: Request) {
 
     title = (originDoc.title || 'unTitled') + ' copy'
     content = originDoc.content
-    parentId = originDoc.parentId
+    contentBinary = originDoc.contentBinary
+    parentId = originDoc.userId === user.id ? originDoc.parentId : null
   }
 
-  // 創建 doc
+  if (parentId) {
+    const parent = await db.doc.findFirst({ where: { id: parentId, userId: user.id, isDeleted: false } })
+    if (!parent) return Response.json(genErrorData('Parent not found'), { status: 400 })
+  }
+  // 创建 doc：按复制/新建后的父级重新计算同级末尾 sortOrder
   try {
+    const sortOrder = await getNextSortOrderForParent(user.id!, parentId)
     const doc = await db.doc.create({
       data: {
         id,
         title,
         content,
+        contentBinary,
         parentId,
+        sortOrder,
         userId: user.id!,
       },
     })
     return Response.json(genSuccessData(doc))
-  } catch (ex) {
+  } catch (ex: any) {
     console.error('Create doc error', ex)
-    sendErrorAlert(ex, 'Create doc error')
+    sendEmail({ subject: 'Create doc error', text: ex.message || 'error' })
     return Response.json(genErrorData('Create doc error'))
   }
 }
@@ -74,8 +84,9 @@ export async function PATCH(request: Request) {
   const user = await getUserInfo()
   if (user == null) return Response.json(genUnAuthData())
 
-  const body = await request.json()
-  const { ids = [], data = {} } = body
+  const parsed = updateDocsSchema.safeParse(await request.json().catch(() => null))
+  if (!parsed.success) return Response.json(genErrorData('Update payload invalid'))
+  const { ids, data } = parsed.data
 
   try {
     await db.doc.updateMany({
@@ -92,20 +103,20 @@ export async function PATCH(request: Request) {
   }
 }
 
-// 獲取多個 docs
+// 获取多个 docs
 export async function GET(request: NextRequest) {
   const user = await getUserInfo()
   if (user == null) return Response.json(genUnAuthData())
 
   const searchParams = request.nextUrl.searchParams
 
-  // 是否軟刪除
+  // 是否软删除
   const isDeletedParam = searchParams.get('isDeleted') // '0' 或 '1'
   let isDeletedFlag: boolean | null = null
   if (isDeletedParam === '0') isDeletedFlag = false
   if (isDeletedParam === '1') isDeletedFlag = true
 
-  // 徹底刪除 回收站 30 天之前的文檔
+  // 彻底删除 回收站 30 天之前的文档
   if (isDeletedFlag) {
     await deleteDocsBefore30Days()
   }
@@ -116,12 +127,12 @@ export async function GET(request: NextRequest) {
   if (isStarParam === '0') isStarFlag = false
   if (isStarParam === '1') isStarFlag = true
 
-  // 搜索關鍵字
+  // 搜索关键字
   const keyword = searchParams.get('keyword') || null
 
-  // where 條件
+  // where
   const whereOpt: any = {
-    isDeleted: false, // 默認
+    isDeleted: false, // 預設
   }
   if (isDeletedFlag != null) {
     if (isDeletedFlag) {
@@ -164,7 +175,7 @@ export async function GET(request: NextRequest) {
   return Response.json(genSuccessData(list || []))
 }
 
-// 刪除多個 docs
+// 删除多个 docs
 export async function DELETE(request: NextRequest) {
   const user = await getUserInfo()
   if (user == null) return Response.json(genUnAuthData())
@@ -173,7 +184,7 @@ export async function DELETE(request: NextRequest) {
   const { ids = [] } = body
 
   try {
-    // 真實刪除
+    // 真实删除
     await db.doc.deleteMany({
       where: {
         id: { in: ids },
@@ -187,7 +198,7 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-// 回收站 30 天之前的文檔，徹底刪除
+// 回收站 30 天之前的文档，彻底删除
 async function deleteDocsBefore30Days() {
   const user = await getUserInfo()
   if (user == null) return

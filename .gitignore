@@ -2,7 +2,6 @@
 
 # dependencies
 /node_modules
-/image-processor/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -29,6 +28,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.test
 
 # vercel
 .vercel
@@ -39,5 +39,14 @@ next-env.d.ts
 
 ISSUE.md
 
-# Google Cloud
-key.json
+.npmrc
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Local persistent images and database dumps
+/data/
+/backups/
+
+# Review patch generated from this checkout
+/deliverables/

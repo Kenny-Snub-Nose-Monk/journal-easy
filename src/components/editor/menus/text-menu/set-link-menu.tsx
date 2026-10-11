@@ -1,19 +1,11 @@
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Link } from 'lucide-react'
 import { LinkEditPanel } from '../link-menu/edit-panel'
+import { useGetEditor } from '@/components/editor'
 
-interface IProps {
-  editor: Editor | null
-}
-
-export default function SetLinkMenu(props: IProps) {
-  const { editor } = props
+export default function SetLinkMenu() {
+  const editor = useGetEditor()
   if (editor == null) return
 
   return (

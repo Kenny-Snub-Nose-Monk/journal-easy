@@ -8,9 +8,9 @@ interface IProps {
   id: string
   className?: string
 }
+
 export default function DocDeleteButton(props: IProps) {
   const { id, className = '' } = props
-  // 刪除文檔
   const { deleteDoc } = useDocs()
   const t = useTranslations('docItem')
 

@@ -5,11 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getHourStamp() {
-  const now = Date.now()
-  const hourStamp = now / (60 * 60 * 1000)
-  return Math.floor(hourStamp)
-}
+export const getRandomElement = (list: any) => list[Math.floor(Math.random() * list.length)]
 
-export const getRandomElement = (list: any) =>
-  list[Math.floor(Math.random() * list.length)]
+export async function loadScript(url: string) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = url
+    script.async = true
+    script.onload = resolve
+    script.onerror = reject
+    document.body.appendChild(script)
+  })
+}

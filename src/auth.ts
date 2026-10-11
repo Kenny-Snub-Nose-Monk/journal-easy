@@ -1,60 +1,82 @@
-import NextAuth from 'next-auth'
+import NextAuth, { type NextAuthConfig } from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { type Adapter } from 'next-auth/adapters'
+import GitHub from 'next-auth/providers/github'
+import Credentials from 'next-auth/providers/credentials'
+import Email from 'next-auth/providers/nodemailer'
+import { createHash, timingSafeEqual } from 'node:crypto'
 import { db } from '@/db/db'
 
-import GitHub from 'next-auth/providers/github'
-import Email from 'next-auth/providers/nodemailer'
-// 其他 provider 看 https://github.com/nextauthjs/next-auth/blob/main/apps/examples/nextjs/auth.ts
-
-import type { NextAuthConfig } from 'next-auth'
+const ownerEmail = (process.env.OWNER_EMAIL || 'owner@localhost').trim().toLowerCase()
+const allowedEmails = new Set([
+  ownerEmail,
+  ...(process.env.ALLOWED_EMAILS || '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean),
+])
+const providers: NextAuthConfig['providers'] = []
+if (process.env.LOCAL_PASSWORD) {
+  providers.push(
+    Credentials({
+      id: 'local',
+      name: 'Local password',
+      credentials: { password: { type: 'password' } },
+      async authorize(credentials) {
+        if (typeof credentials.password !== 'string' || !process.env.LOCAL_PASSWORD) return null
+        const hash = (value: string) => createHash('sha256').update(value).digest()
+        if (!timingSafeEqual(hash(credentials.password), hash(process.env.LOCAL_PASSWORD))) return null
+        return db.user.upsert({
+          where: { email: ownerEmail },
+          update: { isAdmin: true },
+          create: { email: ownerEmail, name: 'Journal owner', isAdmin: true },
+        })
+      },
+    })
+  )
+}
+if (process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET) providers.push(GitHub)
+if (process.env.EMAIL_HOST && process.env.EMAIL_FROM)
+  providers.push(
+    Email({
+      server: {
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT || 587),
+        auth: { user: process.env.EMAIL_FROM, pass: process.env.EMAIL_PASSWORD },
+      },
+      from: process.env.EMAIL_FROM,
+    })
+  )
 
 export const config = {
   trustHost: true,
-  theme: {
-    logo: 'https://next-auth.js.org/img/logo/logo-sm.png',
-  },
   adapter: PrismaAdapter(db) as Adapter,
-  providers: [
-    GitHub({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-    }),
-    Email({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: Number(process.env.EMAIL_SERVER_PORT),
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_SERVER_FROM,
-    }),
-  ],
-  basePath: '/auth',
-  session: {
-    strategy: 'jwt',
-  },
+  providers,
+  pages: { signIn: '/signin', verifyRequest: '/signin/verify-request' },
+  basePath: '/api/auth',
+  session: { strategy: 'jwt' },
   secret: process.env.AUTH_SECRET,
+  events: {
+    async createUser({ user }) {
+      if (user.email?.toLowerCase() === ownerEmail)
+        await db.user.update({ where: { id: user.id }, data: { isAdmin: true } })
+    },
+  },
   callbacks: {
-    authorized({ request, auth }) {
-      // const { pathname } = request.nextUrl
-      // if (pathname.startsWith('/work/')) return !!auth // 因为 NextAuth Adapter 默認不支持 middleware，所以這裡暫時不用
+    authorized() {
       return true
     },
-    jwt({ token, trigger, user }) {
-      if (trigger === 'signIn') {
-        token.id = user.id
-      }
+    signIn({ user }) {
+      return allowedEmails.has(user.email?.toLowerCase() || '')
+    },
+    jwt({ token, user }) {
+      if (user) token.id = user.id
       return token
     },
     session({ session, token }) {
-      // @ts-ignore
-      session.user.id = token.id
+      session.user.id = token.id as string
       return session
     },
   },
 } satisfies NextAuthConfig
-
 export const { handlers, auth, signIn, signOut } = NextAuth(config)

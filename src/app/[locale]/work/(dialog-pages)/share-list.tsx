@@ -1,24 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FileOutput } from 'lucide-react'
-import { Users } from 'lucide-react'
+import { FileOutput, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { IDoc } from '@/stores/docs-store'
-import { get } from '@/lib/ajax'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { useShareStore, IShareRelationDoc } from '@/stores/share-store'
 import { useTranslations } from 'next-intl'
+import { useDialogStore } from '@/stores/dialog-store'
 
 export default function ShareList() {
-  const t = useTranslations('CollabList')
+  const { sharedDialogOpen, setSharedDialogOpen } = useDialogStore()
+  const t = useTranslations('MyShareList')
   return (
-    <Dialog>
+    <Dialog open={sharedDialogOpen} onOpenChange={setSharedDialogOpen}>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <Users className="h-4 w-4 mr-1" />
@@ -27,7 +21,7 @@ export default function ShareList() {
       </DialogTrigger>
       <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>{t('mySharing')}</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
         <ShareListContent />
       </DialogContent>
@@ -36,20 +30,23 @@ export default function ShareList() {
 }
 
 function ShareListContent() {
-  const [loading, setLoading] = useState(true)
-  const [list, setList] = useState<IDoc[]>([])
-  const t = useTranslations('CollabList')
+  const t = useTranslations('MyShareList')
 
-  // Load data
+  // get docs
+  const myShareRelations = useShareStore((s) => s.myShareRelations)
+  const [docs, setDocs] = useState<IShareRelationDoc[]>([])
   useEffect(() => {
-    const url = '/api/doc/shared-docs'
-    get(url).then(({ data = [] }) => {
-      setList(data)
-      setLoading(false)
+    const tempDocs: IShareRelationDoc[] = []
+    myShareRelations.forEach((relation) => {
+      const doc = relation.doc
+      if (tempDocs.some((d) => d.id === doc.id)) return
+      tempDocs.push(doc)
     })
-  }, [])
+    setDocs(tempDocs)
+  }, [myShareRelations])
 
-  function handleClick(doc: IDoc) {
+  // 点击，跳转
+  function handleClick(doc: IShareRelationDoc) {
     const { id } = doc
     location.href = `/work/${id}`
   }
@@ -57,12 +54,9 @@ function ShareListContent() {
   return (
     <div className="h-96 flex flex-col">
       <div className="flex-1 overflow-y-auto">
-        {loading && (
-          <p className="text-muted-foreground text-center mt-8">loading...</p>
-        )}
-        {!loading && list.length > 0 && (
+        {docs.length > 0 && (
           <div className="mt-4">
-            {list.map((doc: IDoc) => {
+            {docs.map((doc: IShareRelationDoc) => {
               return (
                 <div
                   key={doc.id}
@@ -74,13 +68,11 @@ function ShareListContent() {
                 </div>
               )
             })}
-            {!loading && list.length === 0 && (
-              <div className="h-96">
-                <p className="mt-10 text-center text-muted-foreground">
-                  {t('notFound')}
-                </p>
-              </div>
-            )}
+          </div>
+        )}
+        {docs.length === 0 && (
+          <div className="h-96">
+            <p className="mt-10 text-center text-muted-foreground">{t('notFound')}</p>
           </div>
         )}
       </div>

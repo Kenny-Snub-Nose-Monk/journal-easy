@@ -1,10 +1,7 @@
 'use client'
+
 import { Ellipsis } from 'lucide-react'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 import DocDeleteButton from '@/components/delete-doc-button'
 import StarDocButton from '@/components/star-doc-button'
@@ -17,10 +14,11 @@ interface IProps {
 
 export default function ItemHandlers(props: IProps) {
   const { id } = props
+
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div className="cursor-pointer rounded-full p-1 hover:bg-background">
+        <div className="cursor-pointer rounded-full p-1 hover:bg-active">
           <Ellipsis className="h-4 w-4" />
         </div>
       </PopoverTrigger>

@@ -1,39 +1,39 @@
-import { BubbleMenu, Editor } from '@tiptap/react'
-import { use, useCallback } from 'react'
-// 從 tippy.js 引入 sticky 插件
-// sticky 用於確保 tippy 彈出框在滾動時保持固定位置
-// 當頁面滾動時，彈出框會跟隨其參考元素移動
+import { BubbleMenu } from '@tiptap/react'
+import { useCallback } from 'react'
 import { sticky } from 'tippy.js'
 import { v4 as uuid } from 'uuid'
-import { Columns2, PanelLeft, PanelRight, Trash2 } from 'lucide-react'
+import { Columns2, PanelLeft, PanelRight, Trash2, TextSelect } from 'lucide-react'
 import { getRenderContainer } from '@/components/editor/utils/getRenderContainer'
 import { ColumnLayout } from '@/components/editor/extensions/column/Columns'
 import Wrapper from '../bubble-menu-wrapper'
 import { Button } from '@/components/ui/button'
 import { MenuProps } from '../types'
+import { useGetEditor } from '@/components/editor'
 
 export default function ColumnsMenu(props: MenuProps) {
-  const { editor, appendTo } = props
+  const { appendTo } = props
+  const editor = useGetEditor()
 
-  //計算menu的定位
+  // 计算菜单的定位
   const getReferenceClientRect = useCallback(() => {
     if (editor == null) return new DOMRect(-1000, -1000, 0, 0)
 
     const renderContainer = getRenderContainer(editor, 'columns')
-    const rect =
-      renderContainer?.getBoundingClientRect() ||
-      new DOMRect(-1000, -1000, 0, 0)
+    const rect = renderContainer?.getBoundingClientRect() || new DOMRect(-1000, -1000, 0, 0)
 
     return rect
   }, [editor])
 
-  //menu 是否顯示
+  // 菜单是否应该显示
   const shouldShow = useCallback(() => {
     if (editor == null) return false
+
     const isColumns = editor.isActive('columns')
     if (!isColumns) return false
+
     const { empty } = editor.state.selection
     if (!empty) return false
+
     return true
   }, [editor])
 
@@ -41,7 +41,6 @@ export default function ColumnsMenu(props: MenuProps) {
   const onColumnLeft = useCallback(() => {
     editor && editor.chain().focus().setLayout(ColumnLayout.SidebarLeft).run()
   }, [editor])
-
   const isLeftActive = useCallback(() => {
     return (
       editor &&
@@ -77,15 +76,29 @@ export default function ColumnsMenu(props: MenuProps) {
     )
   }, [editor])
 
+  // withBorder
+  const withBorder = useCallback(() => {
+    return (
+      editor &&
+      editor.isActive('columns', {
+        withBorder: true,
+      })
+    )
+  }, [editor])
+  const onWithBorderToggle = useCallback(() => {
+    editor && editor.chain().focus().setWithBorder(!withBorder()).run()
+  }, [editor, withBorder])
+
   if (editor == null) return
+  if (!editor.isEditable) return
 
   return (
     <BubbleMenu
       editor={editor}
-      pluginKey={`columnsMenu-${uuid()}`} //
+      pluginKey={`columnsMenu-${uuid()}`} // 多個菜單，需要不同的 key
       updateDelay={100}
       shouldShow={shouldShow}
-      // BubbleMenu 是基於 tippy 開發的，所以它可以傳入一些 tippy 的配置 https://atomiks.github.io/tippyjs/v6/all-props/
+      // BubbleMenu 是基于 tippy 开发的，所以它可以传入一些 tippy 的配置 https://atomiks.github.io/tippyjs/v6/all-props/
       tippyOptions={{
         offset: [0, 8],
         popperOptions: {
@@ -98,32 +111,19 @@ export default function ColumnsMenu(props: MenuProps) {
       }}
     >
       <Wrapper>
-        <Button
-          size="sm"
-          onClick={onColumnLeft}
-          variant={isLeftActive() ? 'secondary' : 'ghost'}
-        >
+        <Button size="sm" onClick={onColumnLeft} variant={isLeftActive() ? 'secondary' : 'ghost'}>
           <PanelLeft className="h-4 w-4" />
         </Button>
-        <Button
-          size="sm"
-          onClick={onColumnTwo}
-          variant={isTwoActive() ? 'secondary' : 'ghost'}
-        >
+        <Button size="sm" onClick={onColumnTwo} variant={isTwoActive() ? 'secondary' : 'ghost'}>
           <Columns2 className="h-4 w-4" />
         </Button>
-        <Button
-          size="sm"
-          onClick={onColumnRight}
-          variant={isRightActive() ? 'secondary' : 'ghost'}
-        >
+        <Button size="sm" onClick={onColumnRight} variant={isRightActive() ? 'secondary' : 'ghost'}>
           <PanelRight className="h-4 w-4" />
         </Button>
-        <Button
-          size="sm"
-          onClick={() => editor.chain().focus().deleteColumns().run()}
-          variant="ghost"
-        >
+        <Button size="sm" onClick={onWithBorderToggle} variant={withBorder() ? 'secondary' : 'ghost'}>
+          <TextSelect className="h-4 w-4" />
+        </Button>
+        <Button size="sm" onClick={() => editor.chain().focus().deleteColumns().run()} variant="ghost">
           <Trash2 className="h-4 w-4" />
         </Button>
       </Wrapper>

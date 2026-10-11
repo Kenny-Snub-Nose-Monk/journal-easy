@@ -1,7 +1,18 @@
 Dockerfile
 .dockerignore
+.gcloudignore
+cloudbuild.yaml
 node_modules
 npm-debug.log
 README.md
 .next
 .git
+.github
+
+# 憑證：絕對不能進 image layer。
+# .npmrc / .sentry-token 由 CI 寫在工作目錄，靠 BuildKit secret 掛載傳進去，
+# 不是靠 COPY —— 若被 COPY 進 builder stage，會隨 build cache 一起外流。
+.env
+.env.*
+.npmrc
+.sentry-token

@@ -1,11 +1,13 @@
-import 'server-only' // 標注只在服務端使用（客户端组件引入會報錯）
+import 'server-only' // 標記只在伺服器端使用（客戶端組件引入會報錯）
 import { auth } from 'auth'
-import { cache } from 'react'
 import { db } from '@/db/db'
 
-async function getUserInfoFn() {
-  const session = await auth()
+const ENV = process.env.NODE_ENV
 
+export async function getUserInfo() {
+  if (ENV === 'test') return null
+
+  const session = await auth()
   if (!session?.user) {
     return null
   }
@@ -16,17 +18,19 @@ async function getUserInfoFn() {
   }
 
   if (user.id == null) {
-    const res = await db.user.findUnique({
-      where: { email: user.email },
-      select: { id: true },
-    })
-    if (res == null) {
+    try {
+      const res = await db.user.findUnique({
+        where: { email: user.email },
+        select: { id: true },
+      })
+      if (res == null) {
+        return null
+      }
+      return { ...user, id: res.id }
+    } catch (e) {
+      console.error('get user info error ', e)
       return null
     }
-    return { ...user, id: res.id }
   }
-
   return user
 }
-
-export const getUserInfo = cache(getUserInfoFn)

@@ -1,15 +1,14 @@
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { X, Sparkle, BetweenHorizonalStart, Replace } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import markdownit from 'markdown-it'
 import { useTranslations } from 'next-intl'
+import { useGetEditor } from '@/components/editor'
 
 const md = markdownit()
 
 interface IProps {
-  editor: Editor | null
   isSelectionEmpty: boolean
   loading: boolean
   result: string
@@ -17,22 +16,17 @@ interface IProps {
   setInstruction: (instruction: string) => void
   reRequestAI: () => void
 }
+
 export default function ResultPanel(props: IProps) {
-  const {
-    editor,
-    isSelectionEmpty,
-    loading,
-    result = '',
-    setResult,
-    setInstruction,
-    reRequestAI,
-  } = props
+  const { isSelectionEmpty, loading, result = '', setResult, setInstruction, reRequestAI } = props
+  const editor = useGetEditor()
   const menuRef = useRef<HTMLDivElement>(null)
-  const resultHtml = md.render(result)
-  const innerHtml = { __html: resultHtml }
   const t = useTranslations('AIInput')
 
-  // 插入編輯器，考慮換行
+  const resultHtml = md.render(result)
+  const innerHtml = { __html: resultHtml }
+
+  // 插入编辑器，考虑换行
   function insertResultToEditor() {
     if (editor == null) return
     if (result) {
@@ -43,14 +37,15 @@ export default function ResultPanel(props: IProps) {
 
   useEffect(() => {
     if (menuRef.current == null) return
-    // 如果內容太多，需要持續滾動，保證一直能看到菜單
+    // 如果内容太多，需要持续滚动，保证一直能看到菜单
     scrollIntoView(menuRef.current!, {
       scrollMode: 'if-needed',
       behavior: 'smooth',
       block: 'center',
     })
   }, [result])
-  // 替換
+
+  // 替换
   function onReplace() {
     if (editor == null) return
     insertResultToEditor()
@@ -58,6 +53,7 @@ export default function ResultPanel(props: IProps) {
     setResult('')
     setInstruction('')
   }
+
   // 插入
   function onInsert() {
     if (editor == null) return
@@ -68,7 +64,8 @@ export default function ResultPanel(props: IProps) {
     setResult('')
     setInstruction('')
   }
-  // 關閉
+
+  // 关闭
   function onClose() {
     setResult('')
     setInstruction('')
@@ -76,29 +73,20 @@ export default function ResultPanel(props: IProps) {
   }
 
   if (editor == null) return null
-  // if (isSelectionEmpty) return null
   if (!result && !loading) return null
 
   return (
     <div className="border-2 border-blue-600 rounded-lg shadow-lg p-4 pb-2 mb-2">
       <div className="max-h-72 overflow-y-auto">
-        <div>
-          {!result && (
-            <div className="text-center">
-              <span className="text-sm text-muted-foreground">
-                {t('AIgenerating')}
-              </span>
-            </div>
-          )}
-          {result && (
-            <div
-              dangerouslySetInnerHTML={innerHtml}
-              className="prose dark:prose-invert max-w-none"
-            ></div>
-          )}
-        </div>
+        {!result && (
+          <div className="text-center">
+            <span className="text-sm text-muted-foreground">{t('AIgenerating')}</span>
+          </div>
+        )}
+        {result && <div dangerouslySetInnerHTML={innerHtml} className="prose dark:prose-invert max-w-none"></div>}
+
         <div className="flex justify-center mt-1" ref={menuRef}>
-          {/* AI 結果的菜單：替換，插入，重新生成，取消 */}
+          {/* 處理 AI 結果的菜單：替換，插入，重新生成，取消 */}
           <Button
             onClick={onReplace}
             disabled={loading || isSelectionEmpty}

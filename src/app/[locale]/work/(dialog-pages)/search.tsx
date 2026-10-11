@@ -1,33 +1,24 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import {
-  Search as SearchIcon,
-  FileText,
-  Trash2,
-  FileSearch,
-} from 'lucide-react'
+import { Search as SearchIcon, File, Trash2, FileSearch } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import debounce from 'lodash.debounce'
 import { get } from '@/lib/ajax'
 import { IDoc } from '@/stores/docs-store'
 import scrollIntoView from 'scroll-into-view-if-needed'
-import useBindKeyPress from '../hooks/useBindKeyPress'
+import useDialogListKeyPress from './hooks/useDialogListKeyPress'
 import { useTranslations } from 'next-intl'
+import { useDialogStore } from '@/stores/dialog-store'
 
 export default function Search() {
+  const { searchDialogOpen, setSearchDialogOpen } = useDialogStore()
   const t = useTranslations('search')
   return (
-    <Dialog>
+    <Dialog onOpenChange={setSearchDialogOpen} open={searchDialogOpen}>
       <DialogTrigger asChild>
         <Button className="w-full justify-start px-2 h-9" variant="ghost">
           <SearchIcon className="h-4 w-4 mr-1" />
@@ -58,7 +49,7 @@ function SearchPanel() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newKeyword = e.target.value
     setLoading(true)
-    // 重置選擇文檔的狀態
+    // 重置选择文档的状态
     setCurrentIndex(-1)
     setKeyword(newKeyword)
     searchFn(newKeyword)
@@ -93,12 +84,8 @@ function SearchPanel() {
     location.href = `/work/${id}`
   }
 
-  // 監聽鍵盤上下鍵和回車鍵，返回當前激活的文檔的索引 currentIndex
-  const { currentIndex, setCurrentIndex } = useBindKeyPress({
-    list,
-    setKeyword,
-    handleClick,
-  })
+  // 监听键盘上下键和回车键，返回当前激活的文档的索引 currentIndex
+  const { currentIndex, setCurrentIndex } = useDialogListKeyPress({ list, setKeyword, handleClick })
 
   return (
     <div className="h-96 flex flex-col">
@@ -118,14 +105,8 @@ function SearchPanel() {
             <FileSearch className="w-16 h-16" />
           </div>
         )}
-        {loading && (
-          <p className="text-muted-foreground text-center mt-8">loading...</p>
-        )}
-        {notFound && (
-          <p className="text-muted-foreground text-center mt-8">
-            {t('notFound')}
-          </p>
-        )}
+        {loading && <p className="text-muted-foreground text-center mt-8">loading...</p>}
+        {notFound && <p className="text-muted-foreground text-center mt-8">{t('notFound')}</p>}
         {!loading && list.length > 0 && (
           <div className="mt-4">
             {list.map((doc: IDoc, docIndex: number) => {
@@ -153,7 +134,7 @@ interface ItemProps {
   docIndex: number
 }
 
-// 單獨拆分出 Item 組件，使得列表元素過多並需要滾動時，滾動到超出視口的文章
+// 单独拆分出 Item 组件，使得列表元素过多并需要滚动时，滚动到超出视口的文章
 function Item(props: ItemProps) {
   const { doc, handleClick, currentIndex, docIndex } = props
   const isCurrent = currentIndex === docIndex
@@ -180,11 +161,7 @@ function Item(props: ItemProps) {
         isCurrent ? 'bg-muted' : ''
       )}
     >
-      {doc.isDeleted ? (
-        <Trash2 className="h-4 w-4 mr-1" />
-      ) : (
-        <FileText className="h-4 w-4 mr-1" />
-      )}
+      {doc.isDeleted ? <Trash2 className="h-4 w-4 mr-1" /> : <File className="h-4 w-4 mr-1" />}
       <p className="flex-auto truncate">{doc.title}</p>
     </div>
   )

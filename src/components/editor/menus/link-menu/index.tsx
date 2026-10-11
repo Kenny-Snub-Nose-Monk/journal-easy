@@ -1,20 +1,25 @@
-import { BubbleMenu, Editor } from '@tiptap/react'
-import { useCallback, useEffect, useState } from 'react'
+import { BubbleMenu } from '@tiptap/react'
+import { useCallback, useState, useEffect } from 'react'
 import Wrapper from '../bubble-menu-wrapper'
 import { LinkPreviewMenu } from './preview-menu'
 import { LinkEditPanel } from './edit-panel'
 import { MenuProps } from '../types'
+import { useGetEditor } from '@/components/editor'
 
 export default function LinkMenu(props: MenuProps) {
-  const { editor, appendTo } = props
+  const { appendTo } = props
+  const editor = useGetEditor()
+
   const [showEdit, setShowEdit] = useState(false)
 
   const shouldShow = useCallback(() => {
     if (editor == null) return false
     const isActive = editor.isActive('link')
     if (!isActive) return false
+
     const { empty } = editor.state.selection
     if (!empty) return false
+
     return true
   }, [editor])
 
@@ -39,22 +44,26 @@ export default function LinkMenu(props: MenuProps) {
 
   useEffect(() => {
     if (!editor) return
+
     const handleUpdate = () => {
-      // 每次編輯器狀態更新時，檢查連結的變化
+      // 每次编辑器状态更新时，检查链接的变化
       const { href: currentHref } = editor.getAttributes('link') || {}
       if (currentHref && currentHref !== href) {
-        setShowEdit(false) // 如果檢測到連結變化，設置showEdit為false
+        setShowEdit(false) // 如果檢測到鏈接變化，設定showEdit為false
       }
     }
-    // 監聽編輯器選區改變
+
+    // 监听编辑器选区改变
     editor.on('transaction', handleUpdate)
-    // 清理函數
+
+    // 清理函数
     return () => {
       editor.off('transaction', handleUpdate)
     }
   }, [editor, href])
 
   if (editor == null) return
+  if (!editor.isEditable) return
 
   return (
     <BubbleMenu
@@ -75,17 +84,9 @@ export default function LinkMenu(props: MenuProps) {
     >
       <Wrapper>
         {showEdit ? (
-          <LinkEditPanel
-            initialUrl={href}
-            initialOpenInNewTab={target === '_blank'}
-            onSetLink={setLink}
-          />
+          <LinkEditPanel initialUrl={href} initialOpenInNewTab={target === '_blank'} onSetLink={setLink} />
         ) : (
-          <LinkPreviewMenu
-            url={href}
-            onEdit={() => setShowEdit(true)}
-            onClear={unsetLink}
-          />
+          <LinkPreviewMenu url={href} onEdit={() => setShowEdit(true)} onClear={unsetLink} />
         )}
       </Wrapper>
     </BubbleMenu>

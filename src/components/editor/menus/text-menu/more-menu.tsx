@@ -1,19 +1,11 @@
-import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Ellipsis, Subscript, Superscript, Strikethrough } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Ellipsis, Superscript, Subscript, Strikethrough } from 'lucide-react'
+import { useGetEditor } from '@/components/editor'
 
-interface IProps {
-  editor: Editor | null
-}
-
-export default function MoreMenu(props: IProps) {
-  const { editor } = props
-  if (editor == null) return null
+export default function MoreMenu() {
+  const editor = useGetEditor()
+  if (editor == null) return
 
   return (
     <Popover>
